@@ -1,0 +1,80 @@
+@import "../node_modules/bootswatch/dist/vapor/variables";
+
+$success: rgb(50, 251, 226);
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootswatch/dist/vapor/bootswatch";
+@import "../node_modules/jack-hermanson-css-lib/src/main";
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+body {
+  font-family: "Rubik", $font-family-sans-serif;
+  min-height: 100vh;
+}
+
+.navbar-brand, .nav-link {
+  text-transform: uppercase;
+}
+
+h2, h3, h4 {
+  text-transform: uppercase;
+}
+
+.form-group {
+  @extend .mb-3;
+}
+
+.logo {
+  filter: drop-shadow(0 0 5px rgb(255 255 255 / 0.4));
+}
+
+.form-label.required:after {
+  color: white !important;
+}
+
+.bottom-buttons {
+  .btn:not(last-child) {
+    @extend .me-2;
+  }
+}
+
+hr {
+  height: 2px !important;
+  background-color: rgb(50, 251, 226) !important;
+  filter: drop-shadow(0 0 5px rgb(255 255 255 / 0.4));
+  opacity: 100% !important;
+}
+
+.form-control {
+  margin-bottom: 0 !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $success !important;
+}
+
+.page-title {
+  display: flex;
+  @extend .border-bottom;
+  margin-bottom: 1em;
+
+  h2 {
+    margin-bottom: 0;
+    margin-top: 0.5em;
+  }
+
+  .actions {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: 0.5em;
+  }
+}
+
+.btn-success, .alert-success {
+  color: $body-bg;
+}
+
+.btn-outline-success, .btn-success {
+  &:hover, &:active, &.dropdown-toggle.show {
+    color: black !important;
+  }
+}
