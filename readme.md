@@ -8,3 +8,10 @@
 - Jinja macros
 - Linting
 - ERD
+
+### Migration
+
+```sh
+flask db migrate -m "InitialMigration"
+flask db stamp head
+```

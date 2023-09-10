@@ -3,6 +3,7 @@ from flask import Flask
 from flask_talisman import Talisman
 from main.config import Config
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 
 bcrypt = Bcrypt()
@@ -10,6 +11,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = "accounts.login"
 login_manager.login_message_category = "warning"
+migrate = Migrate(compare_type=True)
 
 
 def create_app(config_class=Config):
@@ -35,15 +37,19 @@ def create_app(config_class=Config):
     # login_manager.init_app(app)
 
     # models todo
-    #from .modules.accounts import models
+    from .modules.accounts import models
     #from .modules.apps import models
     #from .modules.logs import models
 
     # database
     db.app = app
     db.init_app(app)
-    with app.app_context():
-        db.create_all()
+    # todo
+    # with app.app_context():
+    #     db.create_all()
+
+    migrate.init_app(app, db)
+
 
     # routes and blueprints todo
     from .modules.main.routes import main
@@ -52,7 +58,6 @@ def create_app(config_class=Config):
     # from .modules.errors.handlers import errors
     # from .modules.logs.routes import logs
 
-    # todo
     for blueprint in [main, accounts]:
         app.register_blueprint(blueprint)
 
