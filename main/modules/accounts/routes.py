@@ -35,6 +35,9 @@ def login(prefilled_form: Login or None = None):
         )
 
     form = Login()
+    if form.password.render_kw.get("autofocus") is not None:
+        del form.password.render_kw["autofocus"]
+    form.name.render_kw["autofocus"] = "true"
 
     if form.validate_on_submit():
         user = Account.query.filter(Account.name == form.name.data).first_or_404()
@@ -72,7 +75,7 @@ def register():
         prefilled_login_form = Login()
         prefilled_login_form.name.data = user.name
         prefilled_login_form.remember.data = True
-        if prefilled_login_form.name.render_kw["autofocus"] is not None:
+        if prefilled_login_form.name.render_kw.get("autofocus") is not None:
             del prefilled_login_form.name.render_kw["autofocus"]
             prefilled_login_form.password.render_kw["autofocus"] = "true"
         return login(prefilled_login_form)
