@@ -38,8 +38,7 @@ def create_app(config_class=Config):
 
     # models todo
     from .modules.accounts import models
-    #from .modules.apps import models
-    #from .modules.logs import models
+    from .modules.lists import models
 
     # database
     db.app = app
