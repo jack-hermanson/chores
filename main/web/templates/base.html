@@ -6,13 +6,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="{{ url_for("static", filename="node_modules/htmx.org/dist/htmx.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="node_modules/dayjs/dayjs.min.js") }}"></script>
 {#<!--    <script src="{{ url_for("static", filename="node_modules/moment/moment.js") }}"></script>-->#}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('main.index') }}">
-{#<!--            <img src="{{ url_for("static", filename="hammer.svg") }}" width="30" height="24" class="d-inline-block align-text-top logo">-->#}
+            <img alt="logo" src="{{ url_for("static", filename="logo-transparent.svg") }}" width="22" height="22" class="d-inline-block align-text-top logo">
             <span class="d-inline-block">Chores</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
