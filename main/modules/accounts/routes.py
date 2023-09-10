@@ -51,6 +51,8 @@ def login(prefilled_form: Login or None = None):
             db.session.commit()
 
             return redirect(next_page) if next_page else redirect(url_for("main.index"))
+        else:
+            flash("Bad login credentials. You should really use a password manager.", "danger")
 
     return render_template(
         "accounts/login.html",

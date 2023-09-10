@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% set title = "My Account" %} {# TODO CHANGE THIS #}
+{% set active_route = "accounts" %} {# TODO CHANGE THIS #}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <p>Something.</p>
+        </div>
+    </div>
+{% endblock body %}

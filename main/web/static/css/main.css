@@ -7685,7 +7685,7 @@ textarea.form-control-lg {
   border-right: 0 !important;
 }
 
-.border-bottom, .page-title {
+.border-bottom {
   border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
@@ -13580,7 +13580,7 @@ hr {
   margin-bottom: 0 !important;
 }
 
-.border-bottom, .page-title {
+.border-bottom {
   border-bottom: 1px solid #32fbe2 !important;
 }
 
@@ -13604,6 +13604,15 @@ hr {
 
 .btn-outline-success:hover, .btn-outline-success:active, .btn-outline-success.dropdown-toggle.show, .btn-success:hover, .btn-success:active, .btn-success.dropdown-toggle.show {
   color: black !important;
+}
+
+p.left-line-next-to-text {
+  border-left: 4px solid rgba(50, 251, 226, 0.3);
+  padding-left: 8px;
+}
+
+.text-muted {
+  color: rgba(50, 251, 226, 0.3) !important;
 }
 
 /*# sourceMappingURL=main.css.map */

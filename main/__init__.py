@@ -55,10 +55,10 @@ def create_app(config_class=Config):
     from .modules.main.routes import main
     from .modules.accounts.routes import accounts
     # from .modules.apps.routes import apps
-    # from .modules.errors.handlers import errors
+    from .modules.errors.handlers import errors
     # from .modules.logs.routes import logs
 
-    for blueprint in [main, accounts]:
+    for blueprint in [main, accounts, errors]:
         app.register_blueprint(blueprint)
 
     # login manager

@@ -50,12 +50,13 @@ hr {
 }
 
 .border-bottom {
+  //border-bottom: 2px solid rgb(50, 251, 226) !important;
   border-bottom: 1px solid $success !important;
 }
 
 .page-title {
   display: flex;
-  @extend .border-bottom;
+  //@extend .border-bottom;
   margin-bottom: 1em;
 
   h2 {
@@ -78,4 +79,13 @@ hr {
   &:hover, &:active, &.dropdown-toggle.show {
     color: black !important;
   }
+}
+
+p.left-line-next-to-text {
+  border-left: 4px solid $text-muted;
+  padding-left: 8px;
+}
+
+.text-muted {
+  color: $text-muted !important;
 }

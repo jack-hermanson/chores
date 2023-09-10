@@ -19,6 +19,12 @@ class Login(FlaskForm):
     remember = BooleanField("Remember Me", default=False)
     submit = SubmitField("Log In")
 
+    @staticmethod
+    def validate_name(_, name):
+        if not Account.query.filter(func.lower(Account.name) == func.lower(name.data)).count():
+            raise ValidationError("Doesn't exist.")
+
+
 
 class Create(FlaskForm):
     name = StringField(

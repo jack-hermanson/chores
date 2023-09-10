@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="{{ url_for("static", filename="node_modules/htmx.org/dist/htmx.min.js") }}"></script>
     <script src="{{ url_for("static", filename="node_modules/dayjs/dayjs.min.js") }}"></script>
-{#    <script src="{{ url_for("static", filename="node_modules/moment/moment.js") }}"></script>#}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
@@ -38,7 +37,15 @@
                         <a class="nav-link {% if active_route == 'accounts' %}active{% endif %}" href="{{ url_for('accounts.profile') }}">{{ current_user.name }}</a>
                     </li>
                     <li class="nav-item">
-                        <a hx-target="body" hx-post="{{ url_for("accounts.logout") }}" href="{{ url_for("accounts.logout") }}" class="nav-link">Log Out</a>
+                        <a
+                            hx-confirm="Are you sure you want to log out?"
+                            hx-target="body"
+                            hx-post="{{ url_for("accounts.logout") }}"
+                            href="{{ url_for("accounts.logout") }}"
+                            class="nav-link"
+                        >
+                            Log Out
+                        </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
@@ -87,7 +94,7 @@
                     {% endblock actions %}
                 </div>
             </div>
-
+            <hr />
         </div>
     </div>
     {% block body %}

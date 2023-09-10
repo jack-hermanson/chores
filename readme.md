@@ -2,17 +2,19 @@
 
 ### To do:
 
-- SQL Alchemy and migrations
-- Static type checking
-- Unit testing
-- Jinja macros
-- Linting
-- ERD
-- Error handling pages
+- [x] SQL Alchemy and migrations
+- [ ] Static type checking
+- [ ] Unit testing
+- [x] Jinja macros
+- [ ] Linting
+- [ ] ERD
+- [x] Error handling pages
+- [ ] Forgot password
+- [ ] Emails
 
 ### Migration
 
 ```sh
 flask db migrate -m "InitialMigration"
-flask db stamp head
+flask migrate
 ```
