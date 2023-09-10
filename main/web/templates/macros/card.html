@@ -1,0 +1,12 @@
+{% macro simple_card(title, class="") %}
+<div class="card bg-dark {{ class }}">
+    <div class="card-body">
+        <h5 class="card-title">
+            {{ title }}
+        </h5>
+        <div class="card-text">
+            {{ caller() }}
+        </div>
+    </div>
+</div>
+{% endmacro %}

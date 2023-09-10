@@ -1,0 +1,6 @@
+{% macro test(name, value='') %}
+    <p>This is a macro called {{ name }}. Value is: {{ value }}</p>
+    {% if caller %}
+    {{ caller() }}
+    {% endif %}
+{% endmacro %}

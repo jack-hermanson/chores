@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="{{ url_for("static", filename="node_modules/htmx.org/dist/htmx.min.js") }}"></script>
     <script src="{{ url_for("static", filename="node_modules/dayjs/dayjs.min.js") }}"></script>
-{#<!--    <script src="{{ url_for("static", filename="node_modules/moment/moment.js") }}"></script>-->#}
+{#    <script src="{{ url_for("static", filename="node_modules/moment/moment.js") }}"></script>#}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
@@ -22,27 +22,27 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbar">
-{#<!--            <ul class="navbar-nav me-auto">-->#}
-{#<!--                {% if current_user.is_authenticated and current_user.clearance >= 2 %}-->#}
-{#<!--                    <li class="nav-item">-->#}
-{#<!--                        <a href="{{ url_for("apps.index") }}" class="nav-link {% if active_route == "apps" %}active{% endif %}">Apps</a>-->#}
-{#<!--                    </li>-->#}
-{#<!--                    <li class="nav-item">-->#}
-{#<!--                        <a href="{{ url_for("logs.index") }}" class="nav-link {% if active_route == "logs" %}active{% endif %}">Logs</a>-->#}
-{#<!--                    </li>-->#}
-{#<!--                {% endif %}-->#}
-{#<!--            </ul>-->#}
-{#<!--            <ul class="navbar-nav ms-auto">-->#}
-{#<!--                {% if current_user.is_authenticated %}-->#}
-{#<!--                    <li class="nav-item">-->#}
-{#<!--                        <a class="nav-link {% if active_route == 'users' %}active{% endif %}" href="{{ url_for('users.profile') }}">{{ current_user.name }}</a>-->#}
-{#<!--                    </li>-->#}
-{#<!--                {% else %}-->#}
-{#<!--                    <li class="nav-item">-->#}
-{#<!--                        <a class="nav-link {% if active_route == 'users' %}active{% endif %}" href="{{ url_for('users.login') }}">Log In</a>-->#}
-{#<!--                    </li>-->#}
-{#<!--                {% endif %}-->#}
-{#<!--            </ul>-->#}
+            <ul class="navbar-nav me-auto">
+{#                {% if current_user.is_authenticated and current_user.clearance >= 2 %}#}
+{#                    <li class="nav-item">#}
+{#                        <a href="{{ url_for("apps.index") }}" class="nav-link {% if active_route == "apps" %}active{% endif %}">Apps</a>#}
+{#                    </li>#}
+{#                    <li class="nav-item">#}
+{#                        <a href="{{ url_for("logs.index") }}" class="nav-link {% if active_route == "logs" %}active{% endif %}">Logs</a>#}
+{#                    </li>#}
+{#                {% endif %}#}
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+{#                        <a class="nav-link {% if active_route == 'users' %}active{% endif %}" href="{{ url_for('users.profile') }}">{{ current_user.name }}</a>#}
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_route == 'users' %}active{% endif %}" href="{{ url_for('accounts.login') }}">Log In</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>

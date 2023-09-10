@@ -1,0 +1,23 @@
+{% macro form_group(form, name, type="text", required=False, description="",
+                    autoFocus=False, class="") %}
+<div class="form-group {{ class }}">
+    {% if required %}
+        {{ form[name].label(class="form-label required") }}
+    {% else %}
+        {{ form[name].label(class="form-label") }}
+    {% endif %}
+
+    {% if form[name].errors %}
+        {{ form[name](class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            {% for error in form[name].errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ form[name](class="form-control form-control-lg") }}
+    {% endif %}
+
+
+</div>
+{% endmacro %}

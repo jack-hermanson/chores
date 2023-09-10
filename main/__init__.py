@@ -7,9 +7,9 @@ from flask_login import LoginManager, current_user
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
-# login_manager = LoginManager()
-# login_manager.login_view = "users.login"
-# login_manager.login_message_category = "warning"
+login_manager = LoginManager()
+login_manager.login_view = "accounts.login"
+login_manager.login_message_category = "warning"
 
 
 def create_app(config_class=Config):
@@ -47,18 +47,18 @@ def create_app(config_class=Config):
 
     # routes and blueprints todo
     from .modules.main.routes import main
-    # from .modules.accounts.routes import users
+    from .modules.accounts.routes import accounts
     # from .modules.apps.routes import apps
     # from .modules.errors.handlers import errors
     # from .modules.logs.routes import logs
 
     # todo
-    for blueprint in [main]:
+    for blueprint in [main, accounts]:
         app.register_blueprint(blueprint)
 
     # login manager
-    # login_manager.init_app(app)
-    # login_manager.session_protection = "strong"
+    login_manager.init_app(app)
+    login_manager.session_protection = "strong"
 
     # return the app
     print("RUNNING APPLICATION")
