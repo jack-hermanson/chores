@@ -1,5 +1,4 @@
-{% macro form_group(form, name, type="text", required=False, description="",
-                    autoFocus=False, class="") %}
+{% macro form_group(form, name, type="text", required=False, description="", class="") %}
 <div class="form-group {{ class }}">
     {% if required %}
         {{ form[name].label(class="form-label required") }}

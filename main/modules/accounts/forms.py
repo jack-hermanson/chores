@@ -6,14 +6,21 @@ from wtforms.validators import DataRequired, EqualTo, ValidationError, Email
 
 
 class Login(FlaskForm):
-    name = StringField("Name", validators=[DataRequired()], render_kw={"autofocus": "true"})
-    password = PasswordField("Password", validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired()], render_kw={
+        "autofocus": "true",
+        "placeholder": "jack"
+    })
+    password = PasswordField("Password", validators=[DataRequired()], render_kw={
+        "placeholder": "passw0rd!"
+    })
     remember = BooleanField("Remember Me", default=False)
     submit = SubmitField("Log In")
 
 
 class Create(FlaskForm):
-    name = StringField("Name", validators=[DataRequired()], render_kw={"autofocus": "true"})
+    name = StringField("Name", validators=[DataRequired()], render_kw={
+        "autofocus": "true"
+    })
     email = EmailField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
