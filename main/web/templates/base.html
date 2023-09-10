@@ -38,7 +38,7 @@
                         <a class="nav-link {% if active_route == 'accounts' %}active{% endif %}" href="{{ url_for('accounts.profile') }}">{{ current_user.name }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for("accounts.logout") }}" class="nav-link">Log Out</a>
+                        <a hx-target="body" hx-post="{{ url_for("accounts.logout") }}" href="{{ url_for("accounts.logout") }}" class="nav-link">Log Out</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
