@@ -8,6 +8,7 @@
 - Jinja macros
 - Linting
 - ERD
+- Error handling pages
 
 ### Migration
 

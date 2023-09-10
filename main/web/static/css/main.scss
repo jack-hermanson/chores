@@ -32,7 +32,8 @@ h2, h3, h4 {
 }
 
 .bottom-buttons {
-  .btn:not(last-child) {
+  @extend .mt-4;
+  .btn:not(:last-child) {
     @extend .me-2;
   }
 }

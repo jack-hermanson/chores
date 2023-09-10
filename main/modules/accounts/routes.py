@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from main import db, bcrypt
 from .forms import Login, Create
 from .models import Account
+from datetime import datetime
 
 accounts = Blueprint("accounts", __name__, url_prefix="/accounts")
 
@@ -22,10 +23,16 @@ def profile():
 
 
 @accounts.route("/login", methods=["GET", "POST"])
-def login():
+def login(prefilled_form: Login or None = None):
     if current_user.is_authenticated:
         flash("You are already logged in.", "info")
         return redirect(url_for("main.index"))
+
+    if prefilled_form is not None:
+        return render_template(
+            "accounts/login.html",
+            form=prefilled_form
+        )
 
     form = Login()
 
@@ -34,7 +41,12 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next")
-            flash("Logged in successfully.", "info")
+            last_login = user.last_login.strftime('%a %d %b %Y, %I:%M%p') \
+                if user.last_login is not None else "never"
+            flash(f"Welcome back, {user.name}. Your last login was {last_login}.", "info")
+            current_user.last_login = datetime.now()
+            db.session.commit()
+
             return redirect(next_page) if next_page else redirect(url_for("main.index"))
 
     return render_template(
@@ -55,18 +67,27 @@ def register():
         user.email = form.email.data.lower()
         db.session.add(user)
         db.session.commit()
-        flash('Account created successfully.', 'success')
-        return redirect(url_for('accounts.login'))
+        flash(f"Alright, {user.name}. Enter your password to log in.", 'success')
+
+        prefilled_login_form = Login()
+        prefilled_login_form.name.data = user.name
+        prefilled_login_form.remember.data = True
+        if prefilled_login_form.name.render_kw["autofocus"] is not None:
+            del prefilled_login_form.name.render_kw["autofocus"]
+            prefilled_login_form.password.render_kw["autofocus"] = "true"
+        return login(prefilled_login_form)
+        # return redirect(url_for('accounts.login'))
     return render_template('accounts/register.html',
                            form=form)
 
 
 @accounts.route("/logout")
 def logout():
+    name = current_user.name
     if not current_user.is_authenticated:
         flash("You are not logged in, so you cannot log out!", "danger")
         return redirect(url_for("accounts.login"))
 
     logout_user()
-    flash("Logged out successfully.", "info")
+    flash(f"Okay, bye {name}.", "info")
     return redirect(url_for("main.index"))

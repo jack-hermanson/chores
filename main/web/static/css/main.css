@@ -8173,7 +8173,7 @@ textarea.form-control-lg {
   margin-top: 1rem !important;
 }
 
-.mt-4 {
+.mt-4, .bottom-buttons {
   margin-top: 1.5rem !important;
 }
 
@@ -8193,7 +8193,7 @@ textarea.form-control-lg {
   margin-right: 0.25rem !important;
 }
 
-.me-2, .bottom-buttons .btn:not(last-child) {
+.me-2, .bottom-buttons .btn:not(:last-child) {
   margin-right: 0.5rem !important;
 }
 

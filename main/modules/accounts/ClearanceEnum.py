@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class ClearanceEnum(Enum):
+class ClearanceEnum(IntEnum):
     SUPER_ADMIN = 5
     NORMAL = 1
     UNVERIFIED = 0
