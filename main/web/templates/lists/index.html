@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "macros/action-link.html" import action_link %}
+
+{% set title = "Lists" %}
+{% set active_route = "lists" %}
+
+{% block actions %}
+    {{ action_link("Create List", url_for("lists.create")) }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <p>Lists.</p>
+            <ul>
+                {% for list in lists_list %}
+                    <li>
+                        {{ list.title }}
+                        {% for account in list.accounts %}
+                            {{ account.name }}
+                            {% if not loop.last %}
+                            ,
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock body %}

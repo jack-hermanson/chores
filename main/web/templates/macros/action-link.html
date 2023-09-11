@@ -1,0 +1,7 @@
+{% macro action_link(text, url, outline=True, color="success") %}
+    <a href="{{ url }}"
+       class="btn btn-sm btn-{{ "outline-" if outline else "" }}{{ color }}"
+    >
+        {{ text }}
+    </a>
+{% endmacro %}

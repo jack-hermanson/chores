@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "macros/form.html" import form_group %}
+
+
+{% set title = "Create List" if mode == "Create" else "Edit List" %}
+{% set active_route = "lists" %} {# TODO CHANGE THIS #}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <form action="" method="{% if mode == "Create" %}POST{% else %}PUT{% endif %}">
+                {{ form.hidden_tag() }}
+                {{ form_group(form, "title", required=True) }}
+                <div class="form-group">
+                    {{ form.accounts.label(class="form-label required") }}
+                    {% if form.accounts.errors %}
+                        {{ form.accounts(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.accounts.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.accounts(class="form-control form-control-lg") }}
+                    {% endif %}
+                    <div class="small form-text text-muted mt-2">{{ form.accounts.description }}</div>
+                </div>
+                <div class="bottom-buttons">
+                    {{ form.submit(class="btn btn-outline-success") }}
+                    <a href="" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock body %}

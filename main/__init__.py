@@ -49,15 +49,13 @@ def create_app(config_class=Config):
 
     migrate.init_app(app, db)
 
-
-    # routes and blueprints todo
+    # routes and blueprints
     from .modules.main.routes import main
     from .modules.accounts.routes import accounts
-    # from .modules.apps.routes import apps
     from .modules.errors.handlers import errors
-    # from .modules.logs.routes import logs
+    from .modules.lists.routes import lists
 
-    for blueprint in [main, accounts, errors]:
+    for blueprint in [main, accounts, errors, lists]:
         app.register_blueprint(blueprint)
 
     # login manager

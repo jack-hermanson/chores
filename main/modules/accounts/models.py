@@ -3,6 +3,8 @@ from flask_login import UserMixin
 from .ClearanceEnum import ClearanceEnum
 from sqlalchemy.sql import func
 
+from ..lists.models import list_account
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -10,6 +12,9 @@ def load_user(user_id):
 
 
 class Account(db.Model, UserMixin):
+    def get_id(self):
+        return self.account_id
+
     account_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(15), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
@@ -17,3 +22,4 @@ class Account(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     join_date = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
+    lists = db.relationship("List", secondary=list_account, back_populates="accounts")

@@ -22,14 +22,11 @@
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto">
-{#                {% if current_user.is_authenticated and current_user.clearance >= 2 %}#}
-{#                    <li class="nav-item">#}
-{#                        <a href="{{ url_for("apps.index") }}" class="nav-link {% if active_route == "apps" %}active{% endif %}">Apps</a>#}
-{#                    </li>#}
-{#                    <li class="nav-item">#}
-{#                        <a href="{{ url_for("logs.index") }}" class="nav-link {% if active_route == "logs" %}active{% endif %}">Logs</a>#}
-{#                    </li>#}
-{#                {% endif %}#}
+                {% if current_user.is_authenticated and current_user.clearance >= 1 %}
+                    <li class="nav-item">
+                        <a href="{{ url_for("lists.index") }}" class="nav-link {% if active_route == "lists" %}active{% endif %}">Lists</a>
+                    </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
@@ -94,7 +91,7 @@
                     {% endblock actions %}
                 </div>
             </div>
-            <hr />
+            <hr class="mt-1" />
         </div>
     </div>
     {% block body %}
