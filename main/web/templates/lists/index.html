@@ -22,6 +22,7 @@
                             ,
                             {% endif %}
                         {% endfor %}
+                        <a href="{{ url_for("lists.edit", list_id=list.list_id) }}">Edit</a>
                     </li>
                 {% endfor %}
             </ul>

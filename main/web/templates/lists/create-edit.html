@@ -3,12 +3,12 @@
 
 
 {% set title = "Create List" if mode == "Create" else "Edit List" %}
-{% set active_route = "lists" %} {# TODO CHANGE THIS #}
+{% set active_route = "lists" %}
 
 {% block body %}
     <div class="row">
         <div class="col-12 col-lg-8">
-            <form action="" method="{% if mode == "Create" %}POST{% else %}PUT{% endif %}">
+            <form action="" method="post">
                 {{ form.hidden_tag() }}
                 {{ form_group(form, "title", required=True) }}
                 <div class="form-group">

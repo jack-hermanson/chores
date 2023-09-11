@@ -52,10 +52,32 @@ def create():
                            form=form)
 
 
-@lists.route("/edit/<int:list_id>")
-@min_clearance
+@lists.route("/edit/<int:list_id>", methods=["GET", "POST"])
+@min_clearance(ClearanceEnum.NORMAL)
 def edit(list_id: int):
-    pass
+    matching_list = List.query.filter(List.list_id == list_id).first_or_404()
+    form = CreateEditList()
+    form.accounts.choices = get_user_options()
+
+    if form.validate_on_submit():
+        matching_list.title = form.title.data
+        matching_list.description = "Auto generated!"
+
+        accounts = []
+        for account_id in form.accounts.data:
+            accounts.append(Account.query.filter(Account.account_id == account_id).first())
+        matching_list.accounts = accounts
+
+        db.session.commit()
+        flash(f"List \"{matching_list.title}\" edited successfully.", "success")
+        return redirect(url_for("lists.index"))
+    elif request.method == "GET":
+        form.accounts.data = [m.account_id for m in matching_list.accounts]
+        form.title.data = matching_list.title
+
+    return render_template("lists/create-edit.html",
+                           mode="Edit",
+                           form=form)
 
 
 
