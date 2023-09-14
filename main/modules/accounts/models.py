@@ -22,5 +22,5 @@ class Account(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     join_date = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
-    lists = db.relationship("List", secondary=list_account, back_populates="accounts",
-                            cascade='all,delete')
+    lists = db.relationship("List", secondary=list_account, back_populates="accounts")
+    chores = db.relationship("Chore", back_populates="owner", cascade="all, delete-orphan")

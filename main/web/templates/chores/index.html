@@ -3,10 +3,21 @@
 {% set title = "Chores" %}
 {% set active_route = "chores" %}
 
+{% from "macros/action-link.html" import action_link %}
+
+{% block actions %}
+    {{ action_link("Create Chore", url_for("chores.create")) }}
+{% endblock %}
+
 {% block body %}
     <div class="row">
         <div class="col-12 col-lg-8">
             <p>Something.</p>
+            <ul>
+                {% for chore in chores_list %}
+                    <li>{{ chore.title }}, {{ chore.description }}, {{ chore.owner.chores }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 {% endblock body %}

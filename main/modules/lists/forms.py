@@ -1,9 +1,6 @@
-from sqlalchemy import func
-from .models import List
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SelectMultipleField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, ValidationError, Email, Length
-from ..accounts.models import Account
 
 
 list_name_length = Length(min=2, max=50)

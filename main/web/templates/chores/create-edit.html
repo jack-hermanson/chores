@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "macros/form.html" import form_group %}
+
+{% set title = mode + " Chore" %}
+{% set active_route = "chores" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <form action="{% if mode == "create" %}
+                              {{ chores.create }}
+                          {% endif %}" method="POST">
+                {{ form.hidden_tag() }}
+                {{ form_group(form, "title") }}
+                {{ form_group(form, "description") }}
+
+                <div class="bottom-buttons">
+                    {{ form.submit(class="btn btn-outline-success") }}
+                    <a href="" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock body %}
