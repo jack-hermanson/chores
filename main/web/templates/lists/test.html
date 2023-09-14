@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% set title = "test" %} {# TODO CHANGE THIS #}
+{% set active_route = "lists" %} {# TODO CHANGE THIS #}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <p>This is a test.</p>
+            <button
+                class="btn btn-success mb-3"
+                hx-get="{{ url_for("lists.test_partial") }}"
+                hx-target="#numbers-list"
+            >
+                Generate new stuff!
+            </button>
+            <div id="numbers-list">
+                {% include "lists/test-partial.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}

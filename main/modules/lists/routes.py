@@ -1,3 +1,5 @@
+import random
+
 from flask import Blueprint, redirect, url_for, flash, request, render_template
 from .forms import CreateEditList
 from ..accounts.models import Account
@@ -35,7 +37,7 @@ def create():
     if form.validate_on_submit():
         new_list = List()
         new_list.title = form.title.data
-        new_list.description = "Auto generated!"
+        new_list.description = form.description.data
 
         accounts = []
         for account_id in form.accounts.data:
@@ -61,7 +63,7 @@ def edit(list_id: int):
 
     if form.validate_on_submit():
         matching_list.title = form.title.data
-        matching_list.description = "Auto generated!"
+        matching_list.description = form.description.data
 
         accounts = []
         for account_id in form.accounts.data:
@@ -74,11 +76,39 @@ def edit(list_id: int):
     elif request.method == "GET":
         form.accounts.data = [m.account_id for m in matching_list.accounts]
         form.title.data = matching_list.title
+        form.description.data = matching_list.description
 
     return render_template("lists/create-edit.html",
                            mode="Edit",
                            form=form)
 
 
+@lists.route("/delete/<int:list_id>", methods=["DELETE"])
+@min_clearance(ClearanceEnum.NORMAL)
+def delete(list_id: int):
+    list = db.session.query(List).filter(List.list_id == list_id).first()
+    db.session.delete(list)
+    db.session.commit()
+    lists_list = List.query.all()
+    return render_template("lists/index-partial-lists.html",
+                           lists_list=lists_list)
 
+
+def gen_numbers():
+    numbers = []
+    for x in range(20):
+        numbers.append(random.randint(1, 20))
+    return numbers
+
+
+@lists.route("/test")
+def test():
+    numbers = gen_numbers()
+    return render_template("lists/test.html", numbers=numbers)
+
+
+@lists.route("/test-partial")
+def test_partial():
+    numbers = gen_numbers()
+    return render_template("lists/test-partial.html", numbers=numbers)
 

@@ -10,7 +10,8 @@
         <div class="col-12 col-lg-8">
             <form action="" method="post">
                 {{ form.hidden_tag() }}
-                {{ form_group(form, "title", required=True) }}
+                {{ form_group(form, "title") }}
+                {{ form_group(form, "description") }}
                 <div class="form-group">
                     {{ form.accounts.label(class="form-label required") }}
                     {% if form.accounts.errors %}
@@ -25,6 +26,7 @@
                     {% endif %}
                     <div class="small form-text text-muted mt-2">{{ form.accounts.description }}</div>
                 </div>
+
                 <div class="bottom-buttons">
                     {{ form.submit(class="btn btn-outline-success") }}
                     <a href="" class="btn btn-outline-secondary">Reset</a>

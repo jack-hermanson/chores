@@ -1,0 +1,21 @@
+{% for list in lists_list %}
+    <li>
+        {{ list.title }}
+        {% for account in list.accounts %}
+            {{ account.name }}
+            {% if not loop.last %},
+            {% endif %}
+        {% endfor %}
+        <a href="{{ url_for("lists.edit", list_id=list.list_id) }}">Edit</a>
+        &nbsp;
+        |
+        &nbsp;
+        <button class="btn btn-danger"
+            hx-confirm="Are you sure you want to delete this list?"
+            hx-delete="{{ url_for("lists.delete", list_id=list.list_id) }}"
+            hx-target="#lists-list"
+       >
+            Delete
+        </button>
+    </li>
+{% endfor %}

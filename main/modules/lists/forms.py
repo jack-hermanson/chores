@@ -1,7 +1,7 @@
 from sqlalchemy import func
 from .models import List
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SelectMultipleField, SubmitField
+from wtforms.fields import StringField, SelectMultipleField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, ValidationError, Email, Length
 from ..accounts.models import Account
 
@@ -14,6 +14,8 @@ class CreateEditList(FlaskForm):
         "autofocus": "true",
         "placeholder": "Boring things I have to do"
     }, description="What should this list be called?")
+    description = TextAreaField("Description", validators=[Length(max=255)],
+                                description="An optional description of the list")
     accounts = SelectMultipleField(
         "Users",
         coerce=int,
