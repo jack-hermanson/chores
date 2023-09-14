@@ -36,17 +36,17 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     # login_manager.init_app(app)
 
-    # models todo
+    # models
     from .modules.accounts import models
     from .modules.lists import models
+    from .modules.chores import models
 
     # database
     db.app = app
     db.init_app(app)
-    # todo
+    # looks like we don't need create_all() because we are doing migrations
     # with app.app_context():
     #     db.create_all()
-
     migrate.init_app(app, db)
 
     # routes and blueprints
@@ -54,8 +54,9 @@ def create_app(config_class=Config):
     from .modules.accounts.routes import accounts
     from .modules.errors.handlers import errors
     from .modules.lists.routes import lists
+    from .modules.chores.routes import chores
 
-    for blueprint in [main, accounts, errors, lists]:
+    for blueprint in [main, accounts, errors, lists, chores]:
         app.register_blueprint(blueprint)
 
     # login manager
