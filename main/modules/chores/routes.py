@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
@@ -36,5 +36,28 @@ def create():
 
     return render_template("chores/create-edit.html",
                            mode="Create",
+                           form=form)
+
+
+@chores.route("/edit/<int:chore_id>", methods=["GET", "POST"])
+@min_clearance(ClearanceEnum.NORMAL)
+def edit(chore_id: int):
+    form = CreateEditChore()
+    chore = Chore.query.filter(Chore.chore_id == chore_id).first_or_404()
+
+    if form.validate_on_submit():
+        chore.title = form.title.data
+        chore.description = form.description.data
+
+        db.session.commit()
+        flash(f"Chore \"{chore.title}\" edited successfully.", "success")
+        return redirect(url_for("chores.index"))
+    elif request.method == "GET":
+        form.title.data = chore.title
+        form.description.data = chore.description
+
+    return render_template("chores/create-edit.html",
+                           mode="Edit",
+                           chore_id=chore_id,
                            form=form)
 

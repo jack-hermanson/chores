@@ -15,7 +15,7 @@
             <p>Something.</p>
             <ul>
                 {% for chore in chores_list %}
-                    <li>{{ chore.title }}, {{ chore.description }}, {{ chore.owner.chores }}</li>
+                    <li>{{ chore.title }}, {{ chore.description }} <a href="{{ url_for("chores.edit", chore_id=chore.chore_id) }}">Edit</a></li>
                 {% endfor %}
             </ul>
         </div>

@@ -9,6 +9,8 @@
         <div class="col-12 col-lg-8">
             <form action="{% if mode == "create" %}
                               {{ chores.create }}
+                          {% elif mode == "edit" %}
+                            {{ chores.edit(chore_id=chore_id) }}
                           {% endif %}" method="POST">
                 {{ form.hidden_tag() }}
                 {{ form_group(form, "title") }}
