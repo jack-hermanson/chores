@@ -40,6 +40,7 @@ def create_app(config_class=Config):
     from .modules.accounts import models
     from .modules.lists import models
     from .modules.chores import models
+    from .modules.chore_logs import models
 
     # database
     db.app = app

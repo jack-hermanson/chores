@@ -20,3 +20,5 @@ class Chore(db.Model):
     # who is able to update/delete this task, who owns it
     owner_id = db.mapped_column(db.ForeignKey("account.account_id"), nullable=False)
     owner = db.relationship("Account", back_populates="chores")
+
+    chore_logs = db.relationship("ChoreLog", back_populates="chore", cascade="all, delete-orphan")

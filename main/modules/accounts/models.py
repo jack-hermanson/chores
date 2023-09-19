@@ -24,3 +24,4 @@ class Account(db.Model, UserMixin):
     last_login = db.Column(db.DateTime, nullable=True)
     lists = db.relationship("List", secondary=list_account, back_populates="accounts")
     chores = db.relationship("Chore", back_populates="owner", cascade="all, delete-orphan")
+    chore_logs = db.relationship("ChoreLog", back_populates="completed_by_account", cascade="all, delete-orphan")
