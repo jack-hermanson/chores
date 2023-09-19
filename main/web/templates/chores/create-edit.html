@@ -15,6 +15,20 @@
                 {{ form.hidden_tag() }}
                 {{ form_group(form, "title") }}
                 {{ form_group(form, "description") }}
+                {{ form_group(
+                        form,
+                        "repeat_type",
+                        render_kw={
+                            "hx-get": url_for("chores.get_repeat_type"),
+                            "hx-target": "#repeat-input"
+                        })
+                }}
+
+                <div id="repeat-input">
+                    {% if form.repeat_type.data == "1" %}
+                        {% include("chores/create-edit-partials/repeat-days.html") %}
+                    {% endif %}
+                </div>
 
                 <div class="bottom-buttons">
                     {{ form.submit(class="btn btn-outline-success") }}

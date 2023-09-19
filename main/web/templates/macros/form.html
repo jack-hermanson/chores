@@ -1,4 +1,4 @@
-{% macro form_group(form, name, type="text", required=False, class="") %}
+{% macro form_group(form, name, type="text", required=False, class="", render_kw={}) %}
 <div class="form-group {{ class }}">
     {% if required %}
         {{ form[name].label(class="form-label required") }}
@@ -6,14 +6,14 @@
         {{ form[name].label(class="form-label") }}
     {% endif %}
     {% if form[name].errors %}
-        {{ form[name](class="form-control form-control-lg is-invalid") }}
+        {{ form[name](class="form-control form-control-lg is-invalid", **render_kw) }}
         <div class="invalid-feedback">
             {% for error in form[name].errors %}
                 <span>{{ error }}</span>
             {% endfor %}
         </div>
     {% else %}
-        {{ form[name](class="form-control form-control-lg") }}
+        {{ form[name](class="form-control form-control-lg", **render_kw) }}
     {% endif %}
     {% if form[name].description %}
         <div class="small form-text text-muted mt-2">{{ form[name].description }}</div>

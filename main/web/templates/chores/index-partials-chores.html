@@ -1,0 +1,13 @@
+{% for chore in chores_list %}
+    <li>
+        {{ chore.title }}, {{ chore.description }}
+        <a href="{{ url_for("chores.edit", chore_id=chore.chore_id) }}">Edit</a>
+        <a href="{{ url_for("chores.delete", chore_id=chore.chore_id) }}"
+           hx-delete="{{ url_for("chores.delete", chore_id=chore.chore_id) }}"
+           hx-target="#chores-list"
+           hx-confirm="Are you sure you want to delete '{{ chore.title }}'?"
+        >
+            Delete
+        </a>
+    </li>
+{% endfor %}
