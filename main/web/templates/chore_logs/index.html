@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% set title = "Chore Logs" %}
+{% set active_route = "chore_logs" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            {% for chore_log in chore_logs_list %}
+                {% include "chore_logs/chore-log-partial.html" %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock body %}

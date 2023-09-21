@@ -1,0 +1,28 @@
+<div class="card mb-3 bg-dark" id="chore-log-card-{{ chore_log.chore_log_id }}">
+    <div class="card-header d-flex">
+        <h5 class="my-auto">{{ chore_log.chore.title }}</h5>
+        <div class="ms-auto">
+            {% if chore_log.is_past_due %}
+                <span class="badge bg-danger">{{ chore_log.due_date.strftime('%a, %b %e') }}</span>
+            {% else %}
+                <span class="badge bg-info">{{ chore_log.due_date.strftime('%a, %b %e') }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <p>{{ chore_log.due_date }}</p>
+        <p>
+            {% if chore_log.chore.description %}
+                {{ chore_log.chore.description }}
+            {% else %}
+                <span class="text-muted">No description</span>
+            {% endif %}
+        </p>
+        <button class="btn btn-outline-success me-2">
+            Complete
+        </button>
+        <button class="btn btn-outline-info">
+            Complete & Keep Schedule
+        </button>
+    </div>
+</div>
