@@ -56,8 +56,9 @@ def create_app(config_class=Config):
     from .modules.errors.handlers import errors
     from .modules.lists.routes import lists
     from .modules.chores.routes import chores
+    from .modules.chore_logs.routes import chore_logs
 
-    for blueprint in [main, accounts, errors, lists, chores]:
+    for blueprint in [main, accounts, errors, lists, chores, chore_logs]:
         app.register_blueprint(blueprint)
 
     # login manager

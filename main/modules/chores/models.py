@@ -22,3 +22,8 @@ class Chore(db.Model):
     owner = db.relationship("Account", back_populates="chores")
 
     chore_logs = db.relationship("ChoreLog", back_populates="chore", cascade="all, delete-orphan")
+
+    # has_past_due_log  exists().where(CreditCard.user_id == id)
+
+    def __repr__(self):
+        return f"<{self.title}, {self.chore_id}, {self.owner.name}, {str(RepeatTypeEnum(self.repeat_type))}>"

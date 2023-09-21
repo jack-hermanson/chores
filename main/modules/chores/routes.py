@@ -14,7 +14,7 @@ chores = Blueprint("chores", __name__, url_prefix="/chores")
 @chores.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
-    chores_list = Chore.query.all()
+    chores_list = Chore.query.filter(Chore.owner == current_user).all()
     return render_template("chores/index.html",
                            chores_list=chores_list)
 
