@@ -82,7 +82,10 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     new_chore_log = ChoreLog()
     new_chore_log.chore = chore_log.chore
     if chore_log.chore.repeat_type == RepeatTypeEnum.DAYS:
-        new_chore_log.due_date = datetime.now() + timedelta(days=chore_log.chore.repeat_days)
+        if stay_on_schedule:
+            new_chore_log.due_date = chore_log.due_date + timedelta(days=chore_log.chore.repeat_days)
+        else:
+            new_chore_log.due_date = datetime.now() + timedelta(days=chore_log.chore.repeat_days)
     elif chore_log.chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
         if stay_on_schedule:
             # if stay on schedule, just add a week
