@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import and_
 from datetime import datetime, timedelta
 
@@ -30,6 +32,7 @@ def get_next_date_with_same_day_of_week(day_of_week: DayOfWeekEnum, exclude_toda
 
     # if we cannot use today, or today is not the day of the week we want,
     # try adding a certain number of days (1-7) until we get to the desired day
+    logging.debug(f"{int(day_of_week)} - {now.weekday()}")
     days_ahead = day_of_week - now.weekday()
     if days_ahead <= 0:
         # already happened

@@ -35,6 +35,8 @@ def create():
         new_chore.repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
         if new_chore.repeat_type == RepeatTypeEnum.DAYS:
             new_chore.repeat_days = form.repeat_days.data
+        elif new_chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
+            new_chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
 
         db.session.add(new_chore)
         db.session.commit()

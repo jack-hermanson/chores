@@ -43,6 +43,11 @@ def generate_next_chore_logs():
             # if we're past due, add days to end of today
             # add number of days to the end
             new_log_for_this_chore.due_date = datetime.now() + timedelta(days=chore.repeat_days)
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
+            new_log_for_this_chore.due_date = helpers.get_next_date_with_same_day_of_week(
+                new_log_for_this_chore.chore.repeat_day_of_week,
+                exclude_today=False
+            )
         else:
             # todo
             new_log_for_this_chore.due_date = datetime.now()
@@ -79,10 +84,15 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     if chore_log.chore.repeat_type == RepeatTypeEnum.DAYS:
         new_chore_log.due_date = datetime.now() + timedelta(days=chore_log.chore.repeat_days)
     elif chore_log.chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-        new_chore_log.due_date = helpers.get_next_date_with_same_day_of_week(
-            new_chore_log.chore.repeat_day_of_week,
-            exclude_today=True
-        )
+        if stay_on_schedule:
+            # if stay on schedule, just add a week
+            new_chore_log.due_date = chore_log.due_date + timedelta(days=7)
+        else:
+            # otherwise, find the next time this day of the week occurs
+            new_chore_log.due_date = helpers.get_next_date_with_same_day_of_week(
+                new_chore_log.chore.repeat_day_of_week,
+                exclude_today=True
+            )
     else:  # should never happen
         raise ValueError(f"Invalid repeat type {chore_log.chore.repeat_type}")
 
