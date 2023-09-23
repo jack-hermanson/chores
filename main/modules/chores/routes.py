@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
+import logging
 
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
@@ -7,6 +8,7 @@ from flask_login import current_user
 from .models import Chore
 from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
+from ...utils.DateTimeEnums import DayOfWeekEnum
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
@@ -15,6 +17,7 @@ chores = Blueprint("chores", __name__, url_prefix="/chores")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
     chores_list = Chore.query.filter(Chore.owner == current_user).all()
+
     return render_template("chores/index.html",
                            chores_list=chores_list)
 
@@ -56,10 +59,16 @@ def edit(chore_id: int):
 
         if chore.repeat_type == RepeatTypeEnum.NONE:
             chore.repeat_days = None
+            chore.repeat_day_of_week = None
         elif chore.repeat_type == RepeatTypeEnum.DAYS:
+            chore.repeat_day_of_week = None
             chore.repeat_days = form.repeat_days.data
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
+            chore.repeat_days = None
+            chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
         else:
-            pass
+            logging.error(f"Invalid repeat_type {chore.repeat_type}")
+            return abort(400)
 
         db.session.commit()
         flash(f"Chore \"{chore.title}\" edited successfully.", "success")
@@ -67,8 +76,11 @@ def edit(chore_id: int):
     elif request.method == "GET":
         form.title.data = chore.title
         form.description.data = chore.description
-        form.repeat_days.data = chore.repeat_days
-        form.repeat_type.data = str(chore.repeat_type)
+        form.repeat_type.data = str(int(chore.repeat_type))
+        if chore.repeat_type == RepeatTypeEnum.DAYS:
+            form.repeat_days.data = chore.repeat_days
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
+            form.repeat_day_of_week.data = str(int(chore.repeat_day_of_week))
 
     return render_template("chores/create-edit.html",
                            mode="Edit",
@@ -85,11 +97,12 @@ def get_repeat_type():
 
     if repeat_type == RepeatTypeEnum.NONE:
         return ""
-    if repeat_type == int(RepeatTypeEnum.DAYS):
+    if repeat_type == RepeatTypeEnum.DAYS:
         return render_template("chores/create-edit-partials/repeat-days.html",
                                form=form)
     if repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-        return "which day of the week"
+        return render_template("chores/create-edit-partials/repeat-day-of-week.html",
+                               form=form)
 
 
 @chores.route("/delete/<int:chore_id>", methods=["DELETE"])

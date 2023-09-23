@@ -5,6 +5,7 @@ from main.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
+import logging
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -12,6 +13,7 @@ login_manager = LoginManager()
 login_manager.login_view = "accounts.login"
 login_manager.login_message_category = "warning"
 migrate = Migrate(compare_type=True)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def create_app(config_class=Config):
@@ -67,4 +69,5 @@ def create_app(config_class=Config):
 
     # return the app
     print("RUNNING APPLICATION")
+    logging.debug("LOGGING IS RUNNING")
     return app

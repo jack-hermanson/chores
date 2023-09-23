@@ -10,7 +10,25 @@
         </div>
     </div>
     <div class="card-body">
+        <h5>{{ chore_log.chore_log_id }}</h5>
         <p>Due: {{ chore_log.due_date }}</p>
+        {% if chore_log.chore.repeat_type == 1 %}
+            <p>Repeat days {{ chore_log.chore.repeat_days }}</p>
+        {% elif chore_log.chore.repeat_type == 2 %}
+            <p>Repeat day: {{ chore_log.chore.repeat_day_of_week }}</p>
+        {% endif %}
+        {% if chore_log.previous %}
+            prev: {{ chore_log.previous }}
+            <button
+                    class="btn btn-danger"
+                    hx-confirm="Are you sure you want to undo your most recent completion of '{{ chore_log.chore.title }}'?"
+                    hx-post="{{ url_for("chore_logs.undo", chore_log_id=chore_log.chore_log_id) }}"
+                    hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                    hx-swap="outerHTML"
+            >
+                Undo Completion
+            </button>
+        {% endif %}
         <p>
             {% if chore_log.chore.description %}
                 {{ chore_log.chore.description }}
@@ -20,11 +38,11 @@
         </p>
         {% if chore_log.is_complete %}
             <p>COMPLETE</p>
-        {% elif chore_log.chore.repeat_type == 1 %}
+        {% elif chore_log.chore.repeat_type == 1 or chore_log.chore.repeat_type == 2 %}
             <button
                     class="btn btn-outline-success me-2"
                     hx-confirm="Complete '{{ chore_log.chore.title }}'?"
-                    hx-get="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                    hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
                     hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
                     hx-swap="outerHTML"
             >

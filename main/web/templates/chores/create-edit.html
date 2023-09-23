@@ -7,6 +7,11 @@
 {% block body %}
     <div class="row">
         <div class="col-12 col-lg-8">
+            {% for error in form.repeat_day_of_week.errors %}
+            	<p>{{ error }}</p>
+            {% endfor %}
+            <p>{{ form.repeat_day_of_week.data }}</p>
+
             <form action="{% if mode == "create" %}
                               {{ chores.create }}
                           {% elif mode == "edit" %}
@@ -27,6 +32,8 @@
                 <div id="repeat-input">
                     {% if form.repeat_type.data == "1" %}
                         {% include("chores/create-edit-partials/repeat-days.html") %}
+                    {% elif form.repeat_type.data == "2" %}
+                        {% include("chores/create-edit-partials/repeat-day-of-week.html") %}
                     {% endif %}
                 </div>
 

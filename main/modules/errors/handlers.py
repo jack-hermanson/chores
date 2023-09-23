@@ -38,3 +38,21 @@ def error_401(error):
                            help_text=help_text,
                            error=error,
                            status=500), 500
+
+
+@errors.app_errorhandler(418)
+def error_418(error):
+    help_text = "Because fuck you, that's why."
+    return render_template("errors/generic-error.html",
+                           help_text=help_text,
+                           error=error,
+                           status=418), 418
+
+
+@errors.app_errorhandler(400)
+def error_400(error):
+    help_text = "You sent something that did not make sense."
+    return render_template("errors/generic-error.html",
+                           help_text=help_text,
+                           error=error,
+                           status=400), 400
