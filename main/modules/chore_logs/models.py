@@ -32,7 +32,8 @@ class ChoreLog(db.Model):
         return f"<{self.chore.title}, {self.chore_log_id}, {str(RepeatTypeEnum(self.chore.repeat_type))}, " \
                f"{self.due_date}, past_due: {self.is_past_due}>"
 
-    def get_previous(self):
+    @property
+    def previous(self):
         prev = ChoreLog.query. \
             filter(and_(ChoreLog.chore == self.chore, ChoreLog.is_complete.is_(True))) \
             .order_by(desc(ChoreLog.completed_date)) \
@@ -48,28 +49,3 @@ class ChoreLog(db.Model):
             "past_due": self.is_past_due,
             "completed_date": self.completed_date
         }
-
-
-class ChoreLogViewModel:
-    def __init__(self, chore_log: ChoreLog):
-        self.chore_log_id = chore_log.chore_log_id
-        self.completed_date = chore_log.completed_date
-        self.due_date = chore_log.due_date
-        self.is_past_due = chore_log.is_past_due
-        self.is_complete = chore_log.is_complete
-        self.completed_by_account_id = chore_log.completed_by_account_id
-        self.completed_by_account = chore_log.completed_by_account
-        self.chore_id = chore_log.chore_id
-        self.chore = chore_log.chore
-        self.previous = chore_log.get_previous()
-
-    chore_log_id: int
-    completed_date: datetime | None
-    due_date: datetime
-    is_past_due: bool
-    is_complete: bool
-    completed_by_account_id: int
-    completed_by_account: Account
-    chore_id: int
-    chore: Chore
-    previous: ChoreLog

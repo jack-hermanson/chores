@@ -101,7 +101,6 @@ def undo_completion(chore_log_id):
     chore.chore_logs.remove(chore_log)
     db.session.commit()
     db.session.refresh(chore)
-    # db.session.flush()
 
     previous = ChoreLog.query \
         .filter(ChoreLog.chore_id == chore_id)\

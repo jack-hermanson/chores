@@ -48,7 +48,13 @@
             >
                 Complete
             </button>
-            <button class="btn btn-outline-info">
+            <button
+                    class="btn btn-outline-info"
+                    hx-confirm="Complete '{{ chore_log.chore.title }}'?"
+                    hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
+                    hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                    hx-swap="outerHTML"
+            >
                 Complete & Keep Schedule
             </button>
         {% else %}
