@@ -6,8 +6,10 @@ $success: rgb(50, 251, 226);
 @import "../node_modules/jack-hermanson-css-lib/src/main";
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
+$subtle_gray: rgba(255, 255, 255, 0.5);
+
 body {
-  font-family: "Rubik", $font-family-sans-serif;
+  font-family:  "SF Pro Rounded", "Rubik", $font-family-sans-serif;
   min-height: 100vh;
 }
 
@@ -89,3 +91,103 @@ p.left-line-next-to-text {
   color: $text-muted !important;
 }
 
+.card {
+  border-radius: 4px;
+}
+
+.card-header {
+  background-color: darken($dark, 5%);
+}
+
+.chore-card {
+  .card-header {
+    h5 {
+      @include media-breakpoint-up(lg) {
+        font-size: 26px;
+      }
+      font-weight: 300;
+    }
+  }
+}
+
+.due-date-badge {
+  &:not(.overdue) {
+    background-color: $green-700;
+  }
+  &.overdue {
+    background-color: $danger;
+  }
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+// The thing in the main css library
+// is broken as fuck, idk how I ever used it.
+.card-data-table {
+  width: 100%;
+  tr {
+    th:first-child, td:first-child {
+      width: 40%;
+      @include media-breakpoint-up(lg) {
+        width: 30%;
+      }
+      padding-left: 1em;
+    }
+    th:last-child, td:last-child {
+      padding-right: 1em;
+    }
+  }
+  tr {
+    td, th {
+      padding-top: 0.7em;
+      padding-bottom: 0.7em;
+    }
+  }
+
+  // if this table is the last thing in the card,
+  // we don't need a border bottom on the last row
+  &:not(:last-child) {
+    tr {
+      border-bottom: 1px solid $subtle_gray;
+    }
+  }
+  // if things come after, do put border bottom on last row
+  &:last-child {
+    tr:not(:last-child) {
+      border-bottom: 1px solid $subtle_gray;
+    }
+  }
+}
+
+.list-group {
+  .list-group-item:not(:last-child) {
+    border-bottom: 1px solid $subtle_gray;
+  }
+}
+
+.button-panel {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+
+  button {
+    display: flex;
+    width: 100%;
+    outline: none;
+    justify-content: center;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    color: white;
+    border: none;
+    background: darken($dark, 5%);
+    &:hover {
+      background: $list-group-bg;
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid $subtle_gray;
+    }
+  }
+}

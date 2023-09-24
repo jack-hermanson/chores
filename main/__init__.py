@@ -7,6 +7,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 import logging
 
+from main.utils.DateTimeEnums import DayOfWeekEnum
+
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -66,6 +68,11 @@ def create_app(config_class=Config):
     # login manager
     login_manager.init_app(app)
     login_manager.session_protection = "strong"
+
+    # filter
+    @app.template_filter()
+    def day_of_week_str(raw):
+        return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()
 
     # return the app
     print("RUNNING APPLICATION")

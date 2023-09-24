@@ -1,0 +1,6 @@
+{% macro key_val_list_item(label, class="") %}
+    <div class="list-group-item {{ class }}">
+        <small class="text-muted">{{ label }}</small>
+        {{ caller() }}
+    </div>
+{% endmacro %}
