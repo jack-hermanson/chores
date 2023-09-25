@@ -1,0 +1,13 @@
+<form
+    id="chore-log-{{ chore_log_id }}-due-date"
+    class="d-flex ms-auto my-auto"
+    hx-post="{{ url_for("chore_logs.due_date", chore_log_id=chore_log_id) }}"
+    hx-target="#chore-log-{{ chore_log_id }}-due-date"
+    hx-include="#chore-log-{{ chore_log_id }}-due-date"
+    hx-swap="outerHTML"
+>
+    {{ form.csrf_token() }}
+    {{ form.due_date(class="form-control form-control-sm") }}
+
+    {{ form.submit(class="ms-2 btn btn-sm btn-info") }}
+</form>

@@ -119,3 +119,4 @@ def delete(chore_id):
 
     return render_template("chores/index-partials-chores.html",
                            chores_list=chores_list)
+

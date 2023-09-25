@@ -1,0 +1,9 @@
+<div
+    id="chore-log-{{ chore_log.chore_log_id }}-due-date"
+    class="ms-auto my-auto"
+    hx-get="{{ url_for("chore_logs.due_date", chore_log_id=chore_log.chore_log_id) }}"
+    hx-target="#chore-log-{{ chore_log.chore_log_id }}-due-date"
+    hx-swap="outerHTML"
+>
+    <span class="badge due-date-badge d-flex {% if chore_log.is_past_due %}overdue{% endif %}"><span class="icon-clock my-auto"></span><span class="mb-auto">&nbsp;&nbsp;{{ chore_log.due_date.strftime('%A, %b %e') }}</span></span>
+</div>

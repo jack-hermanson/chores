@@ -182,12 +182,19 @@ p.left-line-next-to-text {
     color: white;
     border: none;
     background: darken($dark, 5%);
-    &:hover {
+    &:hover:not(:disabled) {
       background: $list-group-bg;
     }
-
+    &:disabled {
+      background: #222;
+      cursor: not-allowed;
+    }
     &:not(:last-child) {
       border-right: 1px solid $subtle_gray;
     }
   }
+}
+
+input {
+  color-scheme: dark;
 }

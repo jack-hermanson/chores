@@ -3,9 +3,7 @@
 <div class="card mb-3 bg-dark chore-card" id="chore-log-card-{{ chore_log.chore_log_id }}">
     <div class="card-header d-flex">
         <h5 class="my-auto">{{ chore_log.chore.title }}</h5>
-        <div class="ms-auto my-auto">
-            <span class="badge due-date-badge {% if chore_log.is_past_due %}overdue{% endif %}">{{ chore_log.due_date.strftime('%A, %b %e') }}</span>
-        </div>
+        {% include "chore_logs/chore-log-due-date-badge-partial.html" %}
     </div>
 
     <div class="card-body p-0">
@@ -43,17 +41,19 @@
                 </p>
             {% endcall %}
             <div class="button-panel">
-                <button>
+                <button title="Complete Now">
                     <span class="my-auto">
                         <span class="icon-check"></span>
                     </span>
                 </button>
-                <button>
+                <button title="Complete & Keep Schedule">
                     <span class="my-auto">
-                        <span class="icon-clock"></span>
+                        <span class="icon-check"></span>
+                        &nbsp;
+                        <span class="icon-calendar"></span>
                     </span>
                 </button>
-                <button>
+                <button title="Undo Last Completion" {% if not chore_log.previous %}disabled{% endif %}>
                     <span class="my-auto">
                         <span class="icon-action-undo"></span>
                     </span>

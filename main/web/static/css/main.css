@@ -12529,11 +12529,19 @@ p.left-line-next-to-text {
   border: none;
   background: #090111;
 }
-.button-panel button:hover {
+.button-panel button:hover:not(:disabled) {
   background: #250d49;
+}
+.button-panel button:disabled {
+  background: #222;
+  cursor: not-allowed;
 }
 .button-panel button:not(:last-child) {
   border-right: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+input {
+  color-scheme: dark;
 }
 
 /*# sourceMappingURL=main.css.map */
