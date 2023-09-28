@@ -3,6 +3,7 @@ from wtforms.fields import StringField, SubmitField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
+from main.modules.lists.services import get_user_lists
 from main.utils.DateTimeEnums import DayOfWeekEnum
 
 
@@ -40,6 +41,12 @@ class CreateEditChore(FlaskForm):
         ],
         validators=[Optional()]
 
+    )
+    list = SelectField(
+        "Chore List",
+        description="Which list does this chore belong to?",
+        choices=[],  # set in controller
+        validators=[DataRequired()]
     )
     submit = SubmitField()
 

@@ -7,19 +7,15 @@
 {% block body %}
     <div class="row">
         <div class="col-12 col-lg-8">
-            {% for error in form.repeat_day_of_week.errors %}
-            	<p>{{ error }}</p>
-            {% endfor %}
-            <p>{{ form.repeat_day_of_week.data }}</p>
-
             <form action="{% if mode == "create" %}
                               {{ chores.create }}
                           {% elif mode == "edit" %}
                             {{ chores.edit(chore_id=chore_id) }}
                           {% endif %}" method="POST">
                 {{ form.hidden_tag() }}
-                {{ form_group(form, "title") }}
+                {{ form_group(form, "title", required=True) }}
                 {{ form_group(form, "description") }}
+                {{ form_group(form, "list", required=True) }}
                 {{ form_group(
                         form,
                         "repeat_type",

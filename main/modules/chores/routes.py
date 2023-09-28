@@ -8,6 +8,8 @@ from flask_login import current_user
 from .models import Chore
 from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
+from ..lists.models import List
+from ..lists.services import get_user_lists
 from ...utils.DateTimeEnums import DayOfWeekEnum
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
@@ -26,6 +28,7 @@ def index():
 @min_clearance(ClearanceEnum.NORMAL)
 def create():
     form = CreateEditChore()
+    form.list.choices = [(ls.list_id, ls.title) for ls in get_user_lists()]
 
     if form.validate_on_submit():
         new_chore = Chore()
@@ -37,6 +40,9 @@ def create():
             new_chore.repeat_days = form.repeat_days.data
         elif new_chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             new_chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
+
+        associated_list = List.query.get_or_404(form.list.data)
+        new_chore.list = associated_list
 
         db.session.add(new_chore)
         db.session.commit()
@@ -52,6 +58,7 @@ def create():
 @min_clearance(ClearanceEnum.NORMAL)
 def edit(chore_id: int):
     form = CreateEditChore()
+    form.list.choices = [(ls.list_id, ls.title) for ls in get_user_lists()]
     chore = Chore.query.filter(Chore.chore_id == chore_id).first_or_404()
 
     if form.validate_on_submit():
@@ -72,6 +79,9 @@ def edit(chore_id: int):
             logging.error(f"Invalid repeat_type {chore.repeat_type}")
             return abort(400)
 
+        associated_list = List.query.get_or_404(form.list.data)
+        chore.list = associated_list
+
         db.session.commit()
         flash(f"Chore \"{chore.title}\" edited successfully.", "success")
         return redirect(url_for("chores.index"))
@@ -83,6 +93,8 @@ def edit(chore_id: int):
             form.repeat_days.data = chore.repeat_days
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             form.repeat_day_of_week.data = str(int(chore.repeat_day_of_week))
+        form.list.data = str(chore.list.list_id)
+        logging.info(f"form.list.data {form.list.data}")
 
     return render_template("chores/create-edit.html",
                            mode="Edit",
@@ -119,4 +131,6 @@ def delete(chore_id):
 
     return render_template("chores/index-partials-chores.html",
                            chores_list=chores_list)
+
+
 

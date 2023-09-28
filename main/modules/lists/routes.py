@@ -40,7 +40,7 @@ def create():
         new_list.description = form.description.data
 
         accounts = []
-        for account_id in form.accounts.data:
+        for account_id in form.accounts.data + [current_user.account_id]:
             accounts.append(Account.query.filter(Account.account_id == account_id).first())
         new_list.accounts = accounts
 
@@ -66,7 +66,7 @@ def edit(list_id: int):
         matching_list.description = form.description.data
 
         accounts = []
-        for account_id in form.accounts.data:
+        for account_id in form.accounts.data + [current_user.account_id]:
             accounts.append(Account.query.filter(Account.account_id == account_id).first())
         matching_list.accounts = accounts
 

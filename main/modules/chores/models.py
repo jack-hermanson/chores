@@ -23,6 +23,9 @@ class Chore(db.Model):
 
     chore_logs = db.relationship("ChoreLog", back_populates="chore", cascade="all, delete-orphan")
 
+    list_id = db.mapped_column(db.ForeignKey("list.list_id"), nullable=False)
+    list = db.relationship("List", back_populates="chores")
+
     # has_past_due_log  exists().where(CreditCard.user_id == id)
 
     def __repr__(self):

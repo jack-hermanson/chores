@@ -7,16 +7,20 @@ from .models import ChoreLog
 from flask_login import current_user
 from datetime import datetime, timedelta
 from main import db
-from sqlalchemy import and_, desc, text
+from sqlalchemy import and_, desc
 from . import helpers
+from ..lists.models import List
 
 
 def generate_next_chore_logs():
     """
     Generate next chore logs for the current user.
-    Returns a list of chore logs for this user, ordered by due date ascending
+    Returns a list of chore logs for this user, ordered by due date ascending.
     """
-    chores = Chore.query.filter(Chore.owner == current_user).all()
+    chores = db.session.query(Chore)\
+        .join(Chore.list)\
+        .join(List.accounts)\
+        .filter(Account.account_id == current_user.account_id)
 
     for chore in chores:
         print(f"Checking chore {chore}")
@@ -56,8 +60,12 @@ def generate_next_chore_logs():
         db.session.add(new_log_for_this_chore)
         db.session.commit()
 
-    chore_logs_to_return = ChoreLog.query.join(ChoreLog.chore) \
-        .filter(and_(Chore.owner == current_user, ChoreLog.completed_date.is_(None))).order_by(ChoreLog.due_date).all()
+    chore_logs_to_return = db.session.query(ChoreLog)\
+        .join(ChoreLog.chore)\
+        .join(Chore.list)\
+        .join(List.accounts)\
+        .filter(Account.account_id == current_user.account_id)\
+        .all()
 
     return chore_logs_to_return
 

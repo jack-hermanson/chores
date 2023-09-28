@@ -13,4 +13,5 @@ class List(db.Model):
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=False, default="")
     accounts = db.relationship("Account", secondary=list_account, back_populates="lists")
+    chores = db.relationship("Chore", back_populates="list", cascade="all, delete-orphan")
 
