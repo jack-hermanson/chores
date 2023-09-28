@@ -1,5 +1,5 @@
 {% for chore in chores_list %}
-    <li>
+    <div class="card">
         {{ chore.title }}, {{ chore.description }}
         <a href="{{ url_for("chores.edit", chore_id=chore.chore_id) }}">Edit</a>
         <a href="{{ url_for("chores.delete", chore_id=chore.chore_id) }}"
@@ -9,5 +9,5 @@
         >
             Delete
         </a>
-    </li>
+    </div>
 {% endfor %}

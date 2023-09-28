@@ -7,7 +7,7 @@ from .models import ChoreLog
 from flask_login import current_user
 from datetime import datetime, timedelta
 from main import db
-from sqlalchemy import and_, desc
+from sqlalchemy import desc
 from . import helpers
 from ..lists.models import List
 
@@ -52,6 +52,8 @@ def generate_next_chore_logs():
                 new_log_for_this_chore.chore.repeat_day_of_week,
                 exclude_today=False
             )
+        elif chore.repeat_type == RepeatTypeEnum.NONE:
+            logging.info(f"Chore with ID {chore.chore_id} does not repeat")
         else:
             # todo
             new_log_for_this_chore.due_date = datetime.now()
@@ -140,43 +142,3 @@ def undo_completion(chore_log_id):
 
     return previous
 
-
-
-
-
-    # previous_chore_log_query = (db.session.query(ChoreLog, Chore, Account)
-    #                             .select_from(ChoreLog)
-    #                             .join(Chore).join(Account).filter(
-    #     and_(
-    #         ChoreLog.chore == chore_log.chore,
-    #         ChoreLog.is_complete.is_(True),
-    #         ChoreLog.chore_log_id != chore_log_id
-    #     )
-    # ).order_by(desc(ChoreLog.completed_date)).first())
-    #
-    # if not previous_chore_log_query:
-    #     logging.info("No previous chore log for this one")
-    #     return None
-    #
-    # # first in tuple
-    # previous_chore_log = previous_chore_log_query[0]
-    #
-    # if previous_chore_log:
-    #     logging.info(f"Found previous chore log with ID {previous_chore_log.chore_log_id}")
-    #     previous_chore_log.completed_date = None
-    #     previous_chore_log.completed_by_account = None
-    #     db.session.commit()
-    #
-    # previous_chore_log_id = previous_chore_log.chore_log_id
-    # previous_chore_log = (ChoreLog.query
-    #                       .filter(ChoreLog.chore_log_id == previous_chore_log_id)
-    #                       .first())
-    #
-    # logging.info("Deleting the original chore log now")
-    # db.session.delete(chore_log)
-    # logging.info("Deleted it")
-    # db.session.commit()
-    #
-    # if not previous_chore_log:
-    #     logging.fatal("WHAT THE FUCK")
-    # return previous_chore_log

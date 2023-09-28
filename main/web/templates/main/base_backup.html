@@ -25,10 +25,13 @@
             <ul class="navbar-nav me-auto">
                 {% if current_user.is_authenticated and current_user.clearance >= 1 %}
                     <li class="nav-item">
-                        <a href="{{ url_for("chore_logs.index") }}" class="nav-link {% if active_route == "chore_logs" or active_route == "chores" %}active{% endif %}">Chore Logs</a>
-                    </li>
-                    <li class="nav-item">
                         <a href="{{ url_for("lists.index") }}" class="nav-link {% if active_route == "lists" %}active{% endif %}">Lists</a>
+                    </li>
+{#                    <li class="nav-item">#}
+{#                        <a href="{{ url_for("chores.index") }}" class="nav-link {% if active_route == "chores" %}active{% endif %}">Chores</a>#}
+{#                    </li>#}
+                    <li class="nav-item">
+                        <a href="{{ url_for("chore_logs.index") }}" class="nav-link {% if active_route == "chore_logs" or active_route == "chores" %}active{% endif %}">Chore Logs</a>
                     </li>
                 {% endif %}
             </ul>

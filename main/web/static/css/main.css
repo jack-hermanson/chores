@@ -12393,6 +12393,10 @@ body {
   min-height: 100vh;
 }
 
+a {
+  color: #eee;
+}
+
 .navbar-brand, .nav-link {
   text-transform: uppercase;
 }
@@ -12549,6 +12553,15 @@ p.left-line-next-to-text {
 
 input {
   color-scheme: dark;
+}
+
+.card {
+  background: #250d49;
+}
+
+ul.jump-to-list {
+  list-style: none;
+  padding-left: 0;
 }
 
 /*# sourceMappingURL=main.css.map */

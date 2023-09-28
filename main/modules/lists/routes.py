@@ -1,6 +1,6 @@
 import random
 
-from flask import Blueprint, redirect, url_for, flash, request, render_template
+from flask import Blueprint, redirect, url_for, flash, request, render_template, abort
 from .forms import CreateEditList
 from ..accounts.models import Account
 from flask_login import current_user, login_required
@@ -8,6 +8,7 @@ from .models import List
 from main import db
 from ..accounts.ClearanceEnum import ClearanceEnum
 from ...utils.min_clearance import min_clearance
+from . import services
 
 lists = Blueprint("lists", __name__, url_prefix="/lists")
 
@@ -36,13 +37,7 @@ def create():
 
     if form.validate_on_submit():
         new_list = List()
-        new_list.title = form.title.data
-        new_list.description = form.description.data
-
-        accounts = []
-        for account_id in form.accounts.data + [current_user.account_id]:
-            accounts.append(Account.query.filter(Account.account_id == account_id).first())
-        new_list.accounts = accounts
+        services.set_list_values(new_list, form)
 
         db.session.add(new_list)
         db.session.commit()
@@ -62,13 +57,7 @@ def edit(list_id: int):
     form.accounts.choices = get_user_options()
 
     if form.validate_on_submit():
-        matching_list.title = form.title.data
-        matching_list.description = form.description.data
-
-        accounts = []
-        for account_id in form.accounts.data + [current_user.account_id]:
-            accounts.append(Account.query.filter(Account.account_id == account_id).first())
-        matching_list.accounts = accounts
+        services.set_list_values(matching_list, form)
 
         db.session.commit()
         flash(f"List \"{matching_list.title}\" edited successfully.", "success")
