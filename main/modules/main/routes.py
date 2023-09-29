@@ -1,8 +1,11 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, redirect, url_for
+import logging
 
 main = Blueprint("main", __name__, url_prefix="")
 
 
 @main.route("/")
 def index():
-    return render_template("main/index.html")
+    logging.debug("Redirecting home page to chore logs index")
+    return redirect(url_for("chore_logs.index"))
+    # return render_template("main/index.html")

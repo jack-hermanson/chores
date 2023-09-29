@@ -1,6 +1,5 @@
 from flask_bcrypt import Bcrypt
 from flask import Flask
-from flask_talisman import Talisman
 from main.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -38,7 +37,6 @@ def create_app(config_class=Config):
 
     # bcrypt
     bcrypt.init_app(app)
-    # login_manager.init_app(app)
 
     # models
     from .modules.accounts import models

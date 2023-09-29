@@ -47,7 +47,7 @@ def create():
         db.session.add(new_chore)
         db.session.commit()
         flash(f"Chore \"{new_chore.title}\" created successfully.", "success")
-        return redirect(url_for("chores.index"))
+        return redirect(url_for("chore_logs.index"))
 
     return render_template("chores/create-edit.html",
                            mode="Create",
@@ -84,7 +84,7 @@ def edit(chore_id: int):
 
         db.session.commit()
         flash(f"Chore \"{chore.title}\" edited successfully.", "success")
-        return redirect(url_for("chores.index"))
+        return redirect(url_for("chore_logs.index"))
     elif request.method == "GET":
         form.title.data = chore.title
         form.description.data = chore.description

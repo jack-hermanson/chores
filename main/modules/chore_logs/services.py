@@ -1,4 +1,5 @@
 import logging
+from operator import and_
 
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
@@ -7,7 +8,7 @@ from .models import ChoreLog
 from flask_login import current_user
 from datetime import datetime, timedelta
 from main import db
-from sqlalchemy import desc
+from sqlalchemy import desc, not_
 from . import helpers
 from ..lists.models import List
 
@@ -66,7 +67,7 @@ def generate_next_chore_logs():
         .join(ChoreLog.chore)\
         .join(Chore.list)\
         .join(List.accounts)\
-        .filter(Account.account_id == current_user.account_id)\
+        .filter(and_(Account.account_id == current_user.account_id, not_(ChoreLog.is_complete)))\
         .all()
 
     return chore_logs_to_return
@@ -97,15 +98,17 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
         else:
             new_chore_log.due_date = datetime.now() + timedelta(days=chore_log.chore.repeat_days)
     elif chore_log.chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-        if stay_on_schedule:
-            # if stay on schedule, just add a week
+        if stay_on_schedule or chore_log.due_date.date() == datetime.now().date():
+            # if stay on schedule (or today is the due date), just add a week to due date
             new_chore_log.due_date = chore_log.due_date + timedelta(days=7)
         else:
-            # otherwise, find the next time this day of the week occurs
+            # otherwise, find the next time (relative to, but not including today) this day of the week occurs
             new_chore_log.due_date = helpers.get_next_date_with_same_day_of_week(
                 new_chore_log.chore.repeat_day_of_week,
                 exclude_today=True
             )
+            # Both behaviors will be the same if we
+
     else:  # should never happen
         raise ValueError(f"Invalid repeat type {chore_log.chore.repeat_type}")
 
