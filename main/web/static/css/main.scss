@@ -65,7 +65,8 @@ hr {
 
 .border-bottom {
   //border-bottom: 2px solid rgb(50, 251, 226) !important;
-  border-bottom: 1px solid $success !important;
+  //border-bottom: 1px solid $success !important;
+  border-bottom: 1px solid $subtle_gray !important;
 }
 
 .page-title {
@@ -184,6 +185,9 @@ p.left-line-next-to-text {
 .list-group {
   .list-group-item:not(:last-child) {
     border-bottom: 1px solid $subtle_gray;
+  }
+  &.border {
+    border: 1px solid $subtle_gray !important;
   }
 }
 

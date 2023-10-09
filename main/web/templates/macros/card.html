@@ -1,12 +1,24 @@
-{% macro simple_card(title, class="") %}
-<div class="card bg-dark {{ class }}">
-    <div class="card-body">
-        <h5 class="card-title">
-            {{ title }}
-        </h5>
+{% macro simple_card(class="") %}
+<div class="card {{ class }}">
+    {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro card_body(title, class="") %}
+    <div class="card-body {{ class }}">
+        {% if title %}
+            <h4 class="card-title mb-3 border-bottom">
+                {{ title }}
+            </h4>
+        {% endif %}
         <div class="card-text">
             {{ caller() }}
         </div>
     </div>
-</div>
+{% endmacro %}
+
+{% macro card_footer(class="") %}
+    <div class="card-footer py-3 {{ class }}">
+        {{ caller() }}
+    </div>
 {% endmacro %}
