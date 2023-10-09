@@ -43,6 +43,7 @@ def create_app(config_class=Config):
     from .modules.lists import models
     from .modules.chores import models
     from .modules.chore_logs import models
+    from .modules.invitations import models
 
     # database
     db.app = app

@@ -133,4 +133,10 @@ def delete(chore_id):
                            chores_list=chores_list)
 
 
+@chores.route("/<int:chore_id>")
+@min_clearance(ClearanceEnum.NORMAL)
+def details(chore_id):
+    chore = Chore.query.get_or_404(chore_id)
+    return render_template("chores/details.html",
+                           chore=chore)
 

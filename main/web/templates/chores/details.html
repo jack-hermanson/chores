@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% set title = "Chore Details" %}
+{% set active_route = "chores" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <p>Here is chore {{ chore.title }}</p>
+        </div>
+    </div>
+{% endblock body %}

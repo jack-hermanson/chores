@@ -17,6 +17,14 @@ a {
   color: #eee;
 }
 
+a.chore-card-title-link {
+  color: white;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .navbar-brand, .nav-link {
   text-transform: uppercase;
 }

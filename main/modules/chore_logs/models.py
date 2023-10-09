@@ -1,14 +1,9 @@
 from __future__ import annotations
-
-from typing import ClassVar
-
 from main import db
 from datetime import datetime
 from sqlalchemy import and_, desc
 
-from main.modules.accounts.models import Account
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
-from main.modules.chores.models import Chore
 
 
 class ChoreLog(db.Model):
