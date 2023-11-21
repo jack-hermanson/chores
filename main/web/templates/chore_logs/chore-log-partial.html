@@ -50,23 +50,30 @@
                     {{ chore_log.due_date.strftime("%a, %b %e %l:%M%p") }}
                 </p>
             {% endcall %}
+            {% call key_val_list_item("Chore Log ID") %}
+                <p class="mb-1">
+                    {{ chore_log.chore_log_id }}
+                </p>
+            {% endcall %}
             <div class="button-panel">
-                <button
-                        title="Complete Now"
-                        hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
-                        hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                        hx-swap="outerHTML"
-                        hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
-                >
-                    <span class="my-auto">
-                        <span class="icon-check"></span>
-                        &nbsp;
-                        <span class="icon-action-redo"></span>
-                        <br>
-                        Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e") }}
-                    </span>
-                </button>
-                {% if chore_log.normal_next_due_date.date() != chore_log.stay_on_schedule_next_due_date.date() %}
+                {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
+                    <button
+                            title="Complete Now"
+                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                    >
+                        <span class="my-auto">
+                            <span class="icon-check"></span>
+                            &nbsp;
+                            <span class="icon-action-redo"></span>
+                            <br>
+                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e %l:%M%p") }}
+                        </span>
+                    </button>
+                {% endif %}
+                {% if chore_log.normal_next_due_date != chore_log.stay_on_schedule_next_due_date %}
                     <button
                             title="Complete & Keep Schedule"
                             hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
@@ -79,7 +86,7 @@
                             &nbsp;
                             <span class="icon-calendar"></span>
                             <br>
-                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e") }}
+                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}
                         </span>
                     </button>
                 {% endif %}

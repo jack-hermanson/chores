@@ -46,9 +46,8 @@ def generate_next_chore_logs():
         new_log_for_this_chore.chore = chore
 
         if chore.repeat_type == RepeatTypeEnum.DAYS:
-            # if we're past due, add days to end of today
-            # add number of days to the end
-            new_log_for_this_chore.due_date = datetime.now() + timedelta(days=chore.repeat_days)
+            # add days to end of today
+            new_log_for_this_chore.due_date = (datetime.now() + timedelta(days=chore.repeat_days)).date()
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             new_log_for_this_chore.due_date = main.utils.date_functions.get_next_date_with_same_day_of_week(
                 new_log_for_this_chore.chore.repeat_day_of_week,
@@ -58,7 +57,7 @@ def generate_next_chore_logs():
             logging.info(f"Chore with ID {chore.chore_id} does not repeat")
         else:
             # todo
-            new_log_for_this_chore.due_date = datetime.now()
+            new_log_for_this_chore.due_date = datetime.now().date()
 
         print(f"Created new log due {new_log_for_this_chore.due_date}")
         db.session.add(new_log_for_this_chore)
@@ -93,9 +92,9 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     # create new
     new_chore_log = ChoreLog()
     new_chore_log.chore = chore_log.chore
-    new_chore_log.due_date = chore_log.stay_on_schedule_next_due_date.date() \
+    new_chore_log.due_date = chore_log.stay_on_schedule_next_due_date \
         if stay_on_schedule \
-        else chore_log.normal_next_due_date.date()
+        else chore_log.normal_next_due_date
 
     db.session.add(new_chore_log)
     db.session.commit()

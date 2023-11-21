@@ -3,7 +3,7 @@ from main import db
 from datetime import datetime, timedelta
 from sqlalchemy import and_, desc, not_
 
-from main.utils.date_functions import get_next_date_with_same_day_of_week
+from main.utils.date_functions import get_next_date_with_same_day_of_week, extract_date
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
 
 
@@ -52,7 +52,7 @@ class ChoreLog(db.Model):
             return get_next_date_with_same_day_of_week(self.chore.repeat_day_of_week, relative_to_date=self.due_date)
         if self.chore.repeat_type == RepeatTypeEnum.DAYS:
             # if it repeats every certain # of days, add that number of days to the due date
-            return self.due_date + timedelta(days=self.chore.repeat_days)
+            return (self.due_date + timedelta(days=self.chore.repeat_days)).date()
         if self.chore.repeat_type == RepeatTypeEnum.NONE:
             return None
 
@@ -60,14 +60,39 @@ class ChoreLog(db.Model):
     def normal_next_due_date(self):
         """The next due date relative to today, not trying to stick to any particular schedule"""
         if self.chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-            # if it's a weekly thing, just get the next time that day of the week occurs relative to today
-            return get_next_date_with_same_day_of_week(self.chore.repeat_day_of_week)
+            # this could be refactored but fuck it for now it's fine
+
+            next_date_with_same_day_of_week = get_next_date_with_same_day_of_week(self.chore.repeat_day_of_week)
+
+            # if it's overdue, bring it up to the next day of the week relative to today
+            if self.is_past_due:
+                return next_date_with_same_day_of_week
+
+            # if it's not overdue, then it's early or on time, so add a week to the next time that date occurs
+
+            # first get the next date with that day of week relative to today
+            next_date = get_next_date_with_same_day_of_week(self.chore.repeat_day_of_week) + timedelta(7)
+
+            # then make sure that is not the due date for this one, which we just completed
+            # that would make it infinitely staying on the same date
+            # if that's the case, add 7 days
+            if extract_date(next_date) == extract_date(self.due_date):
+                return next_date + timedelta(days=7)
+
+            return next_date
+
         if self.chore.repeat_type == RepeatTypeEnum.DAYS:
             # if it repeats every certain # of days, add that number to today
-            return datetime.now() + timedelta(days=self.chore.repeat_days)
+            next_date = (datetime.now() + timedelta(days=self.chore.repeat_days)).date()
+
+            # if we add this # of days, and we get the same due date, that's not gonna work,
+            # so add another # of those days
+            if extract_date(next_date) == extract_date(self.due_date):
+                return next_date + timedelta(days=self.chore.repeat_days)
+
+            return next_date
         if self.chore.repeat_type == RepeatTypeEnum.NONE:
             return None
-
 
     def as_dict(self):
         return {

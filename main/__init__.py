@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from flask_bcrypt import Bcrypt
 from flask import Flask
 from main.config import Config
@@ -6,7 +8,9 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 import logging
 
-from main.utils.DateTimeEnums import DayOfWeekEnum
+from datetime import date, datetime
+
+from main.utils.date_time_enums import DayOfWeekEnum
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -72,6 +76,11 @@ def create_app(config_class=Config):
     @app.template_filter()
     def day_of_week_str(raw):
         return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()
+
+    @app.template_filter()
+    def extract_date(date_or_datetime: date | datetime):
+        from utils import date_functions
+        return date_functions.extract_date(date_or_datetime)
 
         # return the app
     print("RUNNING APPLICATION")

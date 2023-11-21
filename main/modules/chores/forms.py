@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length, NumberRange, ValidationErro
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
 from main.modules.lists.services import get_user_lists
-from main.utils.DateTimeEnums import DayOfWeekEnum
+from main.utils.date_time_enums import DayOfWeekEnum
 
 
 class CreateEditChore(FlaskForm):

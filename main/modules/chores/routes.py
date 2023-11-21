@@ -10,7 +10,7 @@ from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
 from ..lists.models import List
 from ..lists.services import get_user_lists
-from ...utils.DateTimeEnums import DayOfWeekEnum
+from ...utils.date_time_enums import DayOfWeekEnum
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 

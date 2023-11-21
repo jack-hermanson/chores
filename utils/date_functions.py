@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from main import DayOfWeekEnum
 
@@ -23,4 +25,16 @@ def get_next_date_with_same_day_of_week(day_of_week: DayOfWeekEnum, exclude_toda
     if days_ahead <= 0:
         # already happened
         days_ahead += 7
-    return start + timedelta(days=days_ahead + offset_days)
+    return (start + timedelta(days=days_ahead + offset_days)).date()
+
+
+def extract_date(date_or_datetime: date | datetime):
+    if isinstance(date_or_datetime, datetime):
+        return date_or_datetime.date()
+    if isinstance(date_or_datetime, date):
+        return date_or_datetime  # nothing to change
+    else:
+        raise ValueError(
+            f"Invalid type for date_or_datetime (value: {date_or_datetime}) (type: {type(date_or_datetime)}")
+
+
