@@ -52,11 +52,13 @@ def due_date():
         chore_log = ChoreLog.query.get_or_404(chore_log_id)
         chore_log.due_date = form.due_date.data
         db.session.commit()
+
         return render_template("chore_logs/chore-log-due-date-badge-partial.html",
                                chore_log=chore_log)
     elif request.method == "GET":
         chore_log = ChoreLog.query.get_or_404(chore_log_id)
-        form.due_date.data = chore_log.due_date.replace(second=0, microsecond=0)
+        form.due_date.data = chore_log.due_date.date()
+        # form.due_date.data = chore_log.due_date.replace(second=0, microsecond=0)
         return render_template("chore_logs/chore-log-due-date-input-partial.html",
                                chore_log_id=chore_log_id,
                                form=form)

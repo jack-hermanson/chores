@@ -73,7 +73,7 @@ def create_app(config_class=Config):
     def day_of_week_str(raw):
         return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()
 
-    # return the app
+        # return the app
     print("RUNNING APPLICATION")
     logging.debug("LOGGING IS RUNNING")
     return app

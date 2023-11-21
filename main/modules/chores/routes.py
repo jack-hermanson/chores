@@ -15,6 +15,7 @@ from ...utils.DateTimeEnums import DayOfWeekEnum
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
 
+# obsolete deprecated todo
 @chores.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():

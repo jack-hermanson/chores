@@ -44,6 +44,12 @@
                     {{ chore_log.chore.owner.name }}
                 </p>
             {% endcall %}
+            {# todo remove this #}
+            {% call key_val_list_item("Exact Due Date") %}
+                <p class="mb-1">
+                    {{ chore_log.due_date.strftime("%a, %b %e %l:%M%p") }}
+                </p>
+            {% endcall %}
             <div class="button-panel">
                 <button
                         title="Complete Now"
@@ -54,21 +60,29 @@
                 >
                     <span class="my-auto">
                         <span class="icon-check"></span>
-                    </span>
-                </button>
-                <button
-                        title="Complete & Keep Schedule"
-                        hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
-                        hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                        hx-swap="outerHTML"
-                        hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
-                >
-                    <span class="my-auto">
-                        <span class="icon-check"></span>
                         &nbsp;
-                        <span class="icon-calendar"></span>
+                        <span class="icon-action-redo"></span>
+                        <br>
+                        Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e") }}
                     </span>
                 </button>
+                {% if chore_log.normal_next_due_date.date() != chore_log.stay_on_schedule_next_due_date.date() %}
+                    <button
+                            title="Complete & Keep Schedule"
+                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
+                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
+                    >
+                        <span class="my-auto">
+                            <span class="icon-check"></span>
+                            &nbsp;
+                            <span class="icon-calendar"></span>
+                            <br>
+                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e") }}
+                        </span>
+                    </button>
+                {% endif %}
                 <button
                         title="Undo Last Completion" {% if not chore_log.previous %}disabled{% endif %}
                         hx-post="{{ url_for("chore_logs.undo", chore_log_id=chore_log.chore_log_id) }}"
@@ -80,6 +94,10 @@
                 >
                     <span class="my-auto">
                         <span class="icon-action-undo"></span>
+                        &nbsp;
+                        <span class="icon-close"></span>
+                        <br>
+                        Undo
                     </span>
                 </button>
             </div>

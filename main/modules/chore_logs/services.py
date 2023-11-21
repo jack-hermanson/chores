@@ -1,6 +1,7 @@
 import logging
 from operator import and_
 
+import main.utils.date_functions
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
@@ -18,9 +19,9 @@ def generate_next_chore_logs():
     Generate next chore logs for the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
     """
-    chores = db.session.query(Chore)\
-        .join(Chore.list)\
-        .join(List.accounts)\
+    chores = db.session.query(Chore) \
+        .join(Chore.list) \
+        .join(List.accounts) \
         .filter(Account.account_id == current_user.account_id)
 
     for chore in chores:
@@ -49,7 +50,7 @@ def generate_next_chore_logs():
             # add number of days to the end
             new_log_for_this_chore.due_date = datetime.now() + timedelta(days=chore.repeat_days)
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-            new_log_for_this_chore.due_date = helpers.get_next_date_with_same_day_of_week(
+            new_log_for_this_chore.due_date = main.utils.date_functions.get_next_date_with_same_day_of_week(
                 new_log_for_this_chore.chore.repeat_day_of_week,
                 exclude_today=False
             )
@@ -63,11 +64,11 @@ def generate_next_chore_logs():
         db.session.add(new_log_for_this_chore)
         db.session.commit()
 
-    chore_logs_to_return = db.session.query(ChoreLog)\
-        .join(ChoreLog.chore)\
-        .join(Chore.list)\
-        .join(List.accounts)\
-        .filter(and_(Account.account_id == current_user.account_id, not_(ChoreLog.is_complete)))\
+    chore_logs_to_return = db.session.query(ChoreLog) \
+        .join(ChoreLog.chore) \
+        .join(Chore.list) \
+        .join(List.accounts) \
+        .filter(and_(Account.account_id == current_user.account_id, ChoreLog.completed_date.is_(None))) \
         .all()
 
     return chore_logs_to_return
@@ -92,25 +93,9 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     # create new
     new_chore_log = ChoreLog()
     new_chore_log.chore = chore_log.chore
-    if chore_log.chore.repeat_type == RepeatTypeEnum.DAYS:
-        if stay_on_schedule:
-            new_chore_log.due_date = chore_log.due_date + timedelta(days=chore_log.chore.repeat_days)
-        else:
-            new_chore_log.due_date = datetime.now() + timedelta(days=chore_log.chore.repeat_days)
-    elif chore_log.chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-        if stay_on_schedule or chore_log.due_date.date() == datetime.now().date():
-            # if stay on schedule (or today is the due date), just add a week to due date
-            new_chore_log.due_date = chore_log.due_date + timedelta(days=7)
-        else:
-            # otherwise, find the next time (relative to, but not including today) this day of the week occurs
-            new_chore_log.due_date = helpers.get_next_date_with_same_day_of_week(
-                new_chore_log.chore.repeat_day_of_week,
-                exclude_today=True
-            )
-            # Both behaviors will be the same if we
-
-    else:  # should never happen
-        raise ValueError(f"Invalid repeat type {chore_log.chore.repeat_type}")
+    new_chore_log.due_date = chore_log.stay_on_schedule_next_due_date.date() \
+        if stay_on_schedule \
+        else chore_log.normal_next_due_date.date()
 
     db.session.add(new_chore_log)
     db.session.commit()
@@ -119,7 +104,6 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
 
 
 def undo_completion(chore_log_id):
-
     chore_log = ChoreLog.query.get_or_404(chore_log_id)
     chore_id = chore_log.chore_id
 
@@ -129,8 +113,8 @@ def undo_completion(chore_log_id):
     db.session.refresh(chore)
 
     previous = ChoreLog.query \
-        .filter(ChoreLog.chore_id == chore_id)\
-        .order_by(desc(ChoreLog.completed_date))\
+        .filter(ChoreLog.chore_id == chore_id) \
+        .order_by(desc(ChoreLog.completed_date)) \
         .first()
 
     if not previous:
@@ -144,4 +128,3 @@ def undo_completion(chore_log_id):
     db.session.commit()
 
     return previous
-
