@@ -3,7 +3,7 @@
 <div class="card mb-3 bg-dark chore-card" id="chore-log-card-{{ chore_log.chore_log_id }}">
     <div class="card-header d-flex">
         <h5 class="my-auto">
-            <a href="{{ url_for("chores.details", chore_id=chore_log.chore.chore_id) }}" class="chore-card-title-link">
+            <a href="{{ url_for("chores.edit", chore_id=chore_log.chore.chore_id) }}" class="chore-card-title-link">
                 {{ chore_log.chore.title }}
             </a>
         </h5>
@@ -45,16 +45,16 @@
                 </p>
             {% endcall %}
             {# todo remove this #}
-            {% call key_val_list_item("Exact Due Date") %}
-                <p class="mb-1">
-                    {{ chore_log.due_date.strftime("%a, %b %e %l:%M%p") }}
-                </p>
-            {% endcall %}
-            {% call key_val_list_item("Chore Log ID") %}
-                <p class="mb-1">
-                    {{ chore_log.chore_log_id }}
-                </p>
-            {% endcall %}
+{#            {% call key_val_list_item("Exact Due Date") %}#}
+{#                <p class="mb-1">#}
+{#                    {{ chore_log.due_date.strftime("%a, %b %e %l:%M%p") }}#}
+{#                </p>#}
+{#            {% endcall %}#}
+{#            {% call key_val_list_item("Chore Log ID") %}#}
+{#                <p class="mb-1">#}
+{#                    {{ chore_log.chore_log_id }}#}
+{#                </p>#}
+{#            {% endcall %}#}
             <div class="button-panel">
                 {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
                     <button
