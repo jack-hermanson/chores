@@ -7,7 +7,9 @@
 {% block body %}
     <div class="row">
         <div class="col-12 col-lg-8">
-            <form action="{{ url_for("accounts.login") }}" method="POST">
+            {# I think we don't want the form to explicitly have an action so we can use the next arg #}
+            {# <form action="{{ url_for("accounts.login") }}" method="POST"> #}
+            <form action="" method="POST">
                 {{ form.hidden_tag() }}
                 {{ form_group(form, "name", required=True) }}
                 {{ form_group(form, "password", required=True) }}
