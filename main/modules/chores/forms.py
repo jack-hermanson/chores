@@ -3,8 +3,7 @@ from wtforms.fields import StringField, SubmitField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
-from main.modules.lists.services import get_user_lists
-from main.utils.date_time_enums import DayOfWeekEnum
+from utils.date_time_enums import DayOfWeekEnum
 
 
 class CreateEditChore(FlaskForm):

@@ -10,7 +10,6 @@ import logging
 
 from datetime import date, datetime
 
-from main.utils.date_time_enums import DayOfWeekEnum
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -75,7 +74,8 @@ def create_app(config_class=Config):
     # filter
     @app.template_filter()
     def day_of_week_str(raw):
-        return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()
+        from utils import date_functions
+        return date_functions.day_of_week_str(raw)
 
     @app.template_filter()
     def extract_date(date_or_datetime: date | datetime):

@@ -3,7 +3,7 @@ from main import db
 from datetime import datetime, timedelta
 from sqlalchemy import and_, desc, not_
 
-from main.utils.date_functions import get_next_date_with_same_day_of_week, extract_date
+from utils.date_functions import get_next_date_with_same_day_of_week, extract_date
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
 
 

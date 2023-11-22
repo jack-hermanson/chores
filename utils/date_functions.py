@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta, date
-
-from main import DayOfWeekEnum
+from .date_time_enums import DayOfWeekEnum
 
 
 def get_next_date_with_same_day_of_week(day_of_week: DayOfWeekEnum, exclude_today=True,
@@ -38,3 +37,5 @@ def extract_date(date_or_datetime: date | datetime):
             f"Invalid type for date_or_datetime (value: {date_or_datetime}) (type: {type(date_or_datetime)}")
 
 
+def day_of_week_str(raw):
+    return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()

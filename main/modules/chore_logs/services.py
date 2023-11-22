@@ -1,7 +1,7 @@
 import logging
 from operator import and_
 
-import main.utils.date_functions
+from utils.date_functions import get_next_date_with_same_day_of_week
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
@@ -49,7 +49,7 @@ def generate_next_chore_logs():
             # add days to end of today
             new_log_for_this_chore.due_date = (datetime.now() + timedelta(days=chore.repeat_days)).date()
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-            new_log_for_this_chore.due_date = main.utils.date_functions.get_next_date_with_same_day_of_week(
+            new_log_for_this_chore.due_date = get_next_date_with_same_day_of_week(
                 new_log_for_this_chore.chore.repeat_day_of_week,
                 exclude_today=False
             )

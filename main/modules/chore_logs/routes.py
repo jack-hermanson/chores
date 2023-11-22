@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
-from main.utils.min_clearance import min_clearance
+from utils.min_clearance import min_clearance
 from . import services
 from .forms import ChoreLogDueDate
 from .models import ChoreLog

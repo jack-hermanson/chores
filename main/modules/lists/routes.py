@@ -1,20 +1,18 @@
-import random
-
-from flask import Blueprint, redirect, url_for, flash, request, render_template, abort
+from flask import Blueprint, redirect, url_for, flash, request, render_template
 from .forms import CreateEditList
 from ..accounts.models import Account
 from flask_login import current_user, login_required
 from .models import List
 from main import db
 from ..accounts.ClearanceEnum import ClearanceEnum
-from ...utils.min_clearance import min_clearance
+from utils.min_clearance import min_clearance
 from . import services
 
 lists = Blueprint("lists", __name__, url_prefix="/lists")
 
 
 def get_user_options():
-    options = Account.query\
+    options = Account.query \
         .filter(Account.account_id != current_user.account_id) \
         .order_by("name").all()
     return [(option.account_id, option.name) for option in options]
@@ -81,23 +79,3 @@ def delete(list_id: int):
     lists_list = List.query.all()
     return render_template("lists/index-partial-lists.html",
                            lists_list=lists_list)
-
-
-def gen_numbers():
-    numbers = []
-    for x in range(20):
-        numbers.append(random.randint(1, 20))
-    return numbers
-
-
-@lists.route("/test")
-def test():
-    numbers = gen_numbers()
-    return render_template("lists/test.html", numbers=numbers)
-
-
-@lists.route("/test-partial")
-def test_partial():
-    numbers = gen_numbers()
-    return render_template("lists/test-partial.html", numbers=numbers)
-

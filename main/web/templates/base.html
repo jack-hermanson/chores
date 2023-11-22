@@ -40,8 +40,6 @@
                     <li class="nav-item">
                         <a
                             hx-confirm="Are you sure you want to log out?"
-                            hx-target="body"
-                            hx-post="{{ url_for("accounts.logout") }}"
                             href="{{ url_for("accounts.logout") }}"
                             class="nav-link"
                         >

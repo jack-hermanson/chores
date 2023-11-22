@@ -86,7 +86,7 @@ def register():
                            form=form)
 
 
-@accounts.route("/logout", methods=["POST"])
+@accounts.route("/logout")
 def logout():
     name = current_user.name
     if not current_user.is_authenticated:

@@ -3,14 +3,14 @@ import logging
 
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
-from main.utils.min_clearance import min_clearance
+from utils.min_clearance import min_clearance
 from flask_login import current_user
 from .models import Chore
 from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
 from ..lists.models import List
 from ..lists.services import get_user_lists
-from ...utils.date_time_enums import DayOfWeekEnum
+from utils.date_time_enums import DayOfWeekEnum
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
