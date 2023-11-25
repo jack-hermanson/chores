@@ -1,5 +1,5 @@
-{% macro simple_card(class="") %}
-<div class="card {{ class }}">
+{% macro simple_card(class="", id=None) %}
+<div class="card {{ class }}" {% if id %}id="{{ id }}"{% endif %}>
     {{ caller() }}
 </div>
 {% endmacro %}

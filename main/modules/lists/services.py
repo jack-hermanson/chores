@@ -1,5 +1,6 @@
 import logging
 
+from flask import request
 from flask_login import current_user
 
 from main.modules.accounts.models import Account
@@ -23,3 +24,4 @@ def set_list_values(new_list, form):
         accounts.append(Account.query.filter(Account.account_id == account_id).first())
     new_list.accounts = accounts
     return new_list
+

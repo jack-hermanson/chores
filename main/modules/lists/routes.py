@@ -73,9 +73,27 @@ def edit(list_id: int):
 @lists.route("/delete/<int:list_id>", methods=["DELETE"])
 @min_clearance(ClearanceEnum.NORMAL)
 def delete(list_id: int):
-    list = db.session.query(List).filter(List.list_id == list_id).first()
+    list = db.session.query(List).filter(List.list_id == list_id).first_or_404()
+    # todo there is no check for ownership before deleting
     db.session.delete(list)
     db.session.commit()
     lists_list = List.query.all()
     return render_template("lists/index-partial-lists.html",
                            lists_list=lists_list)
+
+
+# Return HTMX for when you click the trash button
+@lists.route("/remove-user-from-list", methods=["PUT"])
+@min_clearance(ClearanceEnum.NORMAL)
+def remove_user_from_list():
+    list_id = int(request.args.get("list_id"))
+    account_id = int(request.args.get("account_id"))
+
+    list_in_question = List.query.filter(List.list_id == list_id).first_or_404()
+    account = Account.query.filter(Account.account_id == account_id).first_or_404()
+
+    list_in_question.accounts = list(filter(lambda a: a.account_id != account.account_id, list_in_question.accounts))
+    db.session.commit()
+
+    return render_template("lists/list-partial.html",
+                           list=list_in_question)
