@@ -3,3 +3,10 @@
 {% for list in lists_list %}
     {% include "lists/list-partial.html" %}
 {% endfor %}
+
+{% if lists_list|length == 0 %}
+    <p>
+        You do not have access to any lists.
+        <a href="{{ url_for("lists.create") }}">Create a new one?</a>
+    </p>
+{% endif %}

@@ -12,13 +12,20 @@
                     <span class="my-auto">
                         {{ account.name }}
                     </span>
-                    {% if account == current_user %}
+                    {% if account == list.owner %}
                         <button
                             class="btn btn-sm btn-outline-danger ms-auto disabled"
                             disabled
                         >
                             <i class="icon-trash"></i>
                         </button>
+                    {% elif account == current_user %}
+                        <a
+                            class="btn btn-sm btn-outline-danger ms-auto"
+                            href="{{ url_for("lists.remove_self_from_list", list_id=list.list_id) }}"
+                        >
+                            <i class="icon-trash"></i>
+                        </a>
                     {% else %}
                         <button
                             class="btn btn-sm btn-outline-danger ms-auto"

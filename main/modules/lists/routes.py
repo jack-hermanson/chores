@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, flash, request, render_template
+from flask import Blueprint, redirect, url_for, flash, request, render_template, abort
 from .forms import CreateEditList
 from ..accounts.models import Account
 from flask_login import current_user, login_required
@@ -19,9 +19,9 @@ def get_user_options():
 
 
 @lists.route("/")
-@login_required
+@min_clearance(ClearanceEnum.NORMAL)
 def index():
-    lists_list = List.query.all()
+    lists_list = List.query.filter(List.accounts.contains(current_user)).all()
     return render_template("lists/index.html",
                            lists_list=lists_list)
 
@@ -35,6 +35,7 @@ def create():
 
     if form.validate_on_submit():
         new_list = List()
+        new_list.owner = current_user
         services.set_list_values(new_list, form)
 
         db.session.add(new_list)
@@ -97,3 +98,19 @@ def remove_user_from_list():
 
     return render_template("lists/list-partial.html",
                            list=list_in_question)
+
+
+@lists.route("/remove-self-from-list/<int:list_id>")
+@min_clearance(ClearanceEnum.NORMAL)
+def remove_self_from_list(list_id: int):
+    list_in_question = List.query.filter(List.list_id == list_id).first_or_404()
+    if list_in_question.owner == current_user:
+        return abort(400)
+    if not list_in_question.accounts.__contains__(current_user):
+        return abort(403)
+
+    list_in_question.accounts = list(filter(lambda a: a.account_id != current_user.account_id, list_in_question.accounts))
+    db.session.commit()
+    flash("Removed self from list successfully.", "success")
+
+    return redirect(url_for("lists.index"))

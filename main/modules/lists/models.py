@@ -15,3 +15,5 @@ class List(db.Model):
     accounts = db.relationship("Account", secondary=list_account, back_populates="lists")
     chores = db.relationship("Chore", back_populates="list", cascade="all, delete-orphan")
 
+    owner_id = db.mapped_column(db.ForeignKey("account.account_id"), nullable=False)
+    owner = db.relationship("Account", back_populates="owned_lists")

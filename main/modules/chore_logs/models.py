@@ -11,6 +11,7 @@ class ChoreLog(db.Model):
     chore_log_id = db.Column(db.Integer, primary_key=True)
     completed_date = db.Column(db.DateTime, nullable=True)
     due_date = db.Column(db.DateTime, nullable=False)
+    # keep this commented out, or delete it
     # is_past_due = db.column_property(and_((completed_date is None), due_date < datetime.now()))
     # is_complete = db.column_property(completed_date.is_not(None))
 
