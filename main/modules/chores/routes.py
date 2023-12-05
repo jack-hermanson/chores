@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 import logging
 
+from wtforms.validators import DataRequired
+
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
 from utils.min_clearance import min_clearance
@@ -8,6 +10,7 @@ from flask_login import current_user
 from .models import Chore
 from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
+from ..accounts.models import Account
 from ..lists.models import List
 from ..lists.services import get_user_lists
 from utils.date_time_enums import DayOfWeekEnum
@@ -30,6 +33,9 @@ def index():
 def create():
     form = CreateEditChore()
     form.list.choices = [(ls.list_id, ls.title) for ls in get_user_lists()]
+    form.owner.data = str(current_user.account_id)
+    form.owner.choices = [(current_user.account_id, current_user.name)]
+    form.owner.render_kw = {"disabled": True}
 
     if form.validate_on_submit():
         new_chore = Chore()
@@ -61,11 +67,14 @@ def edit(chore_id: int):
     form = CreateEditChore()
     form.list.choices = [(ls.list_id, ls.title) for ls in get_user_lists()]
     chore = Chore.query.filter(Chore.chore_id == chore_id).first_or_404()
+    # todo - what if the list changes? need to make this an htmx thing
+    form.owner.choices = [(a.account_id, a.name) for a in chore.list.accounts]
 
     if form.validate_on_submit():
         chore.title = form.title.data
         chore.description = form.description.data
         chore.repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
+        chore.owner = Account.query.filter(Account.account_id == int(form.owner.data)).first_or_404()
 
         if chore.repeat_type == RepeatTypeEnum.NONE:
             chore.repeat_days = None
@@ -95,6 +104,7 @@ def edit(chore_id: int):
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             form.repeat_day_of_week.data = str(int(chore.repeat_day_of_week))
         form.list.data = str(chore.list.list_id)
+        form.owner.data = str(chore.owner.account_id)
         logging.info(f"form.list.data {form.list.data}")
 
     return render_template("chores/create-edit.html",

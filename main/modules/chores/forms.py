@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField, TextAreaField, IntegerField, SelectField
+from wtforms.fields import StringField, SubmitField,  TextAreaField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
@@ -44,6 +44,12 @@ class CreateEditChore(FlaskForm):
     list = SelectField(
         "Chore List",
         description="Which list does this chore belong to?",
+        choices=[],  # set in controller
+        validators=[DataRequired()]
+    )
+    owner = SelectField(
+        "Owner",
+        description="Who is responsible for this chore?",
         choices=[],  # set in controller
         validators=[DataRequired()]
     )

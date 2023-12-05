@@ -16,6 +16,7 @@
                 {{ form_group(form, "title", required=True) }}
                 {{ form_group(form, "description") }}
                 {{ form_group(form, "list", required=True) }}
+                {{ form_group(form, "owner", required=True) }}
                 {{ form_group(
                         form,
                         "repeat_type",
@@ -24,6 +25,7 @@
                             "hx-target": "#repeat-input"
                         })
                 }}
+
 
                 <div id="repeat-input">
                     {% if form.repeat_type.data == "1" %}
