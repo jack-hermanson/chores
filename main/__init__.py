@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 import logging
+import os
 
 from datetime import date, datetime
 
@@ -93,4 +94,6 @@ def create_app(config_class=Config):
         # return the app
     print("RUNNING APPLICATION")
     logging.debug("LOGGING IS RUNNING")
+    logging.info(f"Running app in environment '{os.environ.get('ENVIRONMENT')}'")
+    logging.info(f"FLASK_ENV: '{os.environ.get('FLASK_ENV')}'")
     return app
