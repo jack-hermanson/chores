@@ -82,6 +82,14 @@ def create_app(config_class=Config):
         from utils import date_functions
         return date_functions.extract_date(date_or_datetime)
 
+    @app.template_filter()
+    def number_suffix(value):
+        if 10 <= value % 100 <= 20:
+            suffix = 'th'
+        else:
+            suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(value % 10, 'th')
+        return f"{value}{suffix}"
+
         # return the app
     print("RUNNING APPLICATION")
     logging.debug("LOGGING IS RUNNING")

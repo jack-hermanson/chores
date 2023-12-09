@@ -36,6 +36,9 @@
                         Every {{ chore_log.chore.repeat_days }} days
                     {% elif chore_log.chore.repeat_type == 2 %}
                         Every {{ chore_log.chore.repeat_day_of_week|day_of_week_str }}
+                    {% elif chore_log.chore.repeat_type == 3 %}
+
+                        The {% if chore_log.chore.repeat_day_of_month == 31 %}last{% else %}{{ chore_log.chore.repeat_day_of_month|number_suffix }}{% endif %} day of every month
                     {% endif %}
                 </p>
             {% endcall %}
@@ -69,7 +72,8 @@
                             &nbsp;
                             <span class="icon-action-redo"></span>
                             <br>
-                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e %l:%M%p") }}
+                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e") }}
+{#                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
                         </span>
                     </button>
                 {% endif %}
@@ -86,7 +90,8 @@
                             &nbsp;
                             <span class="icon-calendar"></span>
                             <br>
-                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}
+                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e") }}
+{#                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
                         </span>
                     </button>
                 {% endif %}

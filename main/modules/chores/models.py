@@ -17,6 +17,9 @@ class Chore(db.Model):
     # use enum
     repeat_day_of_week = db.Column(db.Integer, nullable=True)
 
+    # repeat on the 15th of every month
+    repeat_day_of_month = db.Column(db.Integer, nullable=True)
+
     # who is able to update/delete this task, who owns it
     owner_id = db.mapped_column(db.ForeignKey("account.account_id"), nullable=False)
     owner = db.relationship("Account", back_populates="chores")

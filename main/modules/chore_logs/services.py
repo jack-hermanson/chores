@@ -1,7 +1,7 @@
 import logging
 from operator import and_
 
-from utils.date_functions import get_next_date_with_same_day_of_week
+from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
@@ -55,6 +55,8 @@ def generate_next_chore_logs():
             )
         elif chore.repeat_type == RepeatTypeEnum.NONE:
             logging.info(f"Chore with ID {chore.chore_id} does not repeat")
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            new_log_for_this_chore.due_date = get_next_date_with_same_number(chore.repeat_day_of_month)
         else:
             # todo
             new_log_for_this_chore.due_date = datetime.now().date()

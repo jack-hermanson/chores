@@ -47,6 +47,8 @@ def create():
             new_chore.repeat_days = form.repeat_days.data
         elif new_chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             new_chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
+        elif new_chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            new_chore.repeat_day_of_month = int(form.repeat_day_of_month.data)
 
         associated_list = List.query.get_or_404(form.list.data)
         new_chore.list = associated_list
@@ -79,12 +81,19 @@ def edit(chore_id: int):
         if chore.repeat_type == RepeatTypeEnum.NONE:
             chore.repeat_days = None
             chore.repeat_day_of_week = None
+            chore.repeat_day_of_month = None
         elif chore.repeat_type == RepeatTypeEnum.DAYS:
-            chore.repeat_day_of_week = None
             chore.repeat_days = form.repeat_days.data
+            chore.repeat_day_of_week = None
+            chore.repeat_day_of_month = None
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             chore.repeat_days = None
             chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
+            chore.repeat_day_of_month = None
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            chore.repeat_days = None
+            chore.repeat_day_of_week = None
+            chore.repeat_day_of_month = int(form.repeat_day_of_month.data)
         else:
             logging.error(f"Invalid repeat_type {chore.repeat_type}")
             return abort(400)
@@ -103,6 +112,8 @@ def edit(chore_id: int):
             form.repeat_days.data = chore.repeat_days
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             form.repeat_day_of_week.data = str(int(chore.repeat_day_of_week))
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            form.repeat_day_of_month.data = str(int(chore.repeat_day_of_month))
         form.list.data = str(chore.list.list_id)
         form.owner.data = str(chore.owner.account_id)
         logging.info(f"form.list.data {form.list.data}")
@@ -127,6 +138,9 @@ def get_repeat_type():
                                form=form)
     if repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
         return render_template("chores/create-edit-partials/repeat-day-of-week.html",
+                               form=form)
+    if repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+        return render_template("chores/create-edit-partials/repeat-day-of-month.html",
                                form=form)
 
 

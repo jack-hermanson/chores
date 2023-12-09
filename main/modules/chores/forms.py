@@ -16,7 +16,8 @@ class CreateEditChore(FlaskForm):
         choices=[
             (int(RepeatTypeEnum.NONE), "None"),
             (int(RepeatTypeEnum.DAYS), "Days"),
-            (int(RepeatTypeEnum.DAY_OF_THE_WEEK), "Day of Week")
+            (int(RepeatTypeEnum.DAY_OF_THE_WEEK), "Day of the Week"),
+            (int(RepeatTypeEnum.DAY_OF_MONTH), "Day of Month")
         ],
         default=RepeatTypeEnum.NONE
     )
@@ -40,6 +41,14 @@ class CreateEditChore(FlaskForm):
         ],
         validators=[Optional()]
 
+    )
+    repeat_day_of_month = SelectField(
+        "Day of Month",
+        description="This chore will repeat on this day of every month.",
+        choices=[
+            *[(x, x) for x in range(1, 29)],
+            (31, "Last Day of Month")
+        ]
     )
     list = SelectField(
         "Chore List",

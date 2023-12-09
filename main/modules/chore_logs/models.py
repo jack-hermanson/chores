@@ -2,8 +2,9 @@ from __future__ import annotations
 from main import db
 from datetime import datetime, timedelta
 from sqlalchemy import and_, desc, not_
+from dateutil.relativedelta import relativedelta
 
-from utils.date_functions import get_next_date_with_same_day_of_week, extract_date
+from utils.date_functions import get_next_date_with_same_day_of_week, extract_date, get_next_date_with_same_number
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
 
 
@@ -11,7 +12,7 @@ class ChoreLog(db.Model):
     chore_log_id = db.Column(db.Integer, primary_key=True)
     completed_date = db.Column(db.DateTime, nullable=True)
     due_date = db.Column(db.DateTime, nullable=False)
-    # keep this commented out, or delete it
+    # keep this commented out, or delete it, but do not use it
     # is_past_due = db.column_property(and_((completed_date is None), due_date < datetime.now()))
     # is_complete = db.column_property(completed_date.is_not(None))
 
@@ -56,6 +57,9 @@ class ChoreLog(db.Model):
             return (self.due_date + timedelta(days=self.chore.repeat_days)).date()
         if self.chore.repeat_type == RepeatTypeEnum.NONE:
             return None
+        if self.chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            return get_next_date_with_same_number(self.chore.repeat_day_of_month,
+                                                  relative_to_date=extract_date(self.due_date))
 
     @property
     def normal_next_due_date(self):
@@ -94,6 +98,16 @@ class ChoreLog(db.Model):
             return next_date
         if self.chore.repeat_type == RepeatTypeEnum.NONE:
             return None
+        if self.chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
+            next_date = get_next_date_with_same_number(self.chore.repeat_day_of_month)
+
+            # then make sure that is not the due date for this one, which we just completed
+            # that would make it infinitely staying on the same date
+            # if that's the case, add another month
+            if extract_date(next_date) == extract_date(self.due_date):
+                return next_date + relativedelta(months=1)
+
+            return next_date
 
     def as_dict(self):
         return {
