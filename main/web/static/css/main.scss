@@ -231,3 +231,7 @@ ul.jump-to-list {
   list-style: none;
   padding-left: 0;
 }
+
+span.next-due-date {
+  border-bottom: 1px solid $secondary;
+}

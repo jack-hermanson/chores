@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 import logging
 
+from sqlalchemy import not_
 from wtforms.validators import DataRequired
 
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
@@ -11,6 +12,7 @@ from .models import Chore
 from main import db
 from .RepeatTypeEnum import RepeatTypeEnum
 from ..accounts.models import Account
+from ..chore_logs.models import ChoreLog
 from ..lists.models import List
 from ..lists.services import get_user_lists
 from utils.date_time_enums import DayOfWeekEnum
@@ -19,13 +21,14 @@ chores = Blueprint("chores", __name__, url_prefix="/chores")
 
 
 # obsolete deprecated todo
-@chores.route("/")
-@min_clearance(ClearanceEnum.NORMAL)
-def index():
-    chores_list = Chore.query.filter(Chore.owner == current_user).all()
-
-    return render_template("chores/index.html",
-                           chores_list=chores_list)
+# @chores.route("/")
+# @min_clearance(ClearanceEnum.NORMAL)
+# def index():
+#     chores_list = (Chore.query.filter(Chore.list.accounts.__contains__(current_user))
+#                    .order_by(Chore.chore_logs.filter(ChoreLog.completed_date.is_(None)).first().due_date).all())
+#
+#     return render_template("chores/index.html",
+#                            chores_list=chores_list)
 
 
 @chores.route("/create", methods=["GET", "POST"])

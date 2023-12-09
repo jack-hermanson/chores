@@ -12575,4 +12575,8 @@ ul.jump-to-list {
   padding-left: 0;
 }
 
+span.next-due-date {
+  border-bottom: 1px solid #ea39b8;
+}
+
 /*# sourceMappingURL=main.css.map */

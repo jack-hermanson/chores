@@ -70,6 +70,7 @@ def generate_next_chore_logs():
         .join(Chore.list) \
         .join(List.accounts) \
         .filter(and_(Account.account_id == current_user.account_id, ChoreLog.completed_date.is_(None))) \
+        .order_by(ChoreLog.due_date) \
         .all()
 
     return chore_logs_to_return
