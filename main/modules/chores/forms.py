@@ -48,7 +48,8 @@ class CreateEditChore(FlaskForm):
         choices=[
             *[(x, x) for x in range(1, 29)],
             (31, "Last Day of Month")
-        ]
+        ],
+        validators=[Optional()]
     )
     list = SelectField(
         "Chore List",
