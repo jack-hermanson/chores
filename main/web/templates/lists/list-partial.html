@@ -1,6 +1,6 @@
 {% from "macros/card.html" import simple_card, card_body, card_footer %}
 
-{% call simple_card(id="list-partial-" + list.list_id.__str__()) %}
+{% call simple_card(id="list-partial-" + list.list_id.__str__(), class="mb-4 no-mb-last") %}
     {% call card_body(title=list.title) %}
         <h6>Description</h6>
         <p>{{ list.description }}</p>
