@@ -38,7 +38,8 @@
                         Every {{ chore_log.chore.repeat_day_of_week|day_of_week_str }}
                     {% elif chore_log.chore.repeat_type == 3 %}
 
-                        The {% if chore_log.chore.repeat_day_of_month == 31 %}last{% else %}{{ chore_log.chore.repeat_day_of_month|number_suffix }}{% endif %} day of every month
+                        The {% if chore_log.chore.repeat_day_of_month == 31 %}last{% else %}
+                        {{ chore_log.chore.repeat_day_of_month|number_suffix }}{% endif %} day of every month
                     {% endif %}
                 </p>
             {% endcall %}
@@ -48,16 +49,16 @@
                 </p>
             {% endcall %}
 
-            {% if chore_log.chore.repeat_type != 0 %}
-                <div class="button-panel">
-                {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
-                    <button
-                            title="Complete Now"
-                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
-                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                            hx-swap="outerHTML"
-                            hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
-                    >
+            <div class="button-panel">
+                {% if chore_log.chore.repeat_type != 0 %}
+                    {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
+                        <button
+                                title="Complete Now"
+                                hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                                hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                                hx-swap="outerHTML"
+                                hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                        >
                         <span class="my-auto">
                             <span class="icon-check"></span>
                             &nbsp;
@@ -68,35 +69,39 @@
     {#                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
                             </span>
                         </span>
-                    </button>
-                {% endif %}
-                {% if chore_log.normal_next_due_date != chore_log.stay_on_schedule_next_due_date %}
-                    <button
-                            title="Complete & Keep Schedule"
-                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
-                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                            hx-swap="outerHTML"
-                            hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
-                    >
-                        <span class="my-auto">
-                            <span class="icon-check"></span>
-                            &nbsp;
-                            <span class="icon-calendar"></span>
-                            <br>
-                            <span class="next-due-date">
-                                Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %-m/%-e") }}
-    {#                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
+                        </button>
+                    {% endif %}
+                    {% if chore_log.normal_next_due_date != chore_log.stay_on_schedule_next_due_date %}
+                        <button
+                                title="Complete & Keep Schedule"
+                                hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
+                                hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                                hx-swap="outerHTML"
+                                hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
+                        >
+                            <span class="my-auto">
+                                <span class="icon-check"></span>
+                                &nbsp;
+                                <span class="icon-calendar"></span>
+                                <br>
+                                <span class="next-due-date">
+                                    Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %-m/%-e") }}
+        {#                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
+                                </span>
                             </span>
-                        </span>
-                    </button>
+                        </button>
+                    {% endif %}
+                {% elif chore_log.chore.repeat_type == 0 %}
+                    <button>hi</button>
                 {% endif %}
+
                 <button
                         title="Undo Last Completion" {% if not chore_log.previous %}disabled{% endif %}
                         hx-post="{{ url_for("chore_logs.undo", chore_log_id=chore_log.chore_log_id) }}"
                         hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
                         hx-swap="outerHTML"
                         {% if chore_log.previous %}
-                            hx-confirm="Undo completion of '{{ chore_log.chore.title }}' from {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}?"
+                        hx-confirm="Undo completion of '{{ chore_log.chore.title }}' from {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}?"
                         {% endif %}
                 >
                     <span class="my-auto">
@@ -108,7 +113,6 @@
                     </span>
                 </button>
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
