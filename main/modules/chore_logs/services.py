@@ -38,7 +38,7 @@ def generate_next_chore_logs():
 
         if len(open_chore_logs) == 1:
             # This one already has an open one
-            print(f"Chore {chore} already has an open log. Skipping.")
+            logging.debug(f"Chore {chore} already has an open log. Skipping.")
             continue
         # endregion
 
@@ -55,10 +55,11 @@ def generate_next_chore_logs():
             )
         elif chore.repeat_type == RepeatTypeEnum.NONE:
             logging.info(f"Chore with ID {chore.chore_id} does not repeat")
+            new_log_for_this_chore.due_date = chore.one_time_due_date
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
             new_log_for_this_chore.due_date = get_next_date_with_same_number(chore.repeat_day_of_month)
         else:
-            # todo
+            logging.error(f"Not a valid repeat type {chore.repeat_type}")
             new_log_for_this_chore.due_date = datetime.now().date()
 
         print(f"Created new log due {new_log_for_this_chore.due_date}")

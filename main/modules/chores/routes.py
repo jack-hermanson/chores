@@ -46,7 +46,9 @@ def create():
         new_chore.description = form.description.data
         new_chore.owner = current_user
         new_chore.repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
-        if new_chore.repeat_type == RepeatTypeEnum.DAYS:
+        if new_chore.repeat_type == RepeatTypeEnum.NONE:
+            new_chore.one_time_due_date = form.due_date.data
+        elif new_chore.repeat_type == RepeatTypeEnum.DAYS:
             new_chore.repeat_days = form.repeat_days.data
         elif new_chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             new_chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
@@ -85,18 +87,23 @@ def edit(chore_id: int):
             chore.repeat_days = None
             chore.repeat_day_of_week = None
             chore.repeat_day_of_month = None
+            chore.one_time_due_date = form.due_date.data
+            chore.chore_logs.clear()
         elif chore.repeat_type == RepeatTypeEnum.DAYS:
             chore.repeat_days = form.repeat_days.data
             chore.repeat_day_of_week = None
             chore.repeat_day_of_month = None
+            chore.one_time_due_date = None
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
             chore.repeat_days = None
             chore.repeat_day_of_week = DayOfWeekEnum(int(form.repeat_day_of_week.data))
             chore.repeat_day_of_month = None
+            chore.one_time_due_date = None
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
             chore.repeat_days = None
             chore.repeat_day_of_week = None
             chore.repeat_day_of_month = int(form.repeat_day_of_month.data)
+            chore.one_time_due_date = None
         else:
             logging.error(f"Invalid repeat_type {chore.repeat_type}")
             return abort(400)
@@ -135,7 +142,8 @@ def get_repeat_type():
     form = CreateEditChore()
 
     if repeat_type == RepeatTypeEnum.NONE:
-        return ""
+        return render_template("chores/create-edit-partials/due-date.html",
+                               form=form)
     if repeat_type == RepeatTypeEnum.DAYS:
         return render_template("chores/create-edit-partials/repeat-days.html",
                                form=form)

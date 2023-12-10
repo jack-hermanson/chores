@@ -47,18 +47,9 @@
                     {{ chore_log.chore.owner.name }}
                 </p>
             {% endcall %}
-            {# todo remove this #}
-{#            {% call key_val_list_item("Exact Due Date") %}#}
-{#                <p class="mb-1">#}
-{#                    {{ chore_log.due_date.strftime("%a, %b %e %l:%M%p") }}#}
-{#                </p>#}
-{#            {% endcall %}#}
-{#            {% call key_val_list_item("Chore Log ID") %}#}
-{#                <p class="mb-1">#}
-{#                    {{ chore_log.chore_log_id }}#}
-{#                </p>#}
-{#            {% endcall %}#}
-            <div class="button-panel">
+
+            {% if chore_log.chore.repeat_type != 0 %}
+                <div class="button-panel">
                 {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
                     <button
                             title="Complete Now"
@@ -117,6 +108,7 @@
                     </span>
                 </button>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
