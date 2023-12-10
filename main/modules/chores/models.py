@@ -20,6 +20,12 @@ class Chore(db.Model):
     # repeat on the 15th of every month
     repeat_day_of_month = db.Column(db.Integer, nullable=True)
 
+    # do not repeat, and simply have a one-time due date
+    # due December 9th
+    one_time_due_date = db.Column(db.DateTime, nullable=True)
+    # and if we complete it at the one-time due date, prob want to archive it
+    archived = db.Column(db.Boolean, nullable=False, default=False)
+
     # who is able to update/delete this task, who owns it
     owner_id = db.mapped_column(db.ForeignKey("account.account_id"), nullable=False)
     owner = db.relationship("Account", back_populates="chores")

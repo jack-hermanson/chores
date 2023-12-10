@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField,  TextAreaField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
+from wtforms.fields import StringField, SubmitField,  TextAreaField, IntegerField, SelectField, DateField
+from wtforms.validators import DataRequired, Length, ValidationError, Optional
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
 from utils.date_time_enums import DayOfWeekEnum
@@ -19,7 +19,7 @@ class CreateEditChore(FlaskForm):
             (int(RepeatTypeEnum.DAY_OF_THE_WEEK), "Day of the Week"),
             (int(RepeatTypeEnum.DAY_OF_MONTH), "Day of Month")
         ],
-        default=RepeatTypeEnum.NONE
+        default=int(RepeatTypeEnum.NONE)
     )
     repeat_days = IntegerField(
         "Repeats Every",
@@ -63,6 +63,11 @@ class CreateEditChore(FlaskForm):
         choices=[],  # set in controller
         validators=[DataRequired()]
     )
+    due_date = DateField(
+        "Due Date",
+        description="When is this one-time chore due?",
+        validators=[Optional()]
+    )
     submit = SubmitField()
 
     @staticmethod
@@ -93,3 +98,23 @@ class CreateEditChore(FlaskForm):
             )
         ):
             raise ValidationError("Repeat day of week must be between 0 and 6.")
+
+    @staticmethod
+    def validate_repeat_day_of_month(form, _):
+        repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
+
+        if (
+            repeat_type == RepeatTypeEnum.DAY_OF_MONTH
+            and form.repeat_day_of_month.data is None
+        ):
+            raise ValidationError("Day of month is required.")
+
+    @staticmethod
+    def validate_due_date(form, _):
+        repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
+
+        if (
+            repeat_type == RepeatTypeEnum.NONE
+            and form.due_date.data is None
+        ):
+            raise ValidationError("Due date is required for one-off chores.")

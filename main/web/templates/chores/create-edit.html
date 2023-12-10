@@ -28,7 +28,9 @@
 
 
                 <div id="repeat-input">
-                    {% if form.repeat_type.data == "1" %}
+                    {% if form.repeat_type.data == "0" %}
+                        {% include("chores/create-edit-partials/due-date.html") %}
+                    {% elif form.repeat_type.data == "1" %}
                         {% include("chores/create-edit-partials/repeat-days.html") %}
                     {% elif form.repeat_type.data == "2" %}
                         {% include("chores/create-edit-partials/repeat-day-of-week.html") %}
