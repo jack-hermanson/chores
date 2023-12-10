@@ -90,8 +90,7 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     db.session.commit()
 
     if chore_log.chore.repeat_type == RepeatTypeEnum.NONE:
-        # done forever
-        return None
+        return chore_log
 
     # create new
     new_chore_log = ChoreLog()
@@ -111,6 +110,13 @@ def undo_completion(chore_log_id):
     chore_id = chore_log.chore_id
 
     chore = chore_log.chore
+
+    # Little bit different if it doesn't repeat
+    if chore.repeat_type == RepeatTypeEnum.NONE:
+        chore_log.completed_date = None
+        db.session.commit()
+        return chore_log
+
     chore.chore_logs.remove(chore_log)
     db.session.commit()
     db.session.refresh(chore)

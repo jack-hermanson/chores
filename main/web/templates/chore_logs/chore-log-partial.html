@@ -32,7 +32,9 @@
             {% endcall %}
             {% call key_val_list_item("Repeats") %}
                 <p class="mb-1">
-                    {% if chore_log.chore.repeat_type == 1 %}
+                    {% if chore_log.chore.repeat_type == 0 %}
+                        <i>N/A</i>
+                    {% elif chore_log.chore.repeat_type == 1 %}
                         Every {{ chore_log.chore.repeat_days }} days
                     {% elif chore_log.chore.repeat_type == 2 %}
                         Every {{ chore_log.chore.repeat_day_of_week|day_of_week_str }}
@@ -92,7 +94,27 @@
                         </button>
                     {% endif %}
                 {% elif chore_log.chore.repeat_type == 0 %}
-                    <button>hi</button>
+                    <button
+                            {% if chore_log.is_complete %}disabled{% endif %}
+                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                    >
+                        <span class="my-auto">
+                            <span class="icon-check"></span>
+                            <br>
+                            <span class="next-due-date">
+                                {% if chore_log.is_complete and chore_log.chore.archived %}
+                                    Archived
+                                {% elif chore_log.is_complete and not chore_log.chore.archived %}
+                                    Completed
+                                {% else %}
+                                    Complete
+                                {% endif %}
+                            </span>
+                        </span>
+                    </button>
                 {% endif %}
 
                 <button
