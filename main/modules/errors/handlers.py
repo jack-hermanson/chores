@@ -1,6 +1,15 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 errors = Blueprint('errors', __name__)
+
+
+@errors.app_errorhandler(405)
+def error_405(error):
+    help_text = f"You sent a {request.method} request, but apparently that's not allowed."
+    return render_template("errors/generic-error.html",
+                           help_text=help_text,
+                           status=405,
+                           error=error), 405
 
 
 @errors.app_errorhandler(404)
@@ -32,7 +41,7 @@ def error_401(error):
 
 
 @errors.app_errorhandler(500)
-def error_401(error):
+def error_500(error):
     help_text = "Wow something really fucked up. You'll have to check the server logs."
     return render_template('errors/generic-error.html',
                            help_text=help_text,

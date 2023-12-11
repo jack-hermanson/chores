@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort, Response, url_for, flash
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.min_clearance import min_clearance
 from . import services
@@ -7,6 +7,7 @@ from .forms import ChoreLogDueDate
 from .models import ChoreLog
 from main import db, logger
 from datetime import datetime
+from flask_login import current_user
 
 chore_logs = Blueprint("chore_logs", __name__, url_prefix="/chore-logs")
 
@@ -28,11 +29,19 @@ def index():
 
 
 @chore_logs.route("/complete", methods=["POST"])
-@min_clearance(ClearanceEnum.NORMAL)
+# @min_clearance(ClearanceEnum.NORMAL)
 def complete():
+    if not current_user.is_authenticated:
+        flash("Sorry, your login must've expired. Please log in and try again.", "danger")
+        resp = Response("OH WOW that's kinda weird you aren't logged in")
+        resp.headers['hx-redirect'] = url_for("accounts.login")
+        return resp, 401
+    if not current_user.clearance >= ClearanceEnum.NORMAL:
+        return abort(403)
     chore_log_id = int(request.args.get("chore_log_id"))
     stay_on_schedule = bool(request.args.get("stay_on_schedule"))
     updated_chore_log = services.complete(chore_log_id, stay_on_schedule)
+
     return render_template("chore_logs/chore-log-partial.html",
                            chore_log=updated_chore_log)
 

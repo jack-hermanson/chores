@@ -3,11 +3,11 @@ from __future__ import annotations
 import sys
 
 from flask_bcrypt import Bcrypt
-from flask import Flask
+from flask import Flask, abort
 from main.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 import logging
 import os
 
@@ -16,11 +16,12 @@ from logger import StreamLogFormatter, FileLogFormatter
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+migrate = Migrate(compare_type=True)
+logging.basicConfig(level=logging.DEBUG)
+
 login_manager = LoginManager()
 login_manager.login_view = "accounts.login"
 login_manager.login_message_category = "warning"
-migrate = Migrate(compare_type=True)
-logging.basicConfig(level=logging.DEBUG)
 
 
 def create_app(config_class=Config):
@@ -113,4 +114,4 @@ fh.setFormatter(FileLogFormatter())
 logger.addHandler(sh)
 logger.addHandler(fh)
 logger.setLevel(logging.DEBUG if (
-            os.environ.get('FLASK_ENV') == "dev" or os.environ.get("FLASK_ENV") == "development") else logging.INFO)
+        os.environ.get('FLASK_ENV') == "dev" or os.environ.get("FLASK_ENV") == "development") else logging.INFO)
