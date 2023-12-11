@@ -1,15 +1,12 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
-import logging
 
-from sqlalchemy import not_
-from wtforms.validators import DataRequired
 
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
 from utils.min_clearance import min_clearance
 from flask_login import current_user
 from .models import Chore
-from main import db
+from main import db, logger
 from .RepeatTypeEnum import RepeatTypeEnum
 from ..accounts.models import Account
 from ..chore_logs.models import ChoreLog
@@ -105,7 +102,7 @@ def edit(chore_id: int):
             chore.repeat_day_of_month = int(form.repeat_day_of_month.data)
             chore.one_time_due_date = None
         else:
-            logging.error(f"Invalid repeat_type {chore.repeat_type}")
+            logger.error(f"Invalid repeat_type {chore.repeat_type}")
             return abort(400)
 
         associated_list = List.query.get_or_404(form.list.data)
@@ -126,7 +123,7 @@ def edit(chore_id: int):
             form.repeat_day_of_month.data = str(int(chore.repeat_day_of_month))
         form.list.data = str(chore.list.list_id)
         form.owner.data = str(chore.owner.account_id)
-        logging.info(f"form.list.data {form.list.data}")
+        logger.info(f"form.list.data {form.list.data}")
 
     return render_template("chores/create-edit.html",
                            mode="Edit",

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from flask_bcrypt import Bcrypt
 from flask import Flask
 from main.config import Config
@@ -10,7 +12,7 @@ import logging
 import os
 
 from datetime import date, datetime
-
+from logger import StreamLogFormatter, FileLogFormatter
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -92,8 +94,23 @@ def create_app(config_class=Config):
         return f"{value}{suffix}"
 
         # return the app
+
     print("RUNNING APPLICATION")
-    logging.debug("LOGGING IS RUNNING")
-    logging.info(f"Running app in environment '{os.environ.get('ENVIRONMENT')}'")
-    logging.info(f"FLASK_ENV: '{os.environ.get('FLASK_ENV')}'")
+    logger.debug("LOGGING IS RUNNING")
+    logger.info(f"Running app in environment '{os.environ.get('ENVIRONMENT')}'")
+    logger.info(f"FLASK_ENV: '{os.environ.get('FLASK_ENV')}'")
     return app
+
+
+# Set up logging
+logging.basicConfig()
+logger = logging.getLogger("Chores")
+logger.propagate = False
+sh = logging.StreamHandler(sys.stdout)
+sh.setFormatter(StreamLogFormatter())
+fh = logging.FileHandler("application.log")
+fh.setFormatter(FileLogFormatter())
+logger.addHandler(sh)
+logger.addHandler(fh)
+logger.setLevel(logging.DEBUG if (
+            os.environ.get('FLASK_ENV') == "dev" or os.environ.get("FLASK_ENV") == "development") else logging.INFO)

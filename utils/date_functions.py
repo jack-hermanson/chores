@@ -1,8 +1,9 @@
 from __future__ import annotations
 from dateutil.relativedelta import relativedelta
 
-import logging
 from datetime import datetime, timedelta, date
+
+from main import logger
 from .date_time_enums import DayOfWeekEnum
 
 
@@ -20,7 +21,7 @@ def get_next_date_with_same_day_of_week(day_of_week: DayOfWeekEnum, exclude_toda
 
     # if we cannot use today, or today is not the day of the week we want,
     # try adding a certain number of days (1-7) until we get to the desired day
-    logging.debug(f"{int(day_of_week)} - {start.weekday()}")
+    logger.debug(f"{int(day_of_week)} - {start.weekday()}")
     days_ahead = day_of_week - start.weekday()
     if days_ahead <= 0:
         # already happened
@@ -58,7 +59,7 @@ def get_next_date_with_same_number(number: int, exclude_relative_to_date=True,
 
     # past
     if next_occurrence < relative_to_date or (next_occurrence == relative_to_date and exclude_relative_to_date):
-        print("past")
+        logger.debug("past")
         # okay that day already occurred, so let's go to next month
         return next_occurrence + relativedelta(months=1)
 

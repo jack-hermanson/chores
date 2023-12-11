@@ -1,4 +1,3 @@
-import logging
 from operator import and_
 
 from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
@@ -8,7 +7,7 @@ from ..chores.models import Chore
 from .models import ChoreLog
 from flask_login import current_user
 from datetime import datetime, timedelta
-from main import db
+from main import db, logger
 from sqlalchemy import desc, not_
 from . import helpers
 from ..lists.models import List
@@ -19,13 +18,15 @@ def generate_next_chore_logs():
     Generate next chore logs for the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
     """
+    logger.debug("Generating next chore logs")
+
     chores = db.session.query(Chore) \
         .join(Chore.list) \
         .join(List.accounts) \
         .filter(Account.account_id == current_user.account_id)
 
     for chore in chores:
-        print(f"Checking chore {chore}")
+        logger.debug(f"Checking chore {chore}")
         # for each chore get the open logs
         open_chore_logs = helpers.get_open_chore_logs(chore)
 
@@ -38,7 +39,7 @@ def generate_next_chore_logs():
 
         if len(open_chore_logs) == 1:
             # This one already has an open one
-            logging.debug(f"Chore {chore} already has an open log. Skipping.")
+            logger.debug(f"Chore {chore} already has an open log. Skipping.")
             continue
         # endregion
 
@@ -54,15 +55,15 @@ def generate_next_chore_logs():
                 exclude_today=False
             )
         elif chore.repeat_type == RepeatTypeEnum.NONE:
-            logging.info(f"Chore with ID {chore.chore_id} does not repeat")
+            logger.info(f"Chore with ID {chore.chore_id} does not repeat")
             new_log_for_this_chore.due_date = chore.one_time_due_date
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
             new_log_for_this_chore.due_date = get_next_date_with_same_number(chore.repeat_day_of_month)
         else:
-            logging.error(f"Not a valid repeat type {chore.repeat_type}")
+            logger.error(f"Not a valid repeat type {chore.repeat_type}")
             new_log_for_this_chore.due_date = datetime.now().date()
 
-        print(f"Created new log due {new_log_for_this_chore.due_date}")
+        logger.info(f"Created new log for {new_log_for_this_chore.chore} due {new_log_for_this_chore.due_date}")
         db.session.add(new_log_for_this_chore)
         db.session.commit()
 
@@ -78,7 +79,7 @@ def generate_next_chore_logs():
 
 
 def complete(chore_log_id: int, stay_on_schedule: bool = False):
-    print(f"complete chore log with id {chore_log_id}")
+    logger.info(f"complete chore log with id {chore_log_id}")
 
     # complete existing
     chore_log = ChoreLog.query.get_or_404(chore_log_id)
@@ -127,11 +128,11 @@ def undo_completion(chore_log_id):
         .first()
 
     if not previous:
-        logging.info("Did not find a previous")
+        logger.info("Did not find a previous")
         db.session.commit()
         return None
 
-    logging.info(f"Found previous {previous}; un-completing")
+    logger.info(f"Found previous {previous}; un-completing")
     previous.completed_date = None
     previous.completed_by_account = None
     db.session.commit()

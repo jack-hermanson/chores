@@ -1,10 +1,11 @@
+
 from flask import Blueprint, render_template, request
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.min_clearance import min_clearance
 from . import services
 from .forms import ChoreLogDueDate
 from .models import ChoreLog
-from main import db
+from main import db, logger
 from datetime import datetime
 
 chore_logs = Blueprint("chore_logs", __name__, url_prefix="/chore-logs")
@@ -20,6 +21,7 @@ def generate_all():
 @chore_logs.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
+    logger.debug("Chore logs index")
     chore_logs_list = services.generate_next_chore_logs()
     return render_template("chore_logs/index.html",
                            chore_logs_list=chore_logs_list)

@@ -90,11 +90,11 @@ def register():
 
 @accounts.route("/logout")
 def logout():
-    name = current_user.name
     if not current_user.is_authenticated:
         flash("You are not logged in, so you cannot log out!", "danger")
         return redirect(url_for("accounts.login"))
 
+    name = current_user.name
     logout_user()
     flash(f"Okay, bye {name}.", "info")
     return redirect(url_for("main.index"))
