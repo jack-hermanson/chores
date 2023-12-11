@@ -56,7 +56,13 @@ def generate_next_chore_logs():
             )
         elif chore.repeat_type == RepeatTypeEnum.NONE:
             logger.info(f"Chore with ID {chore.chore_id} does not repeat")
-            new_log_for_this_chore.due_date = chore.one_time_due_date
+            # since the chore doesn't repeat, we really only need to generate a log once
+            if len(chore.chore_logs):
+                # there already is a chore log
+                continue
+            else:
+                # create a new one
+                new_log_for_this_chore.due_date = chore.one_time_due_date
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
             new_log_for_this_chore.due_date = get_next_date_with_same_number(chore.repeat_day_of_month)
         else:
@@ -71,7 +77,10 @@ def generate_next_chore_logs():
         .join(ChoreLog.chore) \
         .join(Chore.list) \
         .join(List.accounts) \
-        .filter(and_(Account.account_id == current_user.account_id, ChoreLog.completed_date.is_(None))) \
+        .filter(
+            and_(Account.account_id == current_user.account_id,
+                 ChoreLog.completed_date.is_(None))
+        ) \
         .order_by(ChoreLog.due_date) \
         .all()
 
