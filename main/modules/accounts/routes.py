@@ -1,5 +1,7 @@
 from flask import Blueprint, redirect, url_for, flash, request, render_template
 from flask_login import login_user, logout_user, current_user, login_required
+from sqlalchemy import func
+
 from main import db, bcrypt
 from .forms import Login, Create
 from .models import Account
@@ -40,7 +42,7 @@ def login(prefilled_form: Login or None = None):
     form.name.render_kw["autofocus"] = "true"
 
     if form.validate_on_submit():
-        user = Account.query.filter(Account.name == form.name.data).first_or_404()
+        user = Account.query.filter(func.lower(Account.name) == func.lower(form.name.data)).first_or_404()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next")
