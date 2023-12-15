@@ -8,12 +8,12 @@ from .models import ChoreLog
 from flask_login import current_user
 from datetime import datetime, timedelta
 from main import db, logger
-from sqlalchemy import desc, not_
+from sqlalchemy import desc, not_, or_
 from . import helpers
 from ..lists.models import List
 
 
-def generate_next_chore_logs():
+def generate_next_chore_logs(search_text="", show_archived=False):
     """
     Generate next chore logs for the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
@@ -78,8 +78,32 @@ def generate_next_chore_logs():
         .join(Chore.list) \
         .join(List.accounts) \
         .filter(
-            and_(Account.account_id == current_user.account_id,
-                 ChoreLog.completed_date.is_(None))
+            and_(
+                # search term matches
+                Chore.title.ilike(f"%{search_text}%"),
+                # current user is a member of the list
+                # Account.account_id == current_user.account_id,
+                # and
+                or_(
+                    # this is a repeating chore and chore_log is incomplete
+                    and_(
+                        Chore.repeat_type != RepeatTypeEnum.NONE,
+                        ChoreLog.completed_date.is_(None)
+                    ),
+                    # or
+                    and_(
+                        # this is a non-repeating chore
+                        Chore.repeat_type == RepeatTypeEnum.NONE,
+                        # and
+                        or_(
+                            # it's unarchived
+                            not_(Chore.archived),
+                            # or we want to show archived
+                            show_archived
+                        )
+                    )
+                )
+            )
         ) \
         .order_by(ChoreLog.due_date) \
         .all()

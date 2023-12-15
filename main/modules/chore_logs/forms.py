@@ -11,4 +11,3 @@ class ChoreLogDueDate(FlaskForm):
 class SearchAndFilterForm(FlaskForm):
     search_text = StringField(label="Search")
     show_archived = BooleanField(label="Show Archived")
-    submit = SubmitField("Submit")

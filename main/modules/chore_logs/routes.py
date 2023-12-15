@@ -26,7 +26,8 @@ def index():
 
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
 
-    chore_logs_list = services.generate_next_chore_logs()
+    chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
+                                                        show_archived=form.show_archived.data or False)
     return render_template("chore_logs/index.html",
                            chore_logs_list=chore_logs_list,
                            form=form)
