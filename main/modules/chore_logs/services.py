@@ -6,6 +6,7 @@ from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
 from .models import ChoreLog
 from flask_login import current_user
+from flask import flash
 from datetime import datetime, timedelta
 from main import db, logger
 from sqlalchemy import desc, not_, or_
@@ -116,8 +117,15 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
 
     # complete existing
     chore_log = ChoreLog.query.get_or_404(chore_log_id)
-    if chore_log.completed_date is not None:
-        raise ValueError(f"Chore Log was already completed {chore_log.completed_date}")
+    if chore_log.completed_date is not None and chore_log.chore.archived:
+        raise ValueError(f"Chore Log was already completed on {chore_log.completed_date} and archived (chore log ID {chore_log_id}")
+
+    # archive completed
+    if chore_log.completed_date and not chore_log.chore.archived:
+        logger.info(f"Archiving {chore_log.chore.title}")
+        chore_log.chore.archived = True
+        db.session.commit()
+        return chore_log
 
     chore_log.completed_date = datetime.now()
     chore_log.completed_by_account = current_user

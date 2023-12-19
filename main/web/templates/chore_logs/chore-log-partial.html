@@ -99,7 +99,7 @@
                     {% endif %}
                 {% elif chore_log.chore.repeat_type == 0 %}
                     <button
-                            {% if chore_log.is_complete %}disabled{% endif %}
+                            {% if chore_log.chore.archived %}disabled{% endif %}
                             hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
                             hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
                             hx-swap="outerHTML"
@@ -109,13 +109,11 @@
                             <span class="icon-check"></span>
                             <br>
                             <span class="next-due-date">
-                                {{ chore_log.is_complete }}
+{#                                {{ chore_log.is_complete }}#}
                                 {% if chore_log.is_complete and chore_log.chore.archived %}
                                     Archived
                                 {% elif chore_log.is_complete and not chore_log.chore.archived %}
-                                    Completed
-                                {% elif chore_log.is_complete and chore_log.archived %}
-                                    Archived
+                                    Archive
                                 {% else %}
                                     Complete
                                 {% endif %}
