@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% from "macros/action-link.html" import action_link %}
+{% from "macros/form.html" import form_group %}
 
 {% set title = "Chores" %}
 {% set active_route = "chore_logs" %}
@@ -18,18 +19,31 @@
         <div class="col-12 col-lg-4">
             <div class="card sticky-lg-top">
                 <div class="card-body pb-2">
-                    <label for="search-chores" class="h6">Search</label>
-                    <input id="search-chores" class="form-control form-control-lg" placeholder="Search..." />
-                    <h6 class="mt-3">Filter by List</h6>
-                    <p>To do: check to show chores from list</p>
-                    <h6 class="mt-3">Jump to</h6>
-                    <ul class="jump-to-list">
-                        {% for chore_log in chore_logs_list %}
-                            <li>
-                                <a href="#chore-log-card-{{ chore_log.chore_log_id }}">{{ chore_log.chore.title }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    <form action="{{ url_for("chore_logs.index") }}">
+                        {{ form_group(form, "search_text") }}
+                        <div class="form-group">
+                            <div class="form-check">
+                                {{ form.show_archived(class="form-check-input") }}
+{#                                <input class="form-check-input" type="checkbox" {% if form.show_archived.data %}checked{% endif %} id="show_archived">#}
+                                <label class="form-check-label" for="show_archived">
+                                    Show Archived
+                                </label>
+                            </div>
+                        </div>
+                        <div class="bottom-buttons mb-3">
+                            <button type="submit" class="btn btn-outline-info">Submit</button>
+                        </div>
+                    </form>
+{#                    <h6 class="mt-3">Filter by List</h6>#}
+{#                    <p>To do: check to show chores from list</p>#}
+{#                    <h6 class="mt-3">Jump to</h6>#}
+{#                    <ul class="jump-to-list">#}
+{#                        {% for chore_log in chore_logs_list %}#}
+{#                            <li>#}
+{#                                <a href="#chore-log-card-{{ chore_log.chore_log_id }}">{{ chore_log.chore.title }}</a>#}
+{#                            </li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
                 </div>
             </div>
         </div>

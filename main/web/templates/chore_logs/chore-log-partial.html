@@ -7,7 +7,13 @@
                 {{ chore_log.chore.title }}
             </a>
         </h5>
-        {% include "chore_logs/chore-log-due-date-badge-partial.html" %}
+        {% if chore_log.chore.repeat_type == 0 and not chore_log.due_date %}
+            <div class="ms-auto my-auto">
+                <span class="badge due-date-badge d-flex">Complete</span>
+            </div>
+        {% else %}
+            {% include "chore_logs/chore-log-due-date-badge-partial.html" %}
+        {% endif %}
     </div>
 
     <div class="card-body p-0">
@@ -68,8 +74,6 @@
                             <br>
                             <span class="next-due-date">
                                 {{ chore_log.normal_next_due_date.strftime("%a, %-m/%-e") }}
-{#                                Next: {{ chore_log.normal_next_due_date.strftime("%a, %-m/%-e") }}#}
-    {#                            Next: {{ chore_log.normal_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
                             </span>
                         </span>
                         </button>
@@ -89,8 +93,6 @@
                                 <br>
                                 <span class="next-due-date">
                                     {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %-m/%-e") }}
-{#                                    Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %-m/%-e") }}#}
-        {#                            Next: {{ chore_log.stay_on_schedule_next_due_date.strftime("%a, %b %e %l:%M%p") }}#}
                                 </span>
                             </span>
                         </button>
@@ -107,10 +109,13 @@
                             <span class="icon-check"></span>
                             <br>
                             <span class="next-due-date">
+                                {{ chore_log.is_complete }}
                                 {% if chore_log.is_complete and chore_log.chore.archived %}
                                     Archived
                                 {% elif chore_log.is_complete and not chore_log.chore.archived %}
                                     Completed
+                                {% elif chore_log.is_complete and chore_log.archived %}
+                                    Archived
                                 {% else %}
                                     Complete
                                 {% endif %}

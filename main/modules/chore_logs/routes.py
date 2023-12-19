@@ -3,11 +3,12 @@ from flask import Blueprint, render_template, request, abort, Response, url_for,
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.min_clearance import min_clearance
 from . import services
-from .forms import ChoreLogDueDate
+from .forms import ChoreLogDueDate, SearchAndFilterForm
 from .models import ChoreLog
 from main import db, logger
 from datetime import datetime
 from flask_login import current_user
+import json
 
 chore_logs = Blueprint("chore_logs", __name__, url_prefix="/chore-logs")
 
@@ -22,10 +23,14 @@ def generate_all():
 @chore_logs.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
-    logger.debug("Chore logs index")
-    chore_logs_list = services.generate_next_chore_logs()
+
+    form = SearchAndFilterForm(request.args, meta={'csrf': False})
+
+    chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
+                                                        show_archived=form.show_archived.data or False)
     return render_template("chore_logs/index.html",
-                           chore_logs_list=chore_logs_list)
+                           chore_logs_list=chore_logs_list,
+                           form=form)
 
 
 @chore_logs.route("/complete", methods=["POST"])
