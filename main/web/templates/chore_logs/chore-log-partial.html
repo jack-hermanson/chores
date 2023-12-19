@@ -31,6 +31,8 @@
                 <p class="mb-1">
                     {% if chore_log.previous %}
                         {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+                        by
+                        {{ chore_log.previous.completed_by_account.name }}
                     {% else %}
                         <i>Never</i>
                     {% endif %}
