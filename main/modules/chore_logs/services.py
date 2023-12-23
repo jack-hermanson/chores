@@ -156,6 +156,7 @@ def undo_completion(chore_log_id):
     # Little bit different if it doesn't repeat
     if chore.repeat_type == RepeatTypeEnum.NONE:
         chore_log.completed_date = None
+        chore_log.chore.archived = False
         db.session.commit()
         return chore_log
 

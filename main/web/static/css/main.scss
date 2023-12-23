@@ -9,7 +9,8 @@ $success: rgb(50, 251, 226);
 $subtle_gray: rgba(255, 255, 255, 0.5);
 
 body {
-  font-family:  /*"SF Pro Rounded", */"Rubik", $font-family-sans-serif;
+  font-family: /*"SF Pro Rounded", */
+          "Rubik", $font-family-sans-serif;
   min-height: 100vh;
 }
 
@@ -20,6 +21,7 @@ a {
 a.chore-card-title-link {
   color: white;
   text-decoration: none;
+
   &:hover {
     text-decoration: underline;
   }
@@ -47,6 +49,7 @@ h2, h3, h4 {
 
 .bottom-buttons {
   @extend .mt-4;
+
   .btn:not(:last-child) {
     @extend .me-2;
   }
@@ -126,20 +129,27 @@ p.left-line-next-to-text {
 .due-date-badge {
   &:not(.overdue) {
     background-color: $green-700;
-      &:active, &:hover {
+
+    &:active &:not(.complete), &:hover &:not(.complete) {
       background-color: tint-color($green-700, $btn-active-bg-tint-amount);
     }
   }
+
   &.overdue {
     background-color: $danger;
+
     &:active, &:hover {
       background-color: tint-color($danger, $btn-active-bg-tint-amount);
     }
   }
+
   text-transform: uppercase;
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
+
+  &:not(.complete) {
+    cursor: pointer;
+  }
 
 }
 
@@ -148,6 +158,7 @@ p.left-line-next-to-text {
 // is broken as fuck, idk how I ever used it.
 .card-data-table {
   width: 100%;
+
   tr {
     th:first-child, td:first-child {
       width: 40%;
@@ -156,10 +167,12 @@ p.left-line-next-to-text {
       }
       padding-left: 1em;
     }
+
     th:last-child, td:last-child {
       padding-right: 1em;
     }
   }
+
   tr {
     td, th {
       padding-top: 0.7em;
@@ -174,6 +187,7 @@ p.left-line-next-to-text {
       border-bottom: 1px solid $subtle_gray;
     }
   }
+
   // if things come after, do put border bottom on last row
   &:last-child {
     tr:not(:last-child) {
@@ -186,6 +200,7 @@ p.left-line-next-to-text {
   .list-group-item:not(:last-child) {
     border-bottom: 1px solid $subtle_gray;
   }
+
   &.border {
     border: 1px solid $subtle_gray !important;
   }
@@ -206,13 +221,16 @@ p.left-line-next-to-text {
     color: white;
     border: none;
     background: darken($dark, 5%);
+
     &:hover:not(:disabled) {
       background: $list-group-bg;
     }
+
     &:disabled {
       background: #222;
       cursor: not-allowed;
     }
+
     &:not(:last-child) {
       border-right: 1px solid $subtle_gray;
     }

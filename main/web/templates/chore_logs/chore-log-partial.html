@@ -7,9 +7,9 @@
                 {{ chore_log.chore.title }}
             </a>
         </h5>
-        {% if chore_log.chore.repeat_type == 0 and not chore_log.due_date %}
+        {% if chore_log.chore.repeat_type == 0 and chore_log.completed_date %}
             <div class="ms-auto my-auto">
-                <span class="badge due-date-badge d-flex">Complete</span>
+                <span class="badge due-date-badge d-flex complete">Complete</span>
             </div>
         {% else %}
             {% include "chore_logs/chore-log-due-date-badge-partial.html" %}
