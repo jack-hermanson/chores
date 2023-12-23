@@ -15,35 +15,47 @@
             {% for chore_log in chore_logs_list %}
                 {% include "chore_logs/chore-log-partial.html" %}
             {% endfor %}
+            {% if not chore_logs_list|length %}
+                <p>No results matched your search.</p>
+            {% endif %}
         </div>
         <div class="col-12 col-lg-4">
             <div class="card sticky-lg-top">
                 <div class="card-body pb-2">
-                    <form action="{{ url_for("chore_logs.index") }}">
-                        {{ form_group(form, "search_text") }}
+                    <form action="{{ url_for("chore_logs.index") }}"
+                            {# todo clean up #}
+                          hx-trigger="change"
+                          hx-get="{{ url_for("chore_logs.index") }}"
+                          hx-replace-url="true"
+                          hx-target="body"
+                    >
+
+                        {# todo - have it automatically send requests on keyup #}
+                        {{ form_group(form, "search_text", render_kw={"hx-on": "keyup: console.log('keyup')"}) }}
                         <div class="form-group">
                             <div class="form-check">
                                 {{ form.show_archived(class="form-check-input") }}
-{#                                <input class="form-check-input" type="checkbox" {% if form.show_archived.data %}checked{% endif %} id="show_archived">#}
                                 <label class="form-check-label" for="show_archived">
                                     Show Archived
                                 </label>
                             </div>
                         </div>
+
                         <div class="bottom-buttons mb-3">
-                            <button type="submit" class="btn btn-outline-info">Submit</button>
+                            {#                            <button type="submit" class="btn btn-outline-info w-100 mb-3">Submit</button>#}
+                            <a href="{{ url_for("chore_logs.index") }}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
                         </div>
                     </form>
-{#                    <h6 class="mt-3">Filter by List</h6>#}
-{#                    <p>To do: check to show chores from list</p>#}
-{#                    <h6 class="mt-3">Jump to</h6>#}
-{#                    <ul class="jump-to-list">#}
-{#                        {% for chore_log in chore_logs_list %}#}
-{#                            <li>#}
-{#                                <a href="#chore-log-card-{{ chore_log.chore_log_id }}">{{ chore_log.chore.title }}</a>#}
-{#                            </li>#}
-{#                        {% endfor %}#}
-{#                    </ul>#}
+                    {#                    <h6 class="mt-3">Filter by List</h6>#}
+                    {#                    <p>To do: check to show chores from list</p>#}
+                    {#                    <h6 class="mt-3">Jump to</h6>#}
+                    {#                    <ul class="jump-to-list">#}
+                    {#                        {% for chore_log in chore_logs_list %}#}
+                    {#                            <li>#}
+                    {#                                <a href="#chore-log-card-{{ chore_log.chore_log_id }}">{{ chore_log.chore.title }}</a>#}
+                    {#                            </li>#}
+                    {#                        {% endfor %}#}
+                    {#                    </ul>#}
                 </div>
             </div>
         </div>
