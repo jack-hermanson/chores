@@ -1,5 +1,3 @@
-from operator import and_
-
 from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
@@ -9,7 +7,7 @@ from flask_login import current_user
 from flask import flash
 from datetime import datetime, timedelta
 from main import db, logger
-from sqlalchemy import desc, not_, or_
+from sqlalchemy import desc, not_, or_, and_
 from . import helpers
 from ..lists.models import List
 
@@ -82,8 +80,9 @@ def generate_next_chore_logs(search_text="", show_archived=False):
             and_(
                 # search term matches
                 Chore.title.ilike(f"%{search_text}%"),
-                # current user is a member of the list
-                # Account.account_id == current_user.account_id,
+                # and
+                # chore in list that this user belongs to
+                List.accounts.contains(current_user),
                 # and
                 or_(
                     # this is a repeating chore and chore_log is incomplete

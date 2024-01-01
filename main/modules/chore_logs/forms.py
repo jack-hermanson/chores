@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import SubmitField, DateField, StringField, BooleanField
+from wtforms.fields import SubmitField, DateField, StringField, BooleanField, FieldList, SearchField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 
@@ -9,5 +9,6 @@ class ChoreLogDueDate(FlaskForm):
 
 
 class SearchAndFilterForm(FlaskForm):
-    search_text = StringField(label="Search")
+    search_text = SearchField(label="Search")
     show_archived = BooleanField(label="Show Archived")
+    lists = SelectMultipleField(label="Filter Lists")  # set choices in controller

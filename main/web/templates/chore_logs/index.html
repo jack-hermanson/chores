@@ -11,7 +11,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-12 col-lg-8 mb-3 mb-lg-0">
+        <div class="col-12 col-lg-8 order-2 order-lg-1">
             {% for chore_log in chore_logs_list %}
                 {% include "chore_logs/chore-log-partial.html" %}
             {% endfor %}
@@ -19,26 +19,41 @@
                 <p>No results matched your search.</p>
             {% endif %}
         </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-4 order-1 order-lg-2 mb-3">
             <div class="card sticky-lg-top">
                 <div class="card-body pb-2">
                     <form action="{{ url_for("chore_logs.index") }}"
-                            {# todo clean up #}
                           hx-trigger="change"
                           hx-get="{{ url_for("chore_logs.index") }}"
                           hx-replace-url="true"
                           hx-target="body"
                     >
+                        {{ form_group(form, "search_text", render_kw={"hx-get": url_for("chore_logs.index"), "hx-trigger": "keyup delay:500ms", "hx-include": "closest form"}) }}
 
-                        {# todo - have it automatically send requests on keyup #}
-                        {{ form_group(form, "search_text", render_kw={"hx-on": "keyup: console.log('keyup')"}) }}
                         <div class="form-group">
+                            <label class="form-label">Options</label>
                             <div class="form-check">
                                 {{ form.show_archived(class="form-check-input") }}
                                 <label class="form-check-label" for="show_archived">
                                     Show Archived
                                 </label>
                             </div>
+                        </div>
+
+                        {# check off lists you want to filter #}
+                        <div class="form-group">
+                            <label class="form-label">{{ form.lists.label }}</label>
+                            {% for list_id, list_title in form.lists.choices %}
+                                <div class="form-check">
+                                    {# this is for debugging #}
+{#                                  {{ request.args.getlist(form.lists.name) }}#}
+{#                                  {{ form.lists.data }}#}
+                                    {# Commented out to use view model data rather than URL #}
+                                    {# <input type="checkbox" name="{{ form.lists.name }}" id="{{ form.lists.id }}_{{ loop.index }}" value="{{ list_id }}" class="form-check-input" {% if list_id|string in request.args.getlist(form.lists.name) %}checked{% endif %}>#}
+                                    <input type="checkbox" name="{{ form.lists.name }}" id="{{ form.lists.id }}_{{ loop.index }}" value="{{ list_id }}" class="form-check-input" {% if list_id|string in form.lists.data %}checked{% endif %}>
+                                    <label for="{{ form.lists.id }}_{{ loop.index }}">{{ list_title }}</label>
+                                </div>
+                            {% endfor %}
                         </div>
 
                         <div class="bottom-buttons mb-3">

@@ -27,6 +27,11 @@
                     {% endif %}
                 </p>
             {% endcall %}
+            {% call key_val_list_item("List") %}
+                <p class="mb-1">
+                    {{ chore_log.chore.list.title }}
+                </p>
+            {% endcall %}
             {% call key_val_list_item("Last Completed") %}
                 <p class="mb-1">
                     {% if chore_log.previous %}
