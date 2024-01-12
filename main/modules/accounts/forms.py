@@ -16,7 +16,7 @@ class Login(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired(), password_length], render_kw={
         "placeholder": "passw0rd!"
     })
-    remember = BooleanField("Remember Me", default=False)
+    remember = BooleanField("Remember Me", default=True)
     submit = SubmitField("Log In")
 
     @staticmethod
