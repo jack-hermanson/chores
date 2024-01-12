@@ -1,4 +1,3 @@
-
 from flask import Blueprint, render_template, request, abort, Response, url_for, flash
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.min_clearance import min_clearance
@@ -25,7 +24,6 @@ def generate_all():
 @chore_logs.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
-
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
     lists = List.query.filter(List.accounts.contains(current_user)).all()
     form.lists.choices = [(li.list_id, li.title) for li in lists]
@@ -34,7 +32,8 @@ def index():
         form.lists.data = [str(li.list_id) for li in lists]
 
     chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
-                                                        show_archived=form.show_archived.data or False)
+                                                        show_archived=form.show_archived.data or False,
+                                                        list_ids=[int(li) for li in form.lists.data])
     return render_template("chore_logs/index.html",
                            chore_logs_list=chore_logs_list,
                            form=form)

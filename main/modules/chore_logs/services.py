@@ -12,7 +12,7 @@ from . import helpers
 from ..lists.models import List
 
 
-def generate_next_chore_logs(search_text="", show_archived=False):
+def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list[int] or None = None):
     """
     Generate next chore logs for the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
@@ -79,10 +79,29 @@ def generate_next_chore_logs(search_text="", show_archived=False):
         .filter(
             and_(
                 # search term matches
-                Chore.title.ilike(f"%{search_text}%"),
+                or_(
+                    Chore.title.ilike(f"%{search_text}%"),
+                    Chore.description.ilike(f"%{search_text}%")
+                ),
                 # and
                 # chore in list that this user belongs to
-                List.accounts.contains(current_user),
+                or_(
+                    # either the caller did not specify list ids
+                    # and this list is connected to user
+                    and_(
+                        list_ids is None,
+                        List.accounts.contains(current_user)
+                    ),
+                    # or the caller did specify list ids
+                    # and this list is one that the user asked for
+                    # and this list is connected to user
+                    and_(
+                        list_ids is not None,
+                        List.accounts.contains(current_user),
+                        List.list_id.in_(list_ids)
+                    )
+                ),
+                # List.accounts.contains(current_user),
                 # and
                 or_(
                     # this is a repeating chore and chore_log is incomplete
