@@ -73,7 +73,7 @@ def create_app(config_class=Config):
 
     # login manager
     login_manager.init_app(app)
-    login_manager.session_protection = "strong"
+    # login_manager.session_protection = "strong"
 
     # filter
     @app.template_filter()

@@ -1,5 +1,3 @@
-from operator import and_
-
 from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
@@ -9,12 +7,12 @@ from flask_login import current_user
 from flask import flash
 from datetime import datetime, timedelta
 from main import db, logger
-from sqlalchemy import desc, not_, or_
+from sqlalchemy import desc, not_, or_, and_
 from . import helpers
 from ..lists.models import List
 
 
-def generate_next_chore_logs(search_text="", show_archived=False):
+def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list[int] or None = None):
     """
     Generate next chore logs for the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
@@ -81,9 +79,29 @@ def generate_next_chore_logs(search_text="", show_archived=False):
         .filter(
             and_(
                 # search term matches
-                Chore.title.ilike(f"%{search_text}%"),
-                # current user is a member of the list
-                # Account.account_id == current_user.account_id,
+                or_(
+                    Chore.title.ilike(f"%{search_text}%"),
+                    Chore.description.ilike(f"%{search_text}%")
+                ),
+                # and
+                # chore in list that this user belongs to
+                or_(
+                    # either the caller did not specify list ids
+                    # and this list is connected to user
+                    and_(
+                        list_ids is None,
+                        List.accounts.contains(current_user)
+                    ),
+                    # or the caller did specify list ids
+                    # and this list is one that the user asked for
+                    # and this list is connected to user
+                    and_(
+                        list_ids is not None,
+                        List.accounts.contains(current_user),
+                        List.list_id.in_(list_ids)
+                    )
+                ),
+                # List.accounts.contains(current_user),
                 # and
                 or_(
                     # this is a repeating chore and chore_log is incomplete
@@ -156,6 +174,7 @@ def undo_completion(chore_log_id):
     # Little bit different if it doesn't repeat
     if chore.repeat_type == RepeatTypeEnum.NONE:
         chore_log.completed_date = None
+        chore_log.chore.archived = False
         db.session.commit()
         return chore_log
 

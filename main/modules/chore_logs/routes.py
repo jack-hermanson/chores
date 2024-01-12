@@ -1,4 +1,3 @@
-
 from flask import Blueprint, render_template, request, abort, Response, url_for, flash
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.min_clearance import min_clearance
@@ -9,6 +8,8 @@ from main import db, logger
 from datetime import datetime
 from flask_login import current_user
 import json
+
+from ..lists.models import List
 
 chore_logs = Blueprint("chore_logs", __name__, url_prefix="/chore-logs")
 
@@ -23,19 +24,25 @@ def generate_all():
 @chore_logs.route("/")
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
-
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
+    lists = List.query.filter(List.accounts.contains(current_user)).all()
+    form.lists.choices = [(li.list_id, li.title) for li in lists]
+
+    if len(form.lists.data) == 0:
+        form.lists.data = [str(li.list_id) for li in lists]
 
     chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
-                                                        show_archived=form.show_archived.data or False)
+                                                        show_archived=form.show_archived.data or False,
+                                                        list_ids=[int(li) for li in form.lists.data])
     return render_template("chore_logs/index.html",
                            chore_logs_list=chore_logs_list,
                            form=form)
 
 
 @chore_logs.route("/complete", methods=["POST"])
-# @min_clearance(ClearanceEnum.NORMAL)
 def complete():
+    # auth stuff is taken care of here rather than decorator
+    # so htmx doesn't replace partial with login page
     if not current_user.is_authenticated:
         flash("Sorry, your login must've expired. Please log in and try again.", "danger")
         resp = Response("OH WOW that's kinda weird you aren't logged in")
