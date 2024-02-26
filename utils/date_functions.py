@@ -50,7 +50,10 @@ def extract_datetime(date_or_datetime: date | datetime) -> datetime:
 
 
 def day_of_week_str(raw):
-    return str(DayOfWeekEnum(int(raw))).split(".")[1].capitalize()
+    try:
+        return DayOfWeekEnum(int(raw)).name.capitalize()
+    except Exception as e:
+        return e.__str__()
 
 
 def get_next_date_with_same_number(number: int, exclude_relative_to_date=True,
