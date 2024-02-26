@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, abort, Response, url_for, flash
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
+from utils.date_functions import extract_date, extract_datetime
 from utils.min_clearance import min_clearance
 from . import services
-from .forms import ChoreLogDueDate, SearchAndFilterForm
+from .forms import ChoreLogDueDate, SearchAndFilterForm, ChoreLogCompletedDate
 from .models import ChoreLog
 from main import db, logger
 from datetime import datetime
@@ -86,5 +87,40 @@ def due_date():
                                chore_log=chore_log,
                                chore_log_id=chore_log_id,
                                form=form)
+    else:
+        return f"BAD {form.errors}"
+
+
+@chore_logs.route("/completed-date", methods=["GET", "POST"])
+def completed_date():
+    chore_log_id = request.args.get("chore_log_id")
+    form = ChoreLogCompletedDate()
+    if form.validate_on_submit():
+        chore_log = ChoreLog.query.get_or_404(chore_log_id)
+        new_completed_date = datetime.strptime(request.form.get("completed_date"), "%Y-%m-%dT%H:%M")
+
+        try:
+            # validation
+            if new_completed_date > extract_datetime(datetime.now()):
+                raise ValueError("Cannot be in the future")
+            if ChoreLog.query.filter(ChoreLog.completed_date >= new_completed_date):
+                raise ValueError("There has been a completed chore log since then")
+        except Exception as e:
+            return e.__str__()
+
+        chore_log.previous.completed_date = new_completed_date
+        db.session.commit()
+
+        return render_template("chore_logs/chore-log-partial.html",
+                               chore_log=chore_log)
+    elif request.method == "GET":
+        chore_log = ChoreLog.query.get_or_404(chore_log_id)
+        form.completed_date.data = chore_log.previous.completed_date
+        return render_template("chore_logs/chore-log-completed-date-input-partial.html",
+                               chore_log=chore_log,
+                               chore_log_id=chore_log_id,
+                               form=form,
+                               min_date=chore_log.previous.completed_date.strftime("%Y-%m-%dT%H:%M:%S"),
+                               max_date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
     else:
         return f"BAD {form.errors}"

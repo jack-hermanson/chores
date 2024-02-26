@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dateutil.relativedelta import relativedelta
 
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 
 from main import logger
 from .date_time_enums import DayOfWeekEnum
@@ -29,11 +29,21 @@ def get_next_date_with_same_day_of_week(day_of_week: DayOfWeekEnum, exclude_toda
     return (start + timedelta(days=days_ahead + offset_days)).date()
 
 
-def extract_date(date_or_datetime: date | datetime):
+def extract_date(date_or_datetime: date | datetime) -> date:
     if isinstance(date_or_datetime, datetime):
         return date_or_datetime.date()
     if isinstance(date_or_datetime, date):
         return date_or_datetime  # nothing to change
+    else:
+        raise ValueError(
+            f"Invalid type for date_or_datetime (value: {date_or_datetime}) (type: {type(date_or_datetime)}")
+
+
+def extract_datetime(date_or_datetime: date | datetime) -> datetime:
+    if isinstance(date_or_datetime, datetime):
+        return date_or_datetime  # nothing to change
+    if isinstance(date_or_datetime, date):
+        return datetime.combine(date_or_datetime, time.min)
     else:
         raise ValueError(
             f"Invalid type for date_or_datetime (value: {date_or_datetime}) (type: {type(date_or_datetime)}")
