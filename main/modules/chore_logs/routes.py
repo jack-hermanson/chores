@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, abort, Response, url_for, flash
+from sqlalchemy import or_, and_, not_
+
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from utils.date_functions import extract_date, extract_datetime
 from utils.min_clearance import min_clearance
@@ -10,6 +12,7 @@ from datetime import datetime
 from flask_login import current_user
 import json
 
+from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..lists.models import List
 
 chore_logs = Blueprint("chore_logs", __name__, url_prefix="/chore-logs")
@@ -103,24 +106,39 @@ def completed_date():
             # validation
             if new_completed_date > extract_datetime(datetime.now()):
                 raise ValueError("Cannot be in the future")
-            if ChoreLog.query.filter(ChoreLog.completed_date >= new_completed_date):
-                raise ValueError("There has been a completed chore log since then")
+            if chore_log.chore.repeat_type == RepeatTypeEnum.NONE:
+                chore_logs_completed_since_then = []
+            else:
+                chore_logs_completed_since_then = ChoreLog.query.filter(and_(
+                    ChoreLog.chore_id == chore_log.chore_id,  # same chore
+                    ChoreLog.chore_log_id.isnot(chore_log.previous.chore_log_id),  # different chore log
+                    ChoreLog.completed_date >= new_completed_date  # different chore log has date after this
+                )).all()
+            if len(chore_logs_completed_since_then) != 0:
+                raise ValueError(f"There have been {len(chore_logs_completed_since_then)} completed chore logs since then {[f'{x.chore_log_id} {x.chore.title} {x.completed_date}' for x in chore_logs_completed_since_then]}")
         except Exception as e:
             return e.__str__()
 
-        chore_log.previous.completed_date = new_completed_date
+        if chore_log.chore.repeat_type == RepeatTypeEnum.NONE:
+            chore_log.completed_date = new_completed_date
+        else:
+            chore_log.previous.completed_date = new_completed_date
         db.session.commit()
 
         return render_template("chore_logs/chore-log-partial.html",
                                chore_log=chore_log)
     elif request.method == "GET":
         chore_log = ChoreLog.query.get_or_404(chore_log_id)
-        form.completed_date.data = chore_log.previous.completed_date
+        form.completed_date.data = chore_log.previous.completed_date if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_date
+        if chore_log.previous and chore_log.previous.previous:
+            min_date = chore_log.previous.previous.completed_date.strftime("%Y-%m-%dT%H:%M")
+        else:
+            min_date = None
         return render_template("chore_logs/chore-log-completed-date-input-partial.html",
                                chore_log=chore_log,
                                chore_log_id=chore_log_id,
                                form=form,
-                               min_date=chore_log.previous.completed_date.strftime("%Y-%m-%dT%H:%M:%S"),
-                               max_date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+                               min_date=min_date,
+                               max_date=datetime.now().strftime("%Y-%m-%dT%H:%M"))
     else:
         return f"BAD {form.errors}"
