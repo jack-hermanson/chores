@@ -35,7 +35,7 @@ class ChoreLog(db.Model):
         prev = ChoreLog.query. \
             filter(and_(ChoreLog.chore == self.chore,
                         not_(ChoreLog.completed_date.is_(None)),
-                        ChoreLog.chore_log_id.isnot(self.chore_log_id))) \
+                        ChoreLog.chore_log_id != self.chore_log_id)) \
             .order_by(desc(ChoreLog.completed_date)) \
             .first()
         return prev

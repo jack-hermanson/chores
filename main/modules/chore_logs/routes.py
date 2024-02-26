@@ -111,7 +111,7 @@ def completed_date():
             else:
                 chore_logs_completed_since_then = ChoreLog.query.filter(and_(
                     ChoreLog.chore_id == chore_log.chore_id,  # same chore
-                    ChoreLog.chore_log_id.isnot(chore_log.previous.chore_log_id),  # different chore log
+                    ChoreLog.chore_log_id != chore_log.previous.chore_log_id,  # different chore log
                     ChoreLog.completed_date >= new_completed_date  # different chore log has date after this
                 )).all()
             if len(chore_logs_completed_since_then) != 0:
