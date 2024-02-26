@@ -1,0 +1,22 @@
+{% call key_val_list_item("Last Completed") %}
+    <p
+        class="mb-1"
+        id="chore-log-completed-date-{{ chore_log.chore_log_id }}"
+        {% if chore_log.previous or (chore_log.chore.repeat_type == 0 and chore_log.is_complete) %}
+            hx-on="click"
+            hx-get="{{ url_for("chore_logs.completed_date", chore_log_id=chore_log.chore_log_id) }}"
+            hx-target="#chore-log-completed-date-{{ chore_log.chore_log_id }}"
+            hx-swap="outerHTML"
+        {% endif %}
+    >
+        {% if chore_log.previous %}
+            {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+            by
+            {{ chore_log.previous.completed_by_account.name }}
+        {% elif chore_log.chore.repeat_type == 0 and chore_log.is_complete %}
+            {{ chore_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+        {% else %}
+            <i>Never</i>
+        {% endif %}
+    </p>
+{% endcall %}

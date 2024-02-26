@@ -33,7 +33,9 @@ class ChoreLog(db.Model):
     @property
     def previous(self):
         prev = ChoreLog.query. \
-            filter(and_(ChoreLog.chore == self.chore, not_(ChoreLog.completed_date.is_(None)))) \
+            filter(and_(ChoreLog.chore == self.chore,
+                        not_(ChoreLog.completed_date.is_(None)),
+                        ChoreLog.chore_log_id.isnot(self.chore_log_id))) \
             .order_by(desc(ChoreLog.completed_date)) \
             .first()
         return prev

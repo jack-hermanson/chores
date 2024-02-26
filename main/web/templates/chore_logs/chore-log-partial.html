@@ -1,10 +1,11 @@
 {% from "macros/key-val-list-item.html" import key_val_list_item %}
 
-<div class="card mb-3 bg-dark chore-card" id="chore-log-card-{{ chore_log.chore_log_id }}">
+<div class="card mb-3 no-mb-last bg-dark chore-card" id="chore-log-card-{{ chore_log.chore_log_id }}">
     <div class="card-header d-flex">
         <h5 class="my-auto">
             <a href="{{ url_for("chores.edit", chore_id=chore_log.chore.chore_id) }}" class="chore-card-title-link">
                 {{ chore_log.chore.title }}
+{#                (CL: {{ chore_log.chore_log_id }}, C: {{ chore_log.chore_id }})#}
             </a>
         </h5>
         {% if chore_log.chore.repeat_type == 0 and chore_log.completed_date %}
@@ -32,17 +33,7 @@
                     {{ chore_log.chore.list.title }}
                 </p>
             {% endcall %}
-            {% call key_val_list_item("Last Completed") %}
-                <p class="mb-1">
-                    {% if chore_log.previous %}
-                        {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}
-                        by
-                        {{ chore_log.previous.completed_by_account.name }}
-                    {% else %}
-                        <i>Never</i>
-                    {% endif %}
-                </p>
-            {% endcall %}
+            {% include "chore_logs/chore-log-completed-date-partial.html" %}
             {% call key_val_list_item("Repeats") %}
                 <p class="mb-1">
                     {% if chore_log.chore.repeat_type == 0 %}

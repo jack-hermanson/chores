@@ -1,5 +1,5 @@
-{% macro key_val_list_item(label, class="") %}
-    <div class="list-group-item {{ class }}">
+{% macro key_val_list_item(label, class="", id=None) %}
+    <div class="list-group-item {{ class }}" {% if id != None %}id="{{ id }}"{% endif %}>
         <small class="text-muted">{{ label }}</small>
         {{ caller() }}
     </div>

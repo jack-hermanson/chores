@@ -1,0 +1,19 @@
+{% from "macros/key-val-list-item.html" import key_val_list_item %}
+
+
+<div
+    class="mb-1"
+    id="chore-log-completed-date-{{ chore_log.chore_log_id }}"
+>
+    <form
+        class="d-flex ms-auto my-auto"
+        hx-post="{{ url_for("chore_logs.completed_date", chore_log_id=chore_log_id) }}"
+        hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+        hx-swap="outerHTML"
+    >
+        {{ form.csrf_token() }}
+        {{ form.completed_date(class="form-control form-control-sm", min=min_date, max=max_date) }}
+
+        {{ form.submit(class="ms-2 btn btn-sm btn-info") }}
+    </form>
+</div>
