@@ -43,17 +43,9 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
         # endregion
 
         new_log_for_this_chore = ChoreLog()
-        new_log_for_this_chore.chore = chore
 
-        if chore.repeat_type == RepeatTypeEnum.DAYS:
-            # add days to end of today
-            new_log_for_this_chore.due_date = (datetime.now() + timedelta(days=chore.repeat_days)).date()
-        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
-            new_log_for_this_chore.due_date = get_next_date_with_same_day_of_week(
-                new_log_for_this_chore.chore.repeat_day_of_week,
-                exclude_today=False
-            )
-        elif chore.repeat_type == RepeatTypeEnum.NONE:
+        # Chore does not repeat
+        if chore.repeat_type == RepeatTypeEnum.NONE:
             logger.info(f"Chore with ID {chore.chore_id} does not repeat")
             # since the chore doesn't repeat, we really only need to generate a log once
             if len(chore.chore_logs):
@@ -62,6 +54,20 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
             else:
                 # create a new one
                 new_log_for_this_chore.due_date = chore.one_time_due_date
+
+        # Chore repeats by day
+        elif chore.repeat_type == RepeatTypeEnum.DAYS:
+            # add days to end of today
+            new_log_for_this_chore.due_date = (datetime.now() + timedelta(days=chore.repeat_days)).date()
+
+        # Day of the week
+        elif chore.repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK:
+            new_log_for_this_chore.due_date = get_next_date_with_same_day_of_week(
+                chore.repeat_day_of_week,
+                exclude_today=False
+            )
+
+        # Day of the month
         elif chore.repeat_type == RepeatTypeEnum.DAY_OF_MONTH:
             new_log_for_this_chore.due_date = get_next_date_with_same_number(chore.repeat_day_of_month)
         else:
@@ -69,6 +75,8 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
             new_log_for_this_chore.due_date = datetime.now().date()
 
         logger.info(f"Created new log for {new_log_for_this_chore.chore} due {new_log_for_this_chore.due_date}")
+
+        chore.chore_logs.append(new_log_for_this_chore)
         db.session.add(new_log_for_this_chore)
         db.session.commit()
 
