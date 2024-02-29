@@ -49,11 +49,10 @@ def filtering():
     form.show_form.data = show_form
 
     populate_form_lists(form)
-    
+
     return render_template("chore_logs/chore-log-filtering-open-partial.html",
                            form=form,
                            show_form=show_form)
-
 
 
 @chore_logs.route("/complete", methods=["POST"])
