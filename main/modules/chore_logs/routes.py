@@ -28,11 +28,7 @@ def generate_all():
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
-    lists = List.query.filter(List.accounts.contains(current_user)).all()
-    form.lists.choices = [(li.list_id, li.title) for li in lists]
-
-    if len(form.lists.data) == 0:
-        form.lists.data = [str(li.list_id) for li in lists]
+    populate_form_lists(form)
 
     chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
                                                         show_archived=form.show_archived.data or False,
@@ -52,12 +48,8 @@ def filtering():
     show_form = not show_form
     form.show_form.data = show_form
 
-    lists = List.query.filter(List.accounts.contains(current_user)).all()
-    form.lists.choices = [(li.list_id, li.title) for li in lists]
-
-    if len(form.lists.data) == 0:
-        form.lists.data = [str(li.list_id) for li in lists]
-
+    populate_form_lists(form)
+    
     return render_template("chore_logs/chore-log-filtering-open-partial.html",
                            form=form,
                            show_form=show_form)
@@ -163,3 +155,12 @@ def completed_date():
                                max_date=datetime.now().strftime("%Y-%m-%dT%H:%M"))
     else:
         return f"BAD {form.errors}"
+
+
+# This is a helper function
+def populate_form_lists(form):
+    lists = List.query.filter(List.accounts.contains(current_user)).all()
+    form.lists.choices = [(li.list_id, li.title) for li in lists]
+
+    if len(form.lists.data) == 0:
+        form.lists.data = [str(li.list_id) for li in lists]
