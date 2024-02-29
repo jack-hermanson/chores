@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import SubmitField, DateField, DateTimeField, DateTimeLocalField, StringField, BooleanField, FieldList, SearchField, SelectMultipleField
+from wtforms.fields import (SubmitField, DateField, DateTimeLocalField, BooleanField, SearchField, SelectMultipleField,
+                            HiddenField)
 from wtforms.validators import DataRequired
 
 
@@ -17,3 +18,4 @@ class SearchAndFilterForm(FlaskForm):
     search_text = SearchField(label="Search")
     show_archived = BooleanField(label="Show Archived")
     lists = SelectMultipleField(label="Filter Lists")  # set choices in controller
+    show_form = HiddenField(default="false")

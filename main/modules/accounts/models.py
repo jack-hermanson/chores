@@ -1,8 +1,8 @@
-from main import db, login_manager
 from flask_login import UserMixin
-from .ClearanceEnum import ClearanceEnum
 from sqlalchemy.sql import func
 
+from main import db, login_manager
+from .ClearanceEnum import ClearanceEnum
 from ..lists.models import list_account
 
 
