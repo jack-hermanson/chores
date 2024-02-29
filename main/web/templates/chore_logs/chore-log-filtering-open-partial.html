@@ -25,7 +25,7 @@
           class="card-body pb-2 {% if not show_form %}d-none d-lg-block{% endif %}"
           id="chore-logs-filtering-form"
     >
-        {{ form_group(form, "search_text", render_kw={"hx-get": url_for("chore_logs.index"), "hx-trigger": "keyup delay:500ms", "hx-include": "closest form"}) }}
+        {{ form_group(form, "search_text", render_kw={"hx-get": url_for("chore_logs.index"), "hx-trigger": "keyup delay:250ms", "hx-include": "closest form"}) }}
 
         {# check off lists you want to filter #}
         <div class="form-group">
