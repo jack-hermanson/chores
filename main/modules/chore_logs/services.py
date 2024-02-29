@@ -1,14 +1,15 @@
+from datetime import datetime, timedelta
+
+from flask_login import current_user
+from sqlalchemy import desc, not_, or_, and_
+
+from main import db, logger
 from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
+from . import helpers
+from .models import ChoreLog
 from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
-from .models import ChoreLog
-from flask_login import current_user
-from flask import flash
-from datetime import datetime, timedelta
-from main import db, logger
-from sqlalchemy import desc, not_, or_, and_
-from . import helpers
 from ..lists.models import List
 
 

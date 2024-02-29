@@ -20,59 +20,7 @@
             {% endif %}
         </div>
         <div class="col-12 col-lg-4 order-1 order-lg-2 mb-3">
-            <div class="card sticky-lg-top">
-                <div class="card-body pb-2">
-                    <form action="{{ url_for("chore_logs.index") }}"
-                          hx-trigger="change"
-                          hx-get="{{ url_for("chore_logs.index") }}"
-                          hx-replace-url="true"
-                          hx-target="body"
-                    >
-                        {{ form_group(form, "search_text", render_kw={"hx-get": url_for("chore_logs.index"), "hx-trigger": "keyup delay:500ms", "hx-include": "closest form"}) }}
-
-                        <div class="form-group">
-                            <label class="form-label">Options</label>
-                            <div class="form-check">
-                                {{ form.show_archived(class="form-check-input") }}
-                                <label class="form-check-label" for="show_archived">
-                                    Show Archived
-                                </label>
-                            </div>
-                        </div>
-
-                        {# check off lists you want to filter #}
-                        <div class="form-group">
-                            <label class="form-label">{{ form.lists.label }}</label>
-                            {% for list_id, list_title in form.lists.choices %}
-                                <div class="form-check">
-                                    {# this is for debugging #}
-{#                                  {{ request.args.getlist(form.lists.name) }}#}
-{#                                  {{ form.lists.data }}#}
-                                    {# Commented out to use view model data rather than URL #}
-                                    {# <input type="checkbox" name="{{ form.lists.name }}" id="{{ form.lists.id }}_{{ loop.index }}" value="{{ list_id }}" class="form-check-input" {% if list_id|string in request.args.getlist(form.lists.name) %}checked{% endif %}>#}
-                                    <input type="checkbox" name="{{ form.lists.name }}" id="{{ form.lists.id }}_{{ loop.index }}" value="{{ list_id }}" class="form-check-input" {% if list_id|string in form.lists.data %}checked{% endif %}>
-                                    <label for="{{ form.lists.id }}_{{ loop.index }}">{{ list_title }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="bottom-buttons mb-3">
-                            {#                            <button type="submit" class="btn btn-outline-info w-100 mb-3">Submit</button>#}
-                            <a href="{{ url_for("chore_logs.index") }}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
-                        </div>
-                    </form>
-                    {#                    <h6 class="mt-3">Filter by List</h6>#}
-                    {#                    <p>To do: check to show chores from list</p>#}
-                    {#                    <h6 class="mt-3">Jump to</h6>#}
-                    {#                    <ul class="jump-to-list">#}
-                    {#                        {% for chore_log in chore_logs_list %}#}
-                    {#                            <li>#}
-                    {#                                <a href="#chore-log-card-{{ chore_log.chore_log_id }}">{{ chore_log.chore.title }}</a>#}
-                    {#                            </li>#}
-                    {#                        {% endfor %}#}
-                    {#                    </ul>#}
-                </div>
-            </div>
+            {% include "chore_logs/chore-log-filtering-open-partial.html" %}
         </div>
     </div>
 {% endblock body %}

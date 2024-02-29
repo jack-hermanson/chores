@@ -1,17 +1,16 @@
-from flask import Blueprint, render_template, request, abort, Response, url_for, flash
-from sqlalchemy import or_, and_, not_
+from datetime import datetime
 
+from flask import Blueprint, render_template, request, abort, Response, url_for, flash
+from flask_login import current_user
+from sqlalchemy import and_
+
+from main import db
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
-from utils.date_functions import extract_date, extract_datetime
+from utils.date_functions import extract_datetime
 from utils.min_clearance import min_clearance
 from . import services
 from .forms import ChoreLogDueDate, SearchAndFilterForm, ChoreLogCompletedDate
 from .models import ChoreLog
-from main import db, logger
-from datetime import datetime
-from flask_login import current_user
-import json
-
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..lists.models import List
 
@@ -40,7 +39,29 @@ def index():
                                                         list_ids=[int(li) for li in form.lists.data])
     return render_template("chore_logs/index.html",
                            chore_logs_list=chore_logs_list,
-                           form=form)
+                           form=form,
+                           show_form=(form.show_form.data.lower() == "true"))
+
+
+@chore_logs.route("/filtering")
+@min_clearance(ClearanceEnum.NORMAL)
+def filtering():
+    form = SearchAndFilterForm(request.args, meta={'csrf': False})
+    show_form = form.show_form.data.lower() == "true"
+    # flip it
+    show_form = not show_form
+    form.show_form.data = show_form
+
+    lists = List.query.filter(List.accounts.contains(current_user)).all()
+    form.lists.choices = [(li.list_id, li.title) for li in lists]
+
+    if len(form.lists.data) == 0:
+        form.lists.data = [str(li.list_id) for li in lists]
+
+    return render_template("chore_logs/chore-log-filtering-open-partial.html",
+                           form=form,
+                           show_form=show_form)
+
 
 
 @chore_logs.route("/complete", methods=["POST"])
