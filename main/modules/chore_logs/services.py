@@ -88,10 +88,11 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
         .filter(
             and_(
                 # search term matches
-                or_(
-                    Chore.title.ilike(f"%{search_text}%"),
-                    Chore.description.ilike(f"%{search_text}%")
-                ),
+                # commented out because we only want to search for title
+                # or_(
+                Chore.title.ilike(f"%{search_text}%"),
+                #     Chore.description.ilike(f"%{search_text}%")
+                # ),
                 # and
                 # chore in list that this user belongs to
                 or_(
