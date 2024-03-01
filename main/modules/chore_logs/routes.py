@@ -43,7 +43,7 @@ def index():
 @min_clearance(ClearanceEnum.NORMAL)
 def filtering():
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
-    show_form = form.show_form.data.lower() == "true"
+    show_form = str(form.show_form.data).lower() == "true"
     # flip it
     show_form = not show_form
     form.show_form.data = show_form
@@ -154,6 +154,12 @@ def completed_date():
                                max_date=datetime.now().strftime("%Y-%m-%dT%H:%M"))
     else:
         return f"BAD {form.errors}"
+
+
+@chore_logs.route("/previous-logs/<int:chore_id>")
+def get_previous_logs(chore_id):
+    prev_logs = services.get_previous_logs(chore_id)
+    return [str(log) for log in prev_logs]
 
 
 # This is a helper function

@@ -1,18 +1,17 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
+from flask_login import current_user
 
-
+from main import db, logger
 from main.modules.accounts.ClearanceEnum import ClearanceEnum
 from main.modules.chores.forms import CreateEditChore
+from utils.date_time_enums import DayOfWeekEnum
 from utils.min_clearance import min_clearance
-from flask_login import current_user
-from .models import Chore
-from main import db, logger
 from .RepeatTypeEnum import RepeatTypeEnum
+from .models import Chore
 from ..accounts.models import Account
-from ..chore_logs.models import ChoreLog
 from ..lists.models import List
 from ..lists.services import get_user_lists
-from utils.date_time_enums import DayOfWeekEnum
+from ..chore_logs.services import get_previous_logs
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
@@ -170,5 +169,7 @@ def delete(chore_id):
 @min_clearance(ClearanceEnum.NORMAL)
 def details(chore_id):
     chore = Chore.query.get_or_404(chore_id)
+    previous_logs = get_previous_logs(chore_id)
     return render_template("chores/details.html",
-                           chore=chore)
+                           chore=chore,
+                           previous_logs=previous_logs)

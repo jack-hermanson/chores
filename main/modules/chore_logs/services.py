@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from flask_login import current_user
-from sqlalchemy import desc, not_, or_, and_
+from sqlalchemy import desc, not_, or_, and_, func
 
 from main import db, logger
 from utils.date_functions import get_next_date_with_same_day_of_week, get_next_date_with_same_number
@@ -86,54 +86,54 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
         .join(Chore.list) \
         .join(List.accounts) \
         .filter(
-            and_(
-                # search term matches
-                # commented out because we only want to search for title
-                # or_(
-                Chore.title.ilike(f"%{search_text}%"),
-                #     Chore.description.ilike(f"%{search_text}%")
-                # ),
-                # and
-                # chore in list that this user belongs to
-                or_(
-                    # either the caller did not specify list ids
-                    # and this list is connected to user
-                    and_(
-                        list_ids is None,
-                        List.accounts.contains(current_user)
-                    ),
-                    # or the caller did specify list ids
-                    # and this list is one that the user asked for
-                    # and this list is connected to user
-                    and_(
-                        list_ids is not None,
-                        List.accounts.contains(current_user),
-                        List.list_id.in_(list_ids)
-                    )
+        and_(
+            # search term matches
+            # commented out because we only want to search for title
+            # or_(
+            Chore.title.ilike(f"%{search_text}%"),
+            #     Chore.description.ilike(f"%{search_text}%")
+            # ),
+            # and
+            # chore in list that this user belongs to
+            or_(
+                # either the caller did not specify list ids
+                # and this list is connected to user
+                and_(
+                    list_ids is None,
+                    List.accounts.contains(current_user)
                 ),
-                # List.accounts.contains(current_user),
-                # and
-                or_(
-                    # this is a repeating chore and chore_log is incomplete
-                    and_(
-                        Chore.repeat_type != RepeatTypeEnum.NONE,
-                        ChoreLog.completed_date.is_(None)
-                    ),
-                    # or
-                    and_(
-                        # this is a non-repeating chore
-                        Chore.repeat_type == RepeatTypeEnum.NONE,
-                        # and
-                        or_(
-                            # it's unarchived
-                            not_(Chore.archived),
-                            # or we want to show archived
-                            show_archived
-                        )
+                # or the caller did specify list ids
+                # and this list is one that the user asked for
+                # and this list is connected to user
+                and_(
+                    list_ids is not None,
+                    List.accounts.contains(current_user),
+                    List.list_id.in_(list_ids)
+                )
+            ),
+            # List.accounts.contains(current_user),
+            # and
+            or_(
+                # this is a repeating chore and chore_log is incomplete
+                and_(
+                    Chore.repeat_type != RepeatTypeEnum.NONE,
+                    ChoreLog.completed_date.is_(None)
+                ),
+                # or
+                and_(
+                    # this is a non-repeating chore
+                    Chore.repeat_type == RepeatTypeEnum.NONE,
+                    # and
+                    or_(
+                        # it's unarchived
+                        not_(Chore.archived),
+                        # or we want to show archived
+                        show_archived
                     )
                 )
             )
-        ) \
+        )
+    ) \
         .order_by(ChoreLog.due_date) \
         .all()
 
@@ -146,7 +146,8 @@ def complete(chore_log_id: int, stay_on_schedule: bool = False):
     # complete existing
     chore_log = ChoreLog.query.get_or_404(chore_log_id)
     if chore_log.completed_date is not None and chore_log.chore.archived:
-        raise ValueError(f"Chore Log was already completed on {chore_log.completed_date} and archived (chore log ID {chore_log_id}")
+        raise ValueError(
+            f"Chore Log was already completed on {chore_log.completed_date} and archived (chore log ID {chore_log_id}")
 
     # archive completed
     if chore_log.completed_date and not chore_log.chore.archived:
@@ -208,3 +209,13 @@ def undo_completion(chore_log_id):
     db.session.commit()
 
     return previous
+
+
+# todo add pagination, remove limit
+def get_previous_logs(chore_id):
+    chore_logs = (ChoreLog.query
+                  .filter(and_(ChoreLog.chore_id == chore_id,
+                               ChoreLog.completed_date.is_not(None)))
+                  .order_by(ChoreLog.completed_date.desc())
+                  .limit(20))
+    return chore_logs
