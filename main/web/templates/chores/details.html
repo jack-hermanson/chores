@@ -1,12 +1,84 @@
 {% extends "base.html" %}
 
-{% set title = "Chore Details" %}
+{% from "macros/action-link.html" import action_link %}
+{% from "macros/key-val-list-item.html" import key_val_list_item %}
+
+{% set title = chore.title + " Details" %}
 {% set active_route = "chores" %}
+
+{% block actions %}
+    {{ action_link("Edit Chore", url_for("chores.edit", chore_id=chore.chore_id)) }}
+{% endblock %}
 
 {% block body %}
     <div class="row">
-        <div class="col-12 col-lg-8">
-            <p>Here is chore {{ chore.title }}</p>
+        <div class="col-12 col-lg-8 mb-3 mb-lg-0">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Details</h5>
+                </div>
+                <div class="card-body p-0">
+
+                    <div class="list-group list-group-flush">
+                        {% call key_val_list_item("Description") %}
+                            <p class="mb-1">
+                                {% if chore.description %}
+                                    {{ chore.description }}
+                                {% else %}
+                                    <i>No description.</i>
+                                {% endif %}
+                            </p>
+                        {% endcall %}
+                        {% call key_val_list_item("List") %}
+                            <p class="mb-1">
+                                {{ chore.list.title }}
+                            </p>
+                        {% endcall %}
+                        {#                {% include "chore_logs/chore-log-completed-date-partial.html" %}#}
+                        {% call key_val_list_item("Repeats") %}
+                            <p class="mb-1">
+                                {% if chore.repeat_type == 0 %}
+                                    <i>N/A</i>
+                                {% elif chore.repeat_type == 1 %}
+                                    Every {{ chore.repeat_days }} days
+                                {% elif chore.repeat_type == 2 %}
+                                    Every {{ chore.repeat_day_of_week|day_of_week_str }}
+                                {% elif chore.repeat_type == 3 %}
+
+                                    The {% if chore.repeat_day_of_month == 31 %}last{% else %}
+                                    {{ chore.repeat_day_of_month|number_suffix }}{% endif %} day of every month
+                                {% endif %}
+                            </p>
+                        {% endcall %}
+                        {% call key_val_list_item("Owner") %}
+                            <p class="mb-1">
+                                {{ chore.owner.name }}
+                            </p>
+                        {% endcall %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Completion Logs</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for previous_log in previous_logs %}
+                            <div class="list-group-item">
+                                {{ previous_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+                                by
+                                {{ previous_log.completed_by_account.name }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <small>Limited to 20 records (for now)</small>
+            </div>
         </div>
     </div>
 {% endblock body %}

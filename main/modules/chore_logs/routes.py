@@ -28,11 +28,7 @@ def generate_all():
 @min_clearance(ClearanceEnum.NORMAL)
 def index():
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
-    lists = List.query.filter(List.accounts.contains(current_user)).all()
-    form.lists.choices = [(li.list_id, li.title) for li in lists]
-
-    if len(form.lists.data) == 0:
-        form.lists.data = [str(li.list_id) for li in lists]
+    populate_form_lists(form)
 
     chore_logs_list = services.generate_next_chore_logs(search_text=form.search_text.data or "",
                                                         show_archived=form.show_archived.data or False,
@@ -47,21 +43,16 @@ def index():
 @min_clearance(ClearanceEnum.NORMAL)
 def filtering():
     form = SearchAndFilterForm(request.args, meta={'csrf': False})
-    show_form = form.show_form.data.lower() == "true"
+    show_form = str(form.show_form.data).lower() == "true"
     # flip it
     show_form = not show_form
     form.show_form.data = show_form
 
-    lists = List.query.filter(List.accounts.contains(current_user)).all()
-    form.lists.choices = [(li.list_id, li.title) for li in lists]
-
-    if len(form.lists.data) == 0:
-        form.lists.data = [str(li.list_id) for li in lists]
+    populate_form_lists(form)
 
     return render_template("chore_logs/chore-log-filtering-open-partial.html",
                            form=form,
                            show_form=show_form)
-
 
 
 @chore_logs.route("/complete", methods=["POST"])
@@ -163,3 +154,18 @@ def completed_date():
                                max_date=datetime.now().strftime("%Y-%m-%dT%H:%M"))
     else:
         return f"BAD {form.errors}"
+
+
+@chore_logs.route("/previous-logs/<int:chore_id>")
+def get_previous_logs(chore_id):
+    prev_logs = services.get_previous_logs(chore_id)
+    return [str(log) for log in prev_logs]
+
+
+# This is a helper function
+def populate_form_lists(form):
+    lists = List.query.filter(List.accounts.contains(current_user)).all()
+    form.lists.choices = [(li.list_id, li.title) for li in lists]
+
+    if len(form.lists.data) == 0:
+        form.lists.data = [str(li.list_id) for li in lists]
