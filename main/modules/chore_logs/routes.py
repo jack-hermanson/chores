@@ -50,7 +50,7 @@ def filtering():
 
     populate_form_lists(form)
 
-    return render_template("chore_logs/chore-log-filtering-open-partial.html",
+    return render_template("chore_logs/chore-log-filtering-partial.html",
                            form=form,
                            show_form=show_form)
 
