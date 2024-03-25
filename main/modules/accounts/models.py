@@ -22,6 +22,9 @@ class Account(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     join_date = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
+    capitalize_name = db.Column(db.Boolean, nullable=False, default=False)
+
+    # relationship
     lists = db.relationship("List", secondary=list_account, back_populates="accounts")
     chores = db.relationship("Chore", back_populates="owner", cascade="all, delete-orphan")
     chore_logs = db.relationship("ChoreLog", back_populates="completed_by_account", cascade="all, delete-orphan")
@@ -30,3 +33,10 @@ class Account(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<{self.name}, {self.account_id}>"
+
+    @property
+    def formatted_name(self):
+        if self.capitalize_name:
+            return self.name.upper()
+        else:
+            return self.name.title()

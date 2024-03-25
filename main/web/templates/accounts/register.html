@@ -13,6 +13,25 @@
                 {{ form_group(form, "email", required=True) }}
                 {{ form_group(form, "password", required=True) }}
                 {{ form_group(form, "confirm_password", required=True) }}
+                {# check off lists you want to filter #}
+                <div class="form-group">
+                    <div class="form-check">
+{#                        <input type="checkbox" id="{{ form.capitalize_name.id }}" class="form-check-input"#}
+{#                               value="{{ form.capitalize_name.data }}"#}
+{#                               {% if form.capitalize_name.data %}checked{% endif %}>#}
+                        {{ form.capitalize_name(class="form-check-input") }}
+                        <label for="{{ form.capitalize_name.id }}">{{ form.capitalize_name.label }}</label>
+                        {% if form.capitalize_name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.capitalize_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="small form-text text-muted mt-2">{{ form.capitalize_name.description }}</div>
+                </div>
+
                 <div class="bottom-buttons pb-4 border-bottom">
                     {{ form.submit(class="btn btn-outline-success") }}
                     <a href="{{ url_for('accounts.register') }}" class="btn btn-outline-secondary">Reset</a>

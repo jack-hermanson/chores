@@ -3,7 +3,7 @@ from main import db
 
 class Invitation(db.Model):
     invitation_id = db.Column(db.Integer, primary_key=True)
-    accepted = db.Column(db.Boolean)
+    accepted = db.Column(db.Boolean, default=False, nullable=False)
 
     recipient_id = db.mapped_column(
         db.ForeignKey("account.account_id"), nullable=True

@@ -10,7 +10,7 @@
             {% for account in list.accounts %}
                 <li class="list-group-item d-flex">
                     <span class="my-auto">
-                        {{ account.name }}
+                        {{ account.formatted_name }}
                     </span>
                     {% if account == list.owner %}
                         <button
