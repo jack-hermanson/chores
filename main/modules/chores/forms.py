@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField,  TextAreaField, IntegerField, SelectField, DateField
+from wtforms.fields import StringField, SubmitField, TextAreaField, IntegerField, SelectField, DateField
 from wtforms.validators import DataRequired, Length, ValidationError, Optional
 
 from main.modules.chores.RepeatTypeEnum import RepeatTypeEnum
@@ -28,7 +28,7 @@ class CreateEditChore(FlaskForm):
         "Day of Week",
         description="This chore will repeat on this day of the week.",
         choices=[
-            (int(day_of_week), str(day_of_week).replace("DayOfWeekEnum.", "").capitalize())
+            (int(day_of_week), day_of_week.name.capitalize())
             for day_of_week in [
                 DayOfWeekEnum.MONDAY,
                 DayOfWeekEnum.TUESDAY,
@@ -66,7 +66,8 @@ class CreateEditChore(FlaskForm):
     due_date = DateField(
         "Due Date",
         description="When is this one-time chore due?",
-        validators=[Optional()]
+        validators=[],
+        format="%Y-%m-%d"
     )
     submit = SubmitField()
 
@@ -78,11 +79,10 @@ class CreateEditChore(FlaskForm):
             raise ValidationError("Repeat days is required.")
 
         if (
-                repeat_type == RepeatTypeEnum.DAYS
-                and form.repeat_days.data is not None
-                and (
-                form.repeat_days.data < 1
-                or form.repeat_days.data > 365)
+            repeat_type == RepeatTypeEnum.DAYS
+            and form.repeat_days.data is not None
+            and (form.repeat_days.data < 1
+                 or form.repeat_days.data > 365)
         ):
             raise ValidationError("Repeat Days must be between 1 and 365.")
 
@@ -93,9 +93,7 @@ class CreateEditChore(FlaskForm):
         if (
             repeat_type == RepeatTypeEnum.DAY_OF_THE_WEEK
             and form.repeat_day_of_week.data is not None
-            and (
-                int(form.repeat_day_of_week.data) > 6 or int(form.repeat_day_of_week.data) < 0
-            )
+            and (int(form.repeat_day_of_week.data) > 6 or int(form.repeat_day_of_week.data) < 0)
         ):
             raise ValidationError("Repeat day of week must be between 0 and 6.")
 
