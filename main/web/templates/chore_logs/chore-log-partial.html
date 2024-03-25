@@ -4,7 +4,7 @@
     <div class="card-header d-flex">
         <h5 class="my-auto">
             <a href="{{ url_for("chores.details", chore_id=chore_log.chore.chore_id) }}" class="chore-card-title-link">
-                {{ chore_log.chore.title }}
+                {{ chore_log.chore.title|capitalize }}
             </a>
         </h5>
         {% if chore_log.chore.repeat_type == 0 and chore_log.completed_date %}
