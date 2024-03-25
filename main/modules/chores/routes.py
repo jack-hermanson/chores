@@ -38,7 +38,7 @@ def create():
 
     if form.validate_on_submit():
         new_chore = Chore()
-        new_chore.title = form.title.data.lower().strip()
+        new_chore.title = form.title.data.strip()
         new_chore.description = form.description.data
         new_chore.owner = current_user
         new_chore.repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
@@ -75,7 +75,7 @@ def edit(chore_id: int):
     form.due_date.data = chore.one_time_due_date
 
     if form.validate_on_submit():
-        chore.title = form.title.data.lower().strip()
+        chore.title = form.title.data.strip()
         chore.description = form.description.data
         chore.repeat_type = RepeatTypeEnum(int(form.repeat_type.data))
         chore.owner = Account.query.filter(Account.account_id == int(form.owner.data)).first_or_404()
