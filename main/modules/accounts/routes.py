@@ -72,6 +72,7 @@ def register():
         user.name = form.name.data.lower().strip()
         user.password = hashed_password
         user.email = form.email.data.lower().strip()
+        user.capitalize_name = form.capitalize_name.data
         db.session.add(user)
         db.session.commit()
         flash(f"Alright, {user.name}. Enter your password to log in.", 'success')

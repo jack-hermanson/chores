@@ -52,7 +52,7 @@
                         {% endcall %}
                         {% call key_val_list_item("Owner") %}
                             <p class="mb-1">
-                                {{ chore.owner.name }}
+                                {{ chore.owner.formatted_name }}
                             </p>
                         {% endcall %}
                     </div>
@@ -70,7 +70,7 @@
                             <div class="list-group-item">
                                 {{ previous_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
                                 by
-                                {{ previous_log.completed_by_account.name }}
+                                {{ previous_log.completed_by_account.formatted_name }}
                             </div>
                         {% endfor %}
                     </div>
