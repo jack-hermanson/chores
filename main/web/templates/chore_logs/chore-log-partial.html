@@ -58,11 +58,12 @@
                 {% if chore_log.chore.repeat_type != 0 %}
                     {% if not chore_log.normal_next_due_date|extract_date < chore_log.due_date|extract_date %}
                         <button
-                                title="Complete Now"
-                                hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
-                                hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                                hx-swap="outerHTML"
-                                hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                            title="Complete Now"
+                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                            onclick="this.blur();"
                         >
                         <span class="my-auto">
                             <span class="icon-check"></span>
@@ -77,11 +78,12 @@
                     {% endif %}
                     {% if chore_log.normal_next_due_date != chore_log.stay_on_schedule_next_due_date %}
                         <button
-                                title="Complete & Keep Schedule"
-                                hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
-                                hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                                hx-swap="outerHTML"
-                                hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
+                            title="Complete & Keep Schedule"
+                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id, stay_on_schedule=True) }}"
+                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Complete '{{ chore_log.chore.title }}' and stay on schedule?"
+                            onclick="this.blur();"
                         >
                             <span class="my-auto">
                                 <span class="icon-check"></span>
@@ -96,11 +98,12 @@
                     {% endif %}
                 {% elif chore_log.chore.repeat_type == 0 %}
                     <button
-                            {% if chore_log.chore.archived %}disabled{% endif %}
-                            hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
-                            hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                            hx-swap="outerHTML"
-                            hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                        {% if chore_log.chore.archived %}disabled{% endif %}
+                        hx-post="{{ url_for("chore_logs.complete", chore_log_id=chore_log.chore_log_id) }}"
+                        hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="Complete '{{ chore_log.chore.title }}' now?"
+                        onclick="this.blur();"
                     >
                         <span class="my-auto">
                             <span class="icon-check"></span>
@@ -120,14 +123,27 @@
                 {% endif %}
 
                 <button
-                        title="Undo Last Completion" {% if not chore_log.previous %}disabled{% endif %}
-                        hx-post="{{ url_for("chore_logs.undo", chore_log_id=chore_log.chore_log_id) }}"
-                        hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
-                        hx-swap="outerHTML"
-                        {% if chore_log.previous %}
+                    title="Undo Last Completion"
+                    {# disabled if: #}
+                    {# chore is not a one-time and there is no previous log to revert to #}
+                    {# OR chore is a one-time and it's not been completed, so cannot undo obviously #}
+                    {# todo should probably put this logic on the back-end so it's not repeated #}
+                    {# like "undo_enabled" or something #}
+                    {% if (chore_log.chore.repeat_type != 0 and not chore_log.previous) or (chore_log.chore.repeat_type == 0 and not chore_log.is_complete) %}
+                        disabled
+                    {% endif %}
+                    hx-post="{{ url_for("chore_logs.undo", chore_log_id=chore_log.chore_log_id) }}"
+                    hx-target="#chore-log-card-{{ chore_log.chore_log_id }}"
+                    hx-swap="outerHTML"
+                    {% if chore_log.chore.repeat_type != 0 and chore_log.previous %}
                         hx-confirm="Undo completion of '{{ chore_log.chore.title }}' from {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}?"
-                        {% endif %}
+                    {% endif %}
+                    {% if chore_log.chore.repeat_type == 0 and chore_log.is_complete %}
+                        hx-confirm="Undo completion of '{{ chore_log.chore.title }}' from {{ chore_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}?"
+                    {% endif %}
+                    onclick="this.blur();"
                 >
+
                     <span class="my-auto">
                         <span class="icon-action-undo"></span>
                         &nbsp;
