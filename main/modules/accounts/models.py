@@ -23,6 +23,7 @@ class Account(db.Model, UserMixin):
     join_date = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
     capitalize_name = db.Column(db.Boolean, nullable=False, default=False)
+    subscribed_to_emails = db.Column(db.Boolean, nullable=False, default=True)
 
     # relationship
     lists = db.relationship("List", secondary=list_account, back_populates="accounts")

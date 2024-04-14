@@ -16,17 +16,6 @@ from ..chore_logs.services import get_previous_logs
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
 
-# obsolete deprecated todo
-# @chores.route("/")
-# @min_clearance(ClearanceEnum.NORMAL)
-# def index():
-#     chores_list = (Chore.query.filter(Chore.list.accounts.__contains__(current_user))
-#                    .order_by(Chore.chore_logs.filter(ChoreLog.completed_date.is_(None)).first().due_date).all())
-#
-#     return render_template("chores/index.html",
-#                            chores_list=chores_list)
-
-
 @chores.route("/create", methods=["GET", "POST"])
 @min_clearance(ClearanceEnum.NORMAL)
 def create():
@@ -107,6 +96,7 @@ def edit(chore_id: int):
 
         associated_list = List.query.get_or_404(form.list.data)
         chore.list = associated_list
+        chore.notifications_enabled = form.notifications_enabled.data
 
         db.session.commit()
         flash(f"Chore \"{chore.title}\" edited successfully.", "success")
@@ -123,6 +113,7 @@ def edit(chore_id: int):
             form.repeat_day_of_month.data = str(int(chore.repeat_day_of_month))
         form.list.data = str(chore.list.list_id)
         form.owner.data = str(chore.owner.account_id)
+        form.notifications_enabled.data = chore.notifications_enabled
         logger.info(f"form.list.data {form.list.data}")
 
     return render_template("chores/create-edit.html",

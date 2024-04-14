@@ -13,6 +13,7 @@ from ..chores.models import Chore
 from ..lists.models import List
 
 
+# todo change current user to a passed in user so we can automate
 def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list[int] or None = None):
     """
     Generate next chore logs for the current user.

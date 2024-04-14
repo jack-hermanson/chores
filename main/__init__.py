@@ -4,6 +4,8 @@ import sys
 
 from flask_bcrypt import Bcrypt
 from flask import Flask, abort
+from flask_mail import Mail
+
 from main.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -18,6 +20,7 @@ bcrypt = Bcrypt()
 db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
 logging.basicConfig(level=logging.DEBUG)
+mail = Mail()
 
 login_manager = LoginManager()
 login_manager.login_view = "accounts.login"
@@ -67,13 +70,17 @@ def create_app(config_class=Config):
     from .modules.lists.routes import lists
     from .modules.chores.routes import chores
     from .modules.chore_logs.routes import chore_logs
+    from .modules.emails.routes import emails
 
-    for blueprint in [main, accounts, errors, lists, chores, chore_logs]:
+    for blueprint in [main, accounts, errors, lists, chores, chore_logs, emails]:
         app.register_blueprint(blueprint)
 
     # login manager
     login_manager.init_app(app)
     # login_manager.session_protection = "strong"
+
+    # email
+    mail.init_app(app)
 
     # filter
     @app.template_filter()

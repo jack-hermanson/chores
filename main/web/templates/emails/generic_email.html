@@ -1,0 +1,14 @@
+{% if greeting %}
+    <p>{{ greeting }}</p>
+{% endif %}
+
+{{ body|safe }}
+
+{% if include_signature %}
+    <hr>
+    <p style="font-weight: bolder; font-size: larger;">Chores App</p>
+    <p><a href="{{ url_for('main.index', _external=True) }}">chores.herm.shop</a></p>
+    <br>
+    <p>Todo: unsubscribe</p>
+    {#<p style="color: gray; font-size: 12px;">To unsubscribe <a href="{{ url_for('subscribers.unsubscribe', _external=True) }}">click here</a>.</p>#}
+{% endif %}

@@ -26,6 +26,10 @@ class Chore(db.Model):
     # and if we complete it at the one-time due date, prob want to archive it
     archived = db.Column(db.Boolean, nullable=False, default=False)
 
+    # if this is false, then don't consider it for notifications
+    # probably most relevant to daily chores; don't need to be notified daily
+    notifications_enabled = db.Column(db.Boolean, nullable=False, default=True)
+
     # who is able to update/delete this task, who owns it
     owner_id = db.mapped_column(db.ForeignKey("account.account_id"), nullable=False)
     owner = db.relationship("Account", back_populates="chores")
