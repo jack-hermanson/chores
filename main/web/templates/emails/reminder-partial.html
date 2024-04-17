@@ -1,0 +1,46 @@
+{#{chore_log.chore.title} due {chore_log.due_date.strftime('%A, %D')}#}
+
+<style>
+    li:not(:last-of-type) {
+        border-bottom: 1px solid grey;
+    }
+</style>
+
+{# summary for quick glance #}
+{% if chore_logs_to_remind|length != 0 %}
+    <body>
+    <div
+        style="display:none; font-size:0; line-height:0; max-height:0; max-width:0; opacity:0; overflow:hidden; visibility:hidden">
+        <p>
+            {% for chore_log in chore_logs_to_remind %}
+                {{ chore_log.chore.title }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+        {% for n in range(500) %}
+        	&#847; &zwnj; &nbsp;
+        {% endfor %}
+
+    </div>
+    </body>
+{% endif %}
+
+<p>Hi {{ user_name }},</p>
+
+<h2>{{ summary|safe }}</h2>
+
+<div style="margin-bottom: 2em;">
+    <ul style="list-style: none; padding: 0;">
+        {% for chore_log in chore_logs_to_remind %}
+            <li style="display: block;">
+                <h4 style="display: block; margin-bottom: 8px;">{{ chore_log.chore.title }}</h4>
+                <p style="margin-top: 0;">
+                    Due {{ chore_log.due_date.strftime('%A, %b %e') }}
+                    <br>
+                    <span style="color: grey; font-style: italic;">
+                        {{ chore_log.chore.description }}
+                    </span>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

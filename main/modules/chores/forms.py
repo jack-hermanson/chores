@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms.fields import StringField, SubmitField, TextAreaField, IntegerField, SelectField, DateField
 from wtforms.validators import DataRequired, Length, ValidationError, Optional
 
@@ -69,6 +70,11 @@ class CreateEditChore(FlaskForm):
         validators=[],
         format="%Y-%m-%d"
     )
+    notifications_enabled = BooleanField("Notifications Enabled",
+                                         validators=[],
+                                         default=True,
+                                         description="If checked, this chore will be included in reminder emails.",
+                                         false_values=('False', 'false', ''))
     submit = SubmitField()
 
     @staticmethod

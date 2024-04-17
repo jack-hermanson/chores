@@ -1,0 +1,20 @@
+{% if greeting %}
+    <p>{{ greeting }}</p>
+{% endif %}
+
+{% if body %}
+    {{ body|safe }}
+{% endif %}
+
+{# I want to be able to extend this template with a fully fleshed out template, insert here #}
+{#{% block subtemplate_body %}#}
+{##}
+{#{% endblock subtemplate_body %}#}
+
+{% if include_signature %}
+    <hr>
+    <div style="margin-top: 2em">
+        <p style="font-family: monospace">{{ closing_remarks }}</p>
+    </div>
+    <p>You've received this email because you opted into notifications. To unsubscribe, <a href="{{ url_for('emails.unsubscribe', email_unsubscribe_token=email_unsubscribe_token, _external=True) }}">click here</a>.</p>
+{% endif %}

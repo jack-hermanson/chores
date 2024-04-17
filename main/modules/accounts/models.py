@@ -22,7 +22,10 @@ class Account(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     join_date = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
+    last_request_ip = db.Column(db.String(40), nullable=True)
     capitalize_name = db.Column(db.Boolean, nullable=False, default=False)
+    subscribed_to_emails = db.Column(db.Boolean, nullable=False, default=True)
+    email_unsubscribe_token = db.Column(db.String, nullable=False, default="placeholder")
 
     # relationship
     lists = db.relationship("List", secondary=list_account, back_populates="accounts")
