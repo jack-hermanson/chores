@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Blueprint, redirect, url_for, flash, request, render_template
 from flask_login import login_user, logout_user, current_user, login_required
 from sqlalchemy import func
@@ -73,6 +75,8 @@ def register():
         user.password = hashed_password
         user.email = form.email.data.lower().strip()
         user.capitalize_name = form.capitalize_name.data
+        user.email_unsubscribe_token = uuid.uuid4().__str__()
+        user.subscribed_to_emails = True
         db.session.add(user)
         db.session.commit()
         flash(f"Alright, {user.name}. Enter your password to log in.", 'success')

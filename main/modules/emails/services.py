@@ -94,7 +94,8 @@ def get_chore_logs_for_user_to_remind_about(user) -> AccountWithChoreLogs:
     """
     chore_logs_to_remind = []
     next_chore_logs = generate_next_chore_logs(user=user)
-    for chore_log in next_chore_logs:
+    owned_next_chore_logs = [chore_log for chore_log in next_chore_logs if chore_log.chore.owner == user]
+    for chore_log in owned_next_chore_logs:
         if chore_log.is_past_due and chore_log.chore.notifications_enabled:
             chore_logs_to_remind.append(chore_log)
 
