@@ -13,18 +13,20 @@ from ..chores.models import Chore
 from ..lists.models import List
 
 
-# todo change current user to a passed in user so we can automate
-def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list[int] or None = None):
+def generate_next_chore_logs(user=current_user, search_text="", show_archived=False, list_ids: list[int] or None = None):
     """
-    Generate next chore logs for the current user.
+    Generate next chore logs for a given user, likely the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
+    The use case for passing in a specific user is generating chore logs for a user for reminder emails.
     """
     logger.debug("Generating next chore logs")
+    if list_ids is None:
+        list_ids = [list_.list_id for list_ in user.lists]
 
     chores = db.session.query(Chore) \
         .join(Chore.list) \
         .join(List.accounts) \
-        .filter(Account.account_id == current_user.account_id)
+        .filter(Account.account_id == user.account_id)
 
     for chore in chores:
         logger.debug(f"Checking chore {chore}")
@@ -96,23 +98,32 @@ def generate_next_chore_logs(search_text="", show_archived=False, list_ids: list
             # ),
             # and
             # chore in list that this user belongs to
-            or_(
-                # either the caller did not specify list ids
-                # and this list is connected to user
-                and_(
-                    list_ids is None,
-                    List.accounts.contains(current_user)
-                ),
-                # or the caller did specify list ids
-                # and this list is one that the user asked for
-                # and this list is connected to user
-                and_(
-                    list_ids is not None,
-                    List.accounts.contains(current_user),
-                    List.list_id.in_(list_ids)
-                )
+
+            # this was removed because of stupid lack of short-circuiting in boolean expressions
+            # so in_(list_ids) was evaluated even if list_ids is None.
+            # or_(
+            #     # either the caller did not specify list ids
+            #     # and this list is connected to user
+            #     and_(
+            #         list_ids is None,
+            #         List.accounts.contains(user)
+            #     ),
+            #     # or the caller did specify list ids
+            #     # and this list is one that the user asked for
+            #     # and this list is connected to user
+            #     and_(
+            #         list_ids is not None,
+            #         List.accounts.contains(user),
+            #         List.list_id.in_(list_ids)
+            #     )
+            # ),
+
+            and_(
+                List.accounts.contains(user),
+                List.list_id.in_(list_ids)
             ),
-            # List.accounts.contains(current_user),
+
+            # List.accounts.contains(user),
             # and
             or_(
                 # this is a repeating chore and chore_log is incomplete

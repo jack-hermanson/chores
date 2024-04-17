@@ -2,13 +2,23 @@
     <p>{{ greeting }}</p>
 {% endif %}
 
-{{ body|safe }}
+{% if body %}
+    {{ body|safe }}
+{% endif %}
+
+{# I want to be able to extend this template with a fully fleshed out template, insert here #}
+{#{% block subtemplate_body %}#}
+{##}
+{#{% endblock subtemplate_body %}#}
 
 {% if include_signature %}
     <hr>
-    <p style="font-weight: bolder; font-size: larger;">Chores App</p>
-    <p><a href="{{ url_for('main.index', _external=True) }}">chores.herm.shop</a></p>
-    <br>
+    <div style="margin-top: 2em">
+        <p style="font-family: monospace">{{ closing_remarks }}</p>
+    </div>
+{#    <p style="font-weight: bolder; font-size: larger;">Chores App</p>#}
+{#    <p><a href="{{ url_for('main.index', _external=True) }}">chores.herm.shop</a></p>#}
+{#    <br>#}
     <p>Todo: unsubscribe</p>
     {#<p style="color: gray; font-size: 12px;">To unsubscribe <a href="{{ url_for('subscribers.unsubscribe', _external=True) }}">click here</a>.</p>#}
 {% endif %}

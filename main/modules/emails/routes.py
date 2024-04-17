@@ -1,29 +1,29 @@
 from flask import Blueprint
-from .services import send_generic_email
+
+from .models import AccountWithChoreLogs
+from .services import send_reminders_to_user, send_generic_email, get_users_who_want_reminder_emails, get_chore_logs_for_user_to_remind_about
 from datetime import datetime
 from flask import request
+import os
 
 emails = Blueprint("emails", __name__, url_prefix="/emails")
 
 
-@emails.route("/testing")
-def testing():
-    send_generic_email(
-        recipients=[
-            "jack.hermanson@live.com"
-        ],
-        subject=f"This is a test from {datetime.now().isoformat()}",
-        body=f"Well you made it this far from {get_ip()}.",
-        html=True,
-        greeting="Uh hi?",
-        include_signature=True,
-        sleep=False
-    )
-    return "You did it", 202
+def request_has_valid_api_key_header():
+    """Check if the API key header is valid"""
+    return os.environ.get("API_KEY") == request.headers.get("X-API-KEY")
 
 
-def get_ip():
-    if request.headers.getlist("X-Forwarded-For"):
-        return request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        return request.remote_addr
+@emails.route("/send-reminders", methods=["POST"])
+def send_reminders():
+    """Actually send the reminder for a single account ID"""
+    if not request_has_valid_api_key_header():
+        return "Invalid token", 401
+    # request.json: parsed JSON data. The request must have the application/json content type,
+    # or use request.get_json(force=True) to ignore the content type.
+    account_id = request.json.get("account_id")
+    try:
+        send_reminders_to_user(account_id)
+        return "Sent!"
+    except Exception as e:
+        return str(e), 500

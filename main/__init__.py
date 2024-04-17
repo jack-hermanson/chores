@@ -82,6 +82,12 @@ def create_app(config_class=Config):
     # email
     mail.init_app(app)
 
+    # middleware
+    @app.before_request
+    def request_middleware():
+        from main.modules.accounts.services import record_ip
+        record_ip()
+
     # filter
     @app.template_filter()
     def day_of_week_str(raw):
