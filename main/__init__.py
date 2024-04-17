@@ -71,8 +71,9 @@ def create_app(config_class=Config):
     from .modules.chores.routes import chores
     from .modules.chore_logs.routes import chore_logs
     from .modules.emails.routes import emails
+    from .modules.single_use_endpoints.routes import single_use_endpoints
 
-    for blueprint in [main, accounts, errors, lists, chores, chore_logs, emails]:
+    for blueprint in [main, accounts, errors, lists, chores, chore_logs, emails, single_use_endpoints]:
         app.register_blueprint(blueprint)
 
     # login manager

@@ -1,8 +1,7 @@
 from flask import Blueprint
 
-from .models import AccountWithChoreLogs
-from .services import send_reminders_to_user, send_generic_email, get_users_who_want_reminder_emails, get_chore_logs_for_user_to_remind_about
-from datetime import datetime
+from .services import send_reminders_to_user
+from ..accounts.services import unsubscribe_from_emails
 from flask import request
 import os
 
@@ -27,3 +26,9 @@ def send_reminders():
         return "Sent!"
     except Exception as e:
         return str(e), 500
+
+
+@emails.route("/unsubscribe/<string:email_unsubscribe_token>")
+def unsubscribe(email_unsubscribe_token: str):
+    unsubscribe_from_emails(email_unsubscribe_token)
+    return "unsubscribed"

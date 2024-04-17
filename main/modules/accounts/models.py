@@ -25,6 +25,7 @@ class Account(db.Model, UserMixin):
     last_request_ip = db.Column(db.String(40), nullable=True)
     capitalize_name = db.Column(db.Boolean, nullable=False, default=False)
     subscribed_to_emails = db.Column(db.Boolean, nullable=False, default=True)
+    email_unsubscribe_token = db.Column(db.String, nullable=False, default="placeholder")
 
     # relationship
     lists = db.relationship("List", secondary=list_account, back_populates="accounts")

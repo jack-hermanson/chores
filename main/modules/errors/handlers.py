@@ -14,7 +14,7 @@ def error_405(error):
 
 @errors.app_errorhandler(404)
 def error_404(error):
-    help_text = "Whatever you're looking couldn't be found. Was it deleted? Did it ever exit?"
+    help_text = "Whatever you're looking couldn't be found. Was it deleted? Did it ever exist?"
     return render_template('errors/generic-error.html',
                            help_text=help_text,
                            status=404,

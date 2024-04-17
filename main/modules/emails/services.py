@@ -23,10 +23,11 @@ def send_generic_email(
     recipients: list[str],
     subject,
     body,
+    email_unsubscribe_token,
     html=False,
     greeting=None,
     reply_to=None,
-    include_signature=True
+    include_signature=True,
 ):
     message = Message(
         subject,
@@ -35,7 +36,7 @@ def send_generic_email(
     )
 
     if not html:
-        message.body = body
+        message.body = body + "\n\n" + f"To unsubscribe, click here: {url_for('emails.unsubscribe', email_unsubscribe_token=email_unsubscribe_token)}"
     else:
         message.html = render_template(
             "emails/generic_email.html",
@@ -43,6 +44,7 @@ def send_generic_email(
             greeting=greeting,
             include_signature=include_signature,
             closing_remarks=get_info_for_pokemon(get_random_pokemon()),
+            email_unsubscribe_token=email_unsubscribe_token
         )
 
     message.recipients = recipients
@@ -79,6 +81,7 @@ def send_reminders_to_user(account_id: int):
                 user_name=formatted_name
             ),
             html=True,
+            email_unsubscribe_token=account_and_chore_logs.account.email_unsubscribe_token
         )
     else:
         logging.info(f"No chore logs to remind {account_and_chore_logs.account.name} about")
