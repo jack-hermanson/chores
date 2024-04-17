@@ -1,6 +1,7 @@
 from flask import Blueprint
 
 from .services import send_reminders_to_user
+from ..accounts.models import Account
 from ..accounts.services import unsubscribe_from_emails
 from flask import request
 import os
@@ -32,3 +33,14 @@ def send_reminders():
 def unsubscribe(email_unsubscribe_token: str):
     unsubscribe_from_emails(email_unsubscribe_token)
     return "unsubscribed"
+
+
+@emails.route("/get-subscribed-account-ids")
+def get_subscribed_account_ids():
+    if not request_has_valid_api_key_header():
+        return "Invalid token", 401
+    subscribers = Account.query.filter(Account.subscribed_to_emails.is_(True)).all()
+    return [
+        subscriber.account_id
+        for subscriber in subscribers
+    ]
