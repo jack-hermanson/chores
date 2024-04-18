@@ -10,11 +10,17 @@
         {% endif %}
     >
         {% if chore_log.previous %}
-            {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}
-            by
-            {{ chore_log.previous.completed_by_account.formatted_name }}
+            <span class="fake-link" title="Edit completion">
+                {{ chore_log.previous.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+                by
+                {{ chore_log.previous.completed_by_account.formatted_name }}
+            </span>
         {% elif chore_log.chore.repeat_type == 0 and chore_log.is_complete %}
-            {{ chore_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+            <span class="fake-link" title="Edit completion">
+                {{ chore_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+                by
+                {{ chore_log.completed_by_account.formatted_name }}
+            </span>
         {% else %}
             <i>Never</i>
         {% endif %}

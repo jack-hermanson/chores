@@ -253,3 +253,8 @@ ul.jump-to-list {
 span.next-due-date {
   border-bottom: 1px solid $secondary;
 }
+
+.fake-link {
+  border-bottom: 1px solid $secondary;
+  cursor: pointer;
+}

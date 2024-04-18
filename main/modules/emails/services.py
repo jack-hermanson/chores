@@ -68,15 +68,13 @@ def send_reminders_to_user(account_id: int, testing=False):
     chore_or_chores = "chore" if len(account_and_chore_logs.chore_logs) == 1 else "chores"
     subject = f"Chores App: {len(account_and_chore_logs.chore_logs)} {chore_or_chores} to do"
 
-    formatted_name = account.name.upper() if account.capitalize_name else account.name.capitalize()
-
     if len(account_and_chore_logs.chore_logs) > 0:
         logging.info(f"Sending reminder email to {account_and_chore_logs.account.name}")
         rendered_email_partial_template = render_template(
             "emails/reminder-partial.html",
             chore_logs_to_remind=account_and_chore_logs.chore_logs,
             summary=f"You have <a href='{url_for('main.index', _external=True)}'>{len(account_and_chore_logs.chore_logs)} {chore_or_chores} due</a>:",
-            user_name=formatted_name
+            user_name=account_and_chore_logs.account.formatted_name
         )
 
         if testing:

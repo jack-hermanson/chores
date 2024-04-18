@@ -12581,4 +12581,9 @@ span.next-due-date {
   border-bottom: 1px solid #ea39b8;
 }
 
+.fake-link {
+  border-bottom: 1px solid #ea39b8;
+  cursor: pointer;
+}
+
 /*# sourceMappingURL=main.css.map */
