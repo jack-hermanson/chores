@@ -11,6 +11,7 @@ from utils.min_clearance import min_clearance
 from . import services
 from .forms import ChoreLogDueDate, SearchAndFilterForm, ChoreLogCompletedDate
 from .models import ChoreLog
+from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..lists.models import List
 
@@ -109,10 +110,17 @@ def due_date():
 @chore_logs.route("/completed-date", methods=["GET", "POST"])
 def completed_date():
     chore_log_id = request.args.get("chore_log_id")
+    chore_log = ChoreLog.query.get_or_404(chore_log_id)
+
     form = ChoreLogCompletedDate()
+    form.completed_by.choices = [
+        (int(account.account_id), account.name)
+        for account in chore_log.chore.list.accounts
+    ]
+
     if form.validate_on_submit():
-        chore_log = ChoreLog.query.get_or_404(chore_log_id)
         new_completed_date = datetime.strptime(request.form.get("completed_date"), "%Y-%m-%dT%H:%M")
+        new_completed_by = Account.query.filter(Account.account_id == form.completed_by.data).first_or_404()
 
         try:
             # validation
@@ -133,15 +141,22 @@ def completed_date():
 
         if chore_log.chore.repeat_type == RepeatTypeEnum.NONE:
             chore_log.completed_date = new_completed_date
+            chore_log.completed_by_account = new_completed_by
         else:
             chore_log.previous.completed_date = new_completed_date
+            chore_log.previous.completed_by = new_completed_by
         db.session.commit()
 
         return render_template("chore_logs/chore-log-partial.html",
                                chore_log=chore_log)
     elif request.method == "GET":
-        chore_log = ChoreLog.query.get_or_404(chore_log_id)
         form.completed_date.data = chore_log.previous.completed_date if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_date
+        form.completed_by.choices = [
+            (str(account.account_id), account.name)
+            for account in chore_log.chore.list.accounts
+        ]
+        form.completed_by.data = chore_log.previous.completed_by_account.account_id if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_by_account.account_id
+
         if chore_log.previous and chore_log.previous.previous:
             min_date = chore_log.previous.previous.completed_date.strftime("%Y-%m-%dT%H:%M")
         else:
