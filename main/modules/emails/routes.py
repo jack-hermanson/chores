@@ -22,9 +22,9 @@ def send_reminders():
     # request.json: parsed JSON data. The request must have the application/json content type,
     # or use request.get_json(force=True) to ignore the content type.
     account_id = request.json.get("account_id")
+    testing = request.json.get("testing")
     try:
-        send_reminders_to_user(account_id)
-        return "Sent!"
+        return send_reminders_to_user(account_id, testing=testing) or "Sent in production!"
     except Exception as e:
         return str(e), 500
 
