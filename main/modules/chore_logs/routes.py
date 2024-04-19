@@ -151,11 +151,7 @@ def completed_date():
                                chore_log=chore_log)
     elif request.method == "GET":
         form.completed_date.data = chore_log.previous.completed_date if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_date
-        form.completed_by.choices = [
-            (str(account.account_id), account.formatted_name)
-            for account in chore_log.chore.list.accounts
-        ]
-        form.completed_by.data = chore_log.previous.completed_by_account.account_id if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_by_account.account_id
+        form.completed_by.data = str(chore_log.previous.completed_by_account.account_id if chore_log.chore.repeat_type != RepeatTypeEnum.NONE else chore_log.completed_by_account.account_id)
 
         if chore_log.previous and chore_log.previous.previous:
             min_date = chore_log.previous.previous.completed_date.strftime("%Y-%m-%dT%H:%M")
