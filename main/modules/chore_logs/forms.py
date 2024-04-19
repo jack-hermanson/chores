@@ -12,7 +12,7 @@ class ChoreLogDueDate(FlaskForm):
 
 class ChoreLogCompletedDate(FlaskForm):
     completed_date = DateTimeLocalField(format='%Y-%m-%dT%H:%M', validators=[])
-    completed_by = SelectField("Completed By", choices=[], coerce=int)
+    completed_by = SelectField("Completed By", choices=[], validators=[DataRequired()])
     submit = SubmitField("Save")
 
 

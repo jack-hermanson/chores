@@ -60,7 +60,7 @@ def edit(chore_id: int):
     form.list.choices = [(ls.list_id, ls.title) for ls in get_user_lists()]
     chore = Chore.query.filter(Chore.chore_id == chore_id).first_or_404()
     # todo - what if the list changes? need to make this an htmx thing
-    form.owner.choices = [(a.account_id, a.name) for a in chore.list.accounts]
+    form.owner.choices = [(a.account_id, a.formatted_name) for a in chore.list.accounts]
     form.due_date.data = chore.one_time_due_date
 
     if form.validate_on_submit():

@@ -6,18 +6,18 @@
         {{ form[name].label(class="form-label") }}
     {% endif %}
     {% if form[name].errors %}
-        {{ form[name](class="form-control form-control-lg is-invalid", **render_kw) }}
+        {{ form[name](class=("form-control form-control-lg is-invalid" if form[name].type != "SelectField" else "form-select form-select-lg is-invalid"), **render_kw) }}
         <div class="invalid-feedback">
             {% for error in form[name].errors %}
                 <span>{{ error }}</span>
             {% endfor %}
         </div>
     {% else %}
-        {{ form[name](class="form-control form-control-lg", **render_kw) }}
+        {{ form[name](class=("form-control form-control-lg" if form[name].type != "SelectField" else "form-select form-select-lg"), **render_kw) }}
     {% endif %}
     {% if form[name].description %}
         <div class="small form-text text-muted mt-2">{{ form[name].description }}</div>
     {% endif %}
-
+    {{ form[name].type == "SelectField" }}
 </div>
 {% endmacro %}

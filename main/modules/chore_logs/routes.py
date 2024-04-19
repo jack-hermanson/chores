@@ -114,7 +114,7 @@ def completed_date():
 
     form = ChoreLogCompletedDate()
     form.completed_by.choices = [
-        (int(account.account_id), account.name)
+        (account.account_id, account.formatted_name)
         for account in chore_log.chore.list.accounts
     ]
 
