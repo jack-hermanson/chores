@@ -144,7 +144,7 @@ def completed_date():
             chore_log.completed_by_account = new_completed_by
         else:
             chore_log.previous.completed_date = new_completed_date
-            chore_log.previous.completed_by = new_completed_by
+            chore_log.previous.completed_by_account = new_completed_by
         db.session.commit()
 
         return render_template("chore_logs/chore-log-partial.html",
