@@ -13,7 +13,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-12 col-lg-8 mb-3 mb-lg-0">
+        <div class="col-12 col-xl-7 mb-3 mb-xl-0">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Details</h5>
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-xl-5">
             <div class="card" id="completion-logs">
                 <div class="card-header">
                     <h5 class="mb-0">Completion Logs</h5>
@@ -83,10 +83,10 @@
                                 </div>
 
                                 <div class="ms-auto my-auto">
-                                    <span class="badge complete due-date-badge d-flex {% if previous_log.completed_date > previous_log.due_date %}overdue{% endif %}">
+                                    <span class="badge complete due-date-badge d-flex {% if previous_log.completed_date|extract_date > previous_log.due_date|extract_date %}overdue{% endif %}">
                                         <span class="my-auto">
-                                            {% if previous_log.completed_date > previous_log.due_date %}
-                                                {{ (previous_log.completed_date - previous_log.due_date).days }} Day{% if (previous_log.completed_date - previous_log.due_date).days != 1 %}s{% endif %} Late
+                                            {% if previous_log.completed_date|extract_date > previous_log.due_date|extract_date %}
+                                                {{ (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days }} Day{% if (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days != 1 %}s{% endif %} Late
                                             {% else %}
                                                 On time
                                             {% endif %}
