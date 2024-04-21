@@ -2,6 +2,7 @@
 
 {% from "macros/action-link.html" import action_link %}
 {% from "macros/key-val-list-item.html" import key_val_list_item %}
+{% from "macros/pagination.html" import pagination %}
 
 {% set title = chore.title + " Details" %}
 {% set active_route = "chores" %}
@@ -60,25 +61,60 @@
             </div>
         </div>
         <div class="col-12 col-lg-4">
-            <div class="card">
+            <div class="card" id="completion-logs">
                 <div class="card-header">
                     <h5 class="mb-0">Completion Logs</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        {% for previous_log in previous_logs %}
-                            <div class="list-group-item">
-                                {{ previous_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
-                                by
-                                {{ previous_log.completed_by_account.formatted_name }}
+                        {% for previous_log in previous_logs.items %}
+                            <div class="list-group-item d-flex">
+                                <div>
+                                    <div>
+                                        {{ previous_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
+                                        by
+                                        {{ previous_log.completed_by_account.formatted_name }}
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">
+                                            Due {{ previous_log.due_date.strftime('%A, %b %e') }}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="ms-auto my-auto">
+                                    <span class="badge complete due-date-badge d-flex {% if previous_log.completed_date > previous_log.due_date %}overdue{% endif %}">
+                                        <span class="my-auto">
+                                            {% if previous_log.completed_date > previous_log.due_date %}
+                                                {{ (previous_log.completed_date - previous_log.due_date).days }} Day{% if (previous_log.completed_date - previous_log.due_date).days != 1 %}s{% endif %} Late
+                                            {% else %}
+                                                On time
+                                            {% endif %}
+                                        </span>
+                                    </span>
+                                </div>
+
                             </div>
                         {% endfor %}
+                        {% if not previous_logs.items %}
+                            <div class="list-group-item">
+                                <span class="fst-italic">Never completed</span>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="text-center">
-                <small>Limited to 20 records (for now)</small>
+            <div class="row">
+                <div class="col-12">
+                    {{ pagination(
+                        endpoint="chores.details",
+                        pagination_model=previous_logs,
+                        special_kwargs={'chore_id': chore.chore_id},
+                        suffix="#completion-logs")
+                    }}
+                </div>
             </div>
         </div>
     </div>
+
 {% endblock body %}

@@ -167,12 +167,6 @@ def completed_date():
         return f"BAD {form.errors}"
 
 
-@chore_logs.route("/previous-logs/<int:chore_id>")
-def get_previous_logs(chore_id):
-    prev_logs = services.get_previous_logs(chore_id)
-    return [str(log) for log in prev_logs]
-
-
 # This is a helper function
 def populate_form_lists(form):
     lists = List.query.filter(List.accounts.contains(current_user)).all()
@@ -180,3 +174,5 @@ def populate_form_lists(form):
 
     if len(form.lists.data) == 0:
         form.lists.data = [str(li.list_id) for li in lists]
+
+

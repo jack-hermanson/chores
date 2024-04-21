@@ -2,3 +2,4 @@
 * text=auto
 *.css linguist-vendored
 *.html  linguist-language=html+jinja
+*.mako linguist-vendored
