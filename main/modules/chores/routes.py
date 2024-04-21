@@ -100,7 +100,7 @@ def edit(chore_id: int):
 
         db.session.commit()
         flash(f"Chore \"{chore.title}\" edited successfully.", "success")
-        return redirect(url_for("chore_logs.index"))
+        return redirect(url_for("chores.details", chore_id=chore_id))
     elif request.method == "GET":
         form.title.data = chore.title
         form.description.data = chore.description
@@ -158,10 +158,14 @@ def delete(chore_id):
 
 
 @chores.route("/<int:chore_id>")
-@min_clearance(ClearanceEnum.NORMAL)
+# @min_clearance(ClearanceEnum.NORMAL)
 def details(chore_id):
     chore = Chore.query.get_or_404(chore_id)
-    previous_logs = get_previous_logs(chore_id)
+
+    page = int(request.args.get("page", default=1, type=int))
+    previous_logs = get_previous_logs(chore_id, page)
+
     return render_template("chores/details.html",
                            chore=chore,
-                           previous_logs=previous_logs)
+                           previous_logs=previous_logs,
+                           dir_thing=dir(previous_logs))

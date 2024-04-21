@@ -223,11 +223,10 @@ def undo_completion(chore_log_id):
     return previous
 
 
-# todo add pagination, remove limit
-def get_previous_logs(chore_id):
+def get_previous_logs(chore_id: int, page: int):
     chore_logs = (ChoreLog.query
                   .filter(and_(ChoreLog.chore_id == chore_id,
                                ChoreLog.completed_date.is_not(None)))
                   .order_by(ChoreLog.completed_date.desc())
-                  .limit(20))
+                  .paginate(page=page, per_page=10))
     return chore_logs
