@@ -18,6 +18,8 @@
     {% if form[name].description %}
         <div class="small form-text text-muted mt-2">{{ form[name].description }}</div>
     {% endif %}
-    {{ form[name].type == "SelectField" }}
+
+{# Todo - why is this here? #}
+{#    {{ form[name].type == "SelectField" }}#}
 </div>
 {% endmacro %}
