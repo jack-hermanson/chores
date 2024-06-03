@@ -115,12 +115,13 @@ def create_app(config_class=Config):
     logger.debug("LOGGING IS RUNNING")
     logger.info(f"Running app in environment '{os.environ.get('ENVIRONMENT')}'")
     logger.info(f"FLASK_ENV: '{os.environ.get('FLASK_ENV')}'")
+
     return app
 
 
 # Set up logging
 logging.basicConfig()
-logger = logging.getLogger("RamsForProgress")
+logger = logging.getLogger("Chores")
 logger.propagate = False
 sh = logging.StreamHandler(sys.stdout)
 sh.setFormatter(StreamLogFormatter())
@@ -137,4 +138,4 @@ fh.namer = lambda name: name.replace(".txt", "") + ".txt"
 logger.addHandler(fh)
 logger.addHandler(sh)
 logger.setLevel(logging.DEBUG if (
-        os.environ.get("FLASK_ENV") == "dev" or os.environ.get("FLASK_ENV") == "development") else logging.INFO)
+    os.environ.get("FLASK_ENV") == "dev" or os.environ.get("FLASK_ENV") == "development") else logging.INFO)

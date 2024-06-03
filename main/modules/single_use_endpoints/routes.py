@@ -20,3 +20,8 @@ def set_email_tokens():
     for account in accounts:
         reset_email_unsubscribe_token(account)
     return "done", 200
+
+
+@single_use_endpoints.route("/error")
+def error_out():
+    raise ValueError("Oh no this is a big problem!")

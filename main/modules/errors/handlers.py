@@ -1,4 +1,7 @@
+import traceback
+
 from flask import Blueprint, render_template, request
+from main import logger
 
 errors = Blueprint('errors', __name__)
 
@@ -43,6 +46,7 @@ def error_401(error):
 @errors.app_errorhandler(500)
 def error_500(error):
     help_text = "Wow something really fucked up. You'll have to check the server logs."
+    logger.error("An error occurred: %s", traceback.format_exc())
     return render_template('errors/generic-error.html',
                            help_text=help_text,
                            error=error,
