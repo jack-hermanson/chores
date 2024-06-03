@@ -56,6 +56,17 @@
                                 {{ chore.owner.formatted_name }}
                             </p>
                         {% endcall %}
+                        {% call key_val_list_item("Timeliness") %}
+                            <p class="mb-1">
+                                On average, this chore is completed
+                                {% if average_timelines == 0 %}
+                                    <strong>on time</strong>.
+                                {% else %}
+                                        <span class="font-monospace">{{ average_timelines|abs|round(2) }}</span> day{{ "s" if average_timelines|abs != 1 else "" }}
+                                        <strong>{% if average_timelines|abs < 1 %}early{% else %}late{% endif %}</strong>.
+                                {% endif %}
+                            </p>
+                        {% endcall %}
                     </div>
                 </div>
             </div>
@@ -87,6 +98,8 @@
                                         <span class="my-auto">
                                             {% if previous_log.completed_date|extract_date > previous_log.due_date|extract_date %}
                                                 {{ (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days }} Day{% if (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days != 1 %}s{% endif %} Late
+                                            {% elif previous_log.completed_date|extract_date < previous_log.due_date|extract_date %}
+                                                {{ (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days|abs }} Day{% if (previous_log.completed_date|extract_date - previous_log.due_date|extract_date).days|abs != 1 %}s{% endif %} Early
                                             {% else %}
                                                 On time
                                             {% endif %}

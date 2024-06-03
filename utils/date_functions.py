@@ -63,12 +63,12 @@ def get_next_date_with_same_number(number: int, exclude_relative_to_date=True,
     try:
         next_occurrence = relative_to_date.replace(day=number)
     except ValueError:
-        print("value error")
+        logger.error("value error")
         # we probably gave it a 31 when there are only 30 days, or a 29 or 30 when there are only 28
         next_occurrence = (relative_to_date.replace(day=1) + relativedelta(months=2)) + timedelta(days=-1)
-        print("beyond error")
+        logger.debug("beyond error")
 
-    print(f"next occurrence {next_occurrence.__str__()}")
+    logger.debug(f"next occurrence {next_occurrence.__str__()}")
 
     # past
     if next_occurrence < relative_to_date or (next_occurrence == relative_to_date and exclude_relative_to_date):
@@ -76,7 +76,7 @@ def get_next_date_with_same_number(number: int, exclude_relative_to_date=True,
         # okay that day already occurred, so let's go to next month
         return next_occurrence + relativedelta(months=1)
 
-    print("next occurrence")
+    logger.debug("next occurrence", next_occurrence)
     return next_occurrence  # equivalent to commented out lines
     # # present
     # if next_occurrence == relative_to_date and not exclude_relative_to_date:

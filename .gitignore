@@ -155,3 +155,4 @@ node_modules/
 main/site.db
 main/web/static/.yarn/install-state.gz
 logs/
+backup-for-testing.sql

@@ -11,7 +11,7 @@ from .models import Chore
 from ..accounts.models import Account
 from ..lists.models import List
 from ..lists.services import get_user_lists
-from ..chore_logs.services import get_previous_logs
+from ..chore_logs.services import get_previous_logs, get_average_timeliness
 
 chores = Blueprint("chores", __name__, url_prefix="/chores")
 
@@ -164,8 +164,14 @@ def details(chore_id):
 
     page = int(request.args.get("page", default=1, type=int))
     previous_logs = get_previous_logs(chore_id, page)
+    average_timeliness = get_average_timeliness(chore_id)
 
     return render_template("chores/details.html",
                            chore=chore,
                            previous_logs=previous_logs,
-                           dir_thing=dir(previous_logs))
+                           average_timelines=average_timeliness)
+
+
+@chores.route("/l/<int:chore_id>")
+def lateness(chore_id):
+    return get_average_timeliness(chore_id)

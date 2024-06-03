@@ -11,9 +11,11 @@ from ..accounts.models import Account
 from ..chores.RepeatTypeEnum import RepeatTypeEnum
 from ..chores.models import Chore
 from ..lists.models import List
+from statistics import mean
 
 
-def generate_next_chore_logs(user=current_user, search_text="", show_archived=False, list_ids: list[int] or None = None):
+def generate_next_chore_logs(user=current_user, search_text="", show_archived=False,
+                             list_ids: list[int] or None = None):
     """
     Generate next chore logs for a given user, likely the current user.
     Returns a list of chore logs for this user, ordered by due date ascending.
@@ -50,7 +52,7 @@ def generate_next_chore_logs(user=current_user, search_text="", show_archived=Fa
 
         # Chore does not repeat
         if chore.repeat_type == RepeatTypeEnum.NONE:
-            logger.info(f"Chore with ID {chore.chore_id} does not repeat")
+            logger.info(f"Chore with ID {chore.chore_id} ({chore.title}) does not repeat")
             # since the chore doesn't repeat, we really only need to generate a log once
             if len(chore.chore_logs):
                 # there already is a chore log
@@ -78,7 +80,7 @@ def generate_next_chore_logs(user=current_user, search_text="", show_archived=Fa
             logger.error(f"Not a valid repeat type {chore.repeat_type}")
             new_log_for_this_chore.due_date = datetime.now().date()
 
-        logger.info(f"Created new log for {new_log_for_this_chore.chore} due {new_log_for_this_chore.due_date}")
+        logger.info(f"Created new log for {chore} due {new_log_for_this_chore.due_date}")
 
         chore.chore_logs.append(new_log_for_this_chore)
         db.session.add(new_log_for_this_chore)
@@ -230,3 +232,38 @@ def get_previous_logs(chore_id: int, page: int):
                   .order_by(ChoreLog.completed_date.desc())
                   .paginate(page=page, per_page=10))
     return chore_logs
+
+
+def get_average_timeliness(chore_id):
+    logger.debug("Getting average timeliness for chore with ID", chore_id)
+    chore_logs = (
+        ChoreLog.query.filter(
+            and_(
+                ChoreLog.chore_id == chore_id,
+                ChoreLog.completed_date.is_not(None)
+            )
+        ).all()
+    )
+    if len(chore_logs) == 0:
+        return 0
+    differences_in_days = [
+        (chore_log.completed_date - chore_log.due_date).days
+        for chore_log in chore_logs
+    ]
+    average_timeliness = mean(differences_in_days)
+    return average_timeliness
+
+    # for debugging
+    # return [
+    #     {
+    #         "chore_log_id": chore_log.chore_log_id,
+    #         "due_date": chore_log.due_date,
+    #         "completed_date": chore_log.completed_date,
+    #         "difference": str(chore_log.completed_date - chore_log.due_date),
+    #         "was_late": (chore_log.completed_date - chore_log.due_date).days > 0,
+    #         "was_early": (chore_log.completed_date - chore_log.due_date).days < 0,
+    #         "was_on_time": (chore_log.completed_date - chore_log.due_date).days == 0,
+    #         "x_dif_days": (chore_log.completed_date - chore_log.due_date).days
+    #     }
+    #     for chore_log in chore_logs
+    # ]
