@@ -65,7 +65,7 @@ class Edit(CreateOrEditFormBase):
     @staticmethod
     def validate_password(_, password):
         if len(password.data) > password_length.max:
-            raise ValidationError(f"Name must be less than {password_length.max} characters")
+            raise ValidationError(f"Name must be fewer than {password_length.max} characters")
 
 
 class Create(CreateOrEditFormBase):
