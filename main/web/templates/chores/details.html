@@ -82,6 +82,9 @@
                             <div class="list-group-item d-flex">
                                 <div>
                                     <div>
+                                        {% if debug %}
+                                            ({{ previous_log.chore_log_id }})
+                                        {% endif %}
                                         {{ previous_log.completed_date.strftime("%A, %B %e, %l:%M%p") }}
                                         by
                                         {{ previous_log.completed_by_account.formatted_name }}

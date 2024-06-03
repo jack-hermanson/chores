@@ -160,6 +160,8 @@ def delete(chore_id):
 @chores.route("/<int:chore_id>")
 # @min_clearance(ClearanceEnum.NORMAL)
 def details(chore_id):
+    debug = (request.args.get("debug") or "").lower() == "true"
+
     chore = Chore.query.get_or_404(chore_id)
 
     page = int(request.args.get("page", default=1, type=int))
@@ -169,9 +171,13 @@ def details(chore_id):
     return render_template("chores/details.html",
                            chore=chore,
                            previous_logs=previous_logs,
-                           average_timelines=average_timeliness)
+                           average_timelines=average_timeliness,
+                           debug=debug)
 
 
 @chores.route("/l/<int:chore_id>")
 def lateness(chore_id):
-    return get_average_timeliness(chore_id)
+    return {
+        "chore": str(Chore.query.get(chore_id)),
+        "average_timeliness": get_average_timeliness(chore_id)
+    }
