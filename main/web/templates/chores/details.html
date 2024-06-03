@@ -41,7 +41,7 @@
                                 {% if chore.repeat_type == 0 %}
                                     <i>N/A</i>
                                 {% elif chore.repeat_type == 1 %}
-                                    Every {{ chore.repeat_days }} days
+                                    Every {{ chore.repeat_days if chore.repeat_days != 1 else "" }} day{% if chore.repeat_days != 1 %}s{% endif %}
                                 {% elif chore.repeat_type == 2 %}
                                     Every {{ chore.repeat_day_of_week|day_of_week_str }}
                                 {% elif chore.repeat_type == 3 %}
