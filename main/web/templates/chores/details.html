@@ -63,7 +63,7 @@
                                     <strong>on time</strong>.
                                 {% else %}
                                         <span class="font-monospace">{{ average_timelines|abs|round(2) }}</span> day{{ "s" if average_timelines|abs != 1 else "" }}
-                                        <strong>{% if average_timelines|abs < 1 %}early{% else %}late{% endif %}</strong>.
+                                        <strong>{% if average_timelines < 0 %}early{% else %}late{% endif %}</strong>.
                                 {% endif %}
                             </p>
                         {% endcall %}
